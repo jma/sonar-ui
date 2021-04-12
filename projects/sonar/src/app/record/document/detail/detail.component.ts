@@ -104,7 +104,7 @@ export class DetailComponent implements OnDestroy, OnInit {
     this._subscription.add(
       this._translateService.onLangChange.subscribe(() => {
         this.sortAbstracts();
-        if (this.record.abstracts.length > 0) {
+        if (this.record && this.record.abstracts.length > 0) {
           this.changeAbstract(this.record.abstracts[0]);
         }
       })
@@ -266,6 +266,10 @@ export class DetailComponent implements OnDestroy, OnInit {
    * language of the interface.
    */
   private sortAbstracts() {
+    if (!this.record || !this.record.abstracts) {
+      return;
+    }
+
     const firstLanguage = this._configSservice.languagesMap.find(
       (item) => item.code === this._translateService.currentLang
     );

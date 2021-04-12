@@ -127,7 +127,10 @@ export class AppRoutingModule {
               'language',
               'author',
               'subject',
-              'organisation'
+              'organisation',
+              'customField1',
+              'customField2',
+              'customField3'
             ],
             aggregationsBucketSize: 10,
             searchFields: [
@@ -185,6 +188,9 @@ export class AppRoutingModule {
           'author',
           'subject',
           'organisation',
+          'customField1',
+          'customField2',
+          'customField3'
         ],
         editorSettings: {
           longMode: true
@@ -220,6 +226,9 @@ export class AppRoutingModule {
         files: {
           enabled: true
         },
+        editorSettings: {
+          longMode: true
+        }
       },
       {
         type: 'deposits',
