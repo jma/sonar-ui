@@ -63,8 +63,9 @@
               </li>
             </ng-container>
           </ul>
-          <a href="#" (click)="showMoreContributors($event)"
-            *ngIf="record.contribution.length > 3">{{ 'Show more' | translate }}&hellip;</a>
+          <a href="#" (click)="showMoreContributors($event)" *ngIf="record.contribution.length > 3">
+            {{ 'Show more' | translate }}&hellip;
+          </a>
         </div>
 
         <!-- PUBLICATION STATEMENT -->
@@ -114,13 +115,16 @@
         <div class="my-4 text-justify" *ngIf="record.abstracts.length > 0">
           <a href="#" class="abstract-lang badge badge-secondary text-light mr-1"
             [ngClass]="{'badge-secondary text-light': abstract.show, 'badge-light text-reset': !abstract.show}"
-            (click)="$event.preventDefault(); changeAbstract(abstract)"
-            *ngFor="let abstract of record.abstracts">{{ abstract.language | translateLanguage }}</a>
+            (click)="$event.preventDefault(); changeAbstract(abstract)" *ngFor="let abstract of record.abstracts">
+            {{ abstract.language | translateLanguage }}
+          </a>
           <span *ngFor="let abstract of record.abstracts">
             <ng-container *ngIf="abstract.show">
               <ng-container *ngIf="!abstract.full && abstract.value.length > 400; else fullAbstract">
-                {{ abstract.value | slice:0:400 }} <a href="#"
-                  (click)="showMoreAbstract($event, abstract)">{{ 'Show more' | translate }}&hellip;</a>
+                {{ abstract.value | slice:0:400 }}
+                <a href="#" (click)="showMoreAbstract($event, abstract)">
+                  {{ 'Show more' | translate }}&hellip;
+                </a>
               </ng-container>
               <ng-template #fullAbstract>
                 <span [innerHtml]="abstract.value | nl2br"></span>
@@ -152,8 +156,10 @@
             </dt>
             <dd class="col-lg-8">
               <p class="m-0" *ngFor="let otherEdition of record.otherEdition">
-                {{ otherEdition.publicNote }} : <a [href]="otherEdition.document.electronicLocator"
-                  target="_blank">{{ otherEdition.document.electronicLocator }}</a>
+                {{ otherEdition.publicNote }} :
+                <a [href]="otherEdition.document.electronicLocator" target="_blank">
+                  {{ otherEdition.document.electronicLocator }}
+                </a>
               </p>
             </dd>
           </ng-container>
@@ -192,6 +198,21 @@
                 {{ ('classification_' + classification.classificationPortion) | translate }}
               </ng-container>
             </dd>
+          </ng-container>
+
+          <ng-container *ngFor="let i of [1, 2, 3]">
+            <ng-container *ngIf="record['customField' + i]">
+              <dt class="col-lg-4"
+                *ngIf="record.organisation && record.organisation[0]['documentsCustomField' + i] && record.organisation[0]['documentsCustomField' + i].label; else noLabel">
+                {{ record.organisation[0]['documentsCustomField' + i].label }}
+              </dt>
+              <ng-template #noLabel>
+                <dt class="col-lg-4">{{ 'Custom field' | translate }} {{ i }}</dt>
+              </ng-template>
+              <dd class="col-lg-8">
+                {{ record['customField' + i] }}
+              </dd>
+            </ng-container>
           </ng-container>
 
           <!-- LICENSE -->

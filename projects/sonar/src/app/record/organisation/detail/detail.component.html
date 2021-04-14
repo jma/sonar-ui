@@ -37,5 +37,18 @@
     <dd class="col-sm-9">
       <i class="fa fa-{{ record.metadata.isDedicated ? 'check' : 'close' }}"></i>
     </dd>
+
+    <ng-container *ngFor="let i of [1, 2, 3]">
+      <ng-container *ngIf="record.metadata['documentsCustomField' + i]">
+        <dt class="col-sm-3">{{ 'Custom field' | translate }} {{ i }}</dt>
+        <dd class="col-sm-9">
+          <ng-container *ngIf="record.metadata['documentsCustomField' + i].label">
+            {{ 'Label' | translate }}: {{ record.metadata['documentsCustomField' + i].label }}<br>
+          </ng-container>
+          <i class="fa fa-{{ record.metadata['documentsCustomField' + i].includeInFacets ? 'check' : 'remove' }}"></i>
+          {{ 'Include in facets' | translate }}
+        </dd>
+      </ng-container>
+    </ng-container>
   </dl>
 </ng-container>
