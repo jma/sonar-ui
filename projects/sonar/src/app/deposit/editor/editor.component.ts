@@ -491,9 +491,9 @@ export class EditorComponent implements OnInit {
             };
           }
 
-          // change field input to textarea
-          if (fieldSchema.form.type === 'textarea') {
-            fieldConfig.type = 'textarea';
+          // There's a custom form type
+          if (fieldSchema.form.type != null) {
+            fieldConfig.type = fieldSchema.form.type;
           }
 
           // expression properties
