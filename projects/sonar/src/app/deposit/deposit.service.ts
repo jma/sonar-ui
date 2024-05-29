@@ -17,7 +17,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, DialogService, orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { ApiService, DialogService, processJsonSchema, RecordService, removeEmptyValues, resolve$ref } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { concat, from, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, first, ignoreElements, map, mergeMap, reduce, switchMap, tap } from 'rxjs/operators';
@@ -279,7 +279,7 @@ export class DepositService implements OnDestroy {
     return this._recordService.getSchemaForm(type)
       .pipe(
         map((result: any) => {
-          orderedJsonSchema(result.schema);
+          result.schema = processJsonSchema(resolve$ref(result.schema, result.schema.properties));
           return result.schema;
         })
       );

@@ -16,15 +16,16 @@
  */
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { ActivatedRoute, ActivationStart, Router, RouterEvent, RouterModule, Routes, UrlSegment } from '@angular/router';
+import { ActivatedRoute, ActivationStart, Router, RouterModule, Routes, UrlSegment, mapToCanActivate } from '@angular/router';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, DetailComponent, EditorComponent, RecordSearchPageComponent } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { AdminComponent } from './_layout/admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { BriefViewComponent } from './deposit/brief-view/brief-view.component';
 import { ConfirmationComponent } from './deposit/confirmation/confirmation.component';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { EditorComponent as DepositEditorComponent } from './deposit/editor/editor.component';
 import { UploadComponent } from './deposit/upload/upload.component';
 import { CanAddGuard } from './guard/can-add.guard';
@@ -44,7 +45,6 @@ import { DetailComponent as SubdivisionDetailComponent } from './record/subdivis
 import { DetailComponent as UserDetailComponent } from './record/user/detail/detail.component';
 import { UserComponent } from './record/user/user.component';
 import { UserService } from './user.service';
-import { AdminComponent } from './_layout/admin/admin.component';
 
 const adminModeDisabled = (): Observable<ActionStatus> => {
   return of({
@@ -61,7 +61,7 @@ const routes: Routes = [
       { path: '', component: DashboardComponent },
       {
         path: 'deposit/:id',
-        canActivate: [RoleGuard],
+        canActivate: mapToCanActivate([RoleGuard]),
         data: {
           role: 'submitter'
         },
@@ -135,7 +135,7 @@ const fileConfig = {
 }
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, {})],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
@@ -222,7 +222,7 @@ export class AppRoutingModule {
     this._router.config.push({
       path: ':type/profile/:pid',
       component: EditorComponent,
-      canActivate: [RoleGuard],
+      canActivate: mapToCanActivate([RoleGuard]),
       data: {
         types: [
           {
@@ -451,12 +451,12 @@ export class AppRoutingModule {
         recordsRoutesConfiguration.forEach((config: any) => {
           const route = {
             matcher: (url: any) => this._routeMatcher(url, config.type),
-            canActivate: [RoleGuard],
+            canActivate: mapToCanActivate([RoleGuard]),
             children: [
               { path: '', component: RecordSearchPageComponent },
               { path: 'detail/:pid', component: DetailComponent },
               { path: 'edit/:pid', component: EditorComponent },
-              { path: 'new', component: EditorComponent, canActivate: [CanAddGuard] }
+              { path: 'new', component: EditorComponent, canActivate: mapToCanActivate([CanAddGuard]) }
             ],
             data: {
               role: 'submitter',
@@ -496,7 +496,7 @@ export class AppRoutingModule {
    * Updates route data properties which are depending to the view parameter.
    */
   private _updateSearchRouteData() {
-    this._router.events.subscribe((e: RouterEvent) => {
+    this._router.events.subscribe(e => {
       if (e instanceof ActivationStart &&
         e.snapshot.parent.routeConfig &&
         e.snapshot.parent.routeConfig.path === ':view/search'

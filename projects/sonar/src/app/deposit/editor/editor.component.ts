@@ -22,10 +22,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, DialogService } from '@rero/ng-core';
+import { ApiService, DialogService, processJsonSchema, resolve$ref, JSONSchemaService } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { combineLatest, EMPTY, of } from 'rxjs';
+import { EMPTY, combineLatest, of } from 'rxjs';
 import { delay, first, switchMap, tap } from 'rxjs/operators';
 import { UserService } from '../../user.service';
 import { DepositService } from '../deposit.service';
@@ -115,7 +115,8 @@ export class EditorComponent implements OnInit {
     private _datePipe: DatePipe,
     private _apiService: ApiService,
     private _httpClient: HttpClient,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    private _jsonschemaService: JSONSchemaService
   ) {}
 
   ngOnInit(): void {
@@ -547,76 +548,23 @@ export class EditorComponent implements OnInit {
    * @param schema JSON schema
    */
   private _createForm(schema: any) {
+    schema = processJsonSchema(resolve$ref(schema, schema.properties));
+        // form configuration
+    const editorConfig = {
+      pid: this.deposit.pid,
+      longMode: false,
+      recordType: 'deposits'
+    }
     const depositFields = this._formlyJsonschema.toFieldConfig(schema, {
-      map: (fieldConfig: any, fieldSchema: any) => {
-        if (fieldSchema.form) {
-          // Template options
-          if (fieldSchema.form.templateOptions) {
-            fieldConfig.templateOptions = {
-              ...fieldConfig.templateOptions,
-              ...fieldSchema.form.templateOptions,
-            };
-          }
+      map: (field: any, fieldSchema: any) => {
+        field = this._jsonschemaService.processField(field, fieldSchema);
 
-          // Options for enum types
-          if (fieldSchema.form.options) {
-            fieldConfig.templateOptions = {
-              ...fieldConfig.templateOptions,
-              ...{ options: fieldSchema.form.options },
-            };
-          }
-
-          // There's a custom form type
-          if (fieldSchema.form.type != null) {
-            fieldConfig.type = fieldSchema.form.type;
-          }
-
-          // expression properties
-          if (fieldSchema.form.expressionProperties) {
-            fieldConfig.expressionProperties =
-              fieldSchema.form.expressionProperties;
-          }
-
-          // hide expression
-          if (fieldSchema.form.hideExpression) {
-            fieldConfig.hideExpression = fieldSchema.form.hideExpression;
-          }
-
-          if (
-            fieldSchema.form.remoteTypeahead &&
-            fieldSchema.form.remoteTypeahead.type
-          ) {
-            fieldConfig.type = 'remoteTypeahead';
-            fieldConfig.templateOptions = {
-              ...fieldConfig.templateOptions,
-              ...{ remoteTypeahead: fieldSchema.form.remoteTypeahead },
-            };
-          }
-
-          // Validation messages
-          if (fieldSchema.form.validation) {
-            const messages = fieldSchema.form.validation.messages;
-            if (messages) {
-              if (!fieldConfig.validation) {
-                fieldConfig.validation = {};
-              }
-              if (!fieldConfig.validation.messages) {
-                fieldConfig.validation.messages = {};
-              }
-              for (const key of Object.keys(messages)) {
-                const msg = messages[key];
-                // add support of key with or without Message suffix (required == requiredMessage),
-                // this is usefull for backend translation extraction
-                fieldConfig.validation.messages[key.replace(/Message$/, '')] =
-                  msg;
-              }
-            }
-          }
-        }
+        field.props.editorConfig = editorConfig;
+        field.props.getRoot = (() => this.fields[0]);
 
         // Force validate `value` field when type is changed.
         if (fieldSchema.key && fieldSchema.key === 'identified_by_type') {
-          fieldConfig.templateOptions.change = (field: any) => {
+          field.props.change = (field: any) => {
             if (field.parent.model.value) {
               field.parent.formControl.controls.value.touched = true;
               field.parent.formControl.controls.value.updateValueAndValidity();
@@ -626,7 +574,7 @@ export class EditorComponent implements OnInit {
 
         // Add a validator depending on field `type`
         if (fieldSchema.key && fieldSchema.key === 'identified_by_value') {
-          fieldConfig.validators = {
+          field.validators = {
             identifier: {
               expression: (c: any) => {
                 switch (c.parent.controls.type.value) {
@@ -654,7 +602,7 @@ export class EditorComponent implements OnInit {
           };
         }
 
-        return fieldConfig;
+        return field;
       },
     });
 
