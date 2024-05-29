@@ -23,6 +23,10 @@
               "projects/sonar/src/assets"
             ],
             "styles": [
+              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
               "projects/sonar/src/styles.scss"
             ],
             "scripts": [],
@@ -68,22 +72,22 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sonar:build"
+            "buildTarget": "sonar:build"
           },
           "configurations": {
             "proxy": {
-              "browserTarget": "sonar:build:proxy",
-              "proxyConfig": "proxy.conf.json"
+              "proxyConfig": "proxy.conf.json",
+              "buildTarget": "sonar:build:proxy"
             },
             "production": {
-              "browserTarget": "sonar:build:production"
+              "buildTarget": "sonar:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sonar:build"
+            "buildTarget": "sonar:build"
           }
         },
         "test": {
@@ -98,6 +102,10 @@
               "projects/sonar/src/assets"
             ],
             "styles": [
+              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
               "projects/sonar/src/styles.scss"
             ],
             "scripts": []

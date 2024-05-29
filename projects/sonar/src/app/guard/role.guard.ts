@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { UserService } from '../user.service';
@@ -35,7 +35,7 @@ import { UserService } from '../user.service';
  *    }
  *  }
  */
-export class RoleGuard implements CanActivate {
+export class RoleGuard  {
   /**
    * Constructor.
    * @param _userService User service.
