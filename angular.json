@@ -23,10 +23,6 @@
               "projects/sonar/src/assets"
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
               "projects/sonar/src/styles.scss"
             ],
             "scripts": [],
@@ -47,13 +43,13 @@
                   "with": "projects/sonar/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
               "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "optimization": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -102,10 +98,6 @@
               "projects/sonar/src/assets"
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
               "projects/sonar/src/styles.scss"
             ],
             "scripts": []

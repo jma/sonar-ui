@@ -381,20 +381,5 @@
         </div>
     </div>
   </ng-container>
-
-  <!--Preview modal-->
-  <ng-template #previewModal>
-    <ng-container *ngIf="previewFile">
-      <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">{{ previewFile.label }}</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="previewModalRef.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe class="preview-iframe" id="preview-iframe" width="100%" height="500" [src]="previewFile.url"
-          style="border: none;"></iframe>
-      </div>
-    </ng-container>
-  </ng-template>
+<sonar-upload-files recordType="documents"[pid]="record.pid"></sonar-upload-files>
 </ng-container>

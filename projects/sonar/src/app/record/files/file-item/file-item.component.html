@@ -1,0 +1,106 @@
+<!--
+  SONAR User Interface
+  Copyright (C) 2024 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<p-panel [toggleable]="true" collapsed="true">
+  <ng-template pTemplate="header">
+    <ng-container
+      [ngTemplateOutlet]="fileLink"
+      [ngTemplateOutletContext]="{ file: file(), name: file().label }"
+    ></ng-container>
+  </ng-template>
+
+  <ng-template pTemplate="icons">
+    <button
+      [title]="'remove' | translate"
+      class="p-panel-header-icon p-link mr-2"
+      (click)="deleteFile(file())"
+    >
+      <span class="fa fa-trash"></span>
+    </button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col">
+      <div class="flex justify-content-end flex-wrap">
+        <p-button
+          label="Save"
+          (click)="save()"
+          icon="pi pi-save"
+          class="small"
+        />
+      </div>
+      <p-divider />
+      <formly-form
+        [model]="model"
+        [fields]="fields()"
+        [options]="options"
+        [form]="form"
+      ></formly-form>
+    </div>
+    <p-divider layout="vertical"></p-divider>
+
+    <div class="col">
+      <div class="flex justify-content-end flex-wrap">
+        <p-fileUpload
+          mode="basic"
+          [chooseLabel]="'A new version' | translate"
+          chooseIcon="pi pi-upload"
+          [accept]="file().metadata.mimetype"
+          fileLimit="1"
+          [auto]="true"
+          [maxFileSize]="maxFileSize"
+          [customUpload]="true"
+          (uploadHandler)="uploadHandler($event)"
+        />
+      </div>
+      <p-divider />
+      @if (file().versions) {
+      <h5 translate>Versions</h5>
+      <ul>
+        @for (version of file()?.versions; track version) {
+        <li>
+          <ng-container
+            [ngTemplateOutlet]="fileLink"
+            [ngTemplateOutletContext]="{
+              file: version,
+              name: version.created | dateTranslate
+            }"
+          ></ng-container>
+        </li>
+        }
+      </ul>
+      } @else {
+      <span translate>No previous version</span>
+      }
+    </div>
+  </div>
+</p-panel>
+
+<ng-template #fileLink let-file="file" let-name="name">
+  @if (file?.links?.self) {
+  <a
+    tabindex="-1"
+    [tooltip]="
+      (file.size | filesize) + ' / ' + (file.updated | dateTranslate : 'medium')
+    "
+    title="download"
+    [href]="downloadURL(file)"
+    download
+    >{{ name }} <i class="fa fa-download"></i
+  ></a>
+  }
+</ng-template>

@@ -1,0 +1,35 @@
+/*
+ * SONAR User Interface
+ * Copyright (C) 2024 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+@import 'node_modules/bootstrap/scss/_functions';
+@import 'node_modules/bootstrap/scss/_variables';
+:host ::ng-deep {
+  .p-orderlist .p-orderlist-list .p-orderlist-item.p-highlight {
+    background-color: rgba($blue, 0.5);
+  }
+  .p-orderlist .p-orderlist-list .p-orderlist-item.p-highlight.p-focus {
+    background-color: rgba($blue, 0.75);
+  }
+  .p-orderlist-item, .p-orderlist-list {
+    overflow: visible;
+  }
+  .p-tabview-title {
+    font-weight: normal;
+    font-size: 0.9rem;
+  }
+}
