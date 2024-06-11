@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DatePipe } from '@angular/common';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -30,6 +30,13 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { ToastrModule } from 'ngx-toastr';
+import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
+import { FileUploadModule } from 'primeng/fileupload';
+import { InputTextModule } from 'primeng/inputtext';
+import { OrderListModule } from 'primeng/orderlist';
+import { PanelModule } from 'primeng/panel';
+import { AdminComponent } from './_layout/admin/admin.component';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -57,6 +64,8 @@ import { DetailComponent as DocumentDetailComponent } from './record/document/de
 import { DocumentComponent } from './record/document/document.component';
 import { FileComponent } from './record/document/file/file.component';
 import { PublicationPipe } from './record/document/publication.pipe';
+import { FileItemComponent } from './record/files/file-item/file-item.component';
+import { UploadFilesComponent } from './record/files/upload-files/upload-files.component';
 import { DetailComponent as HepvsProjectDetailComponent } from './record/hepvs/project/detail/detail.component';
 import { IdentifierComponent } from './record/identifier/identifier.component';
 import { DetailComponent as OrganisationDetailComponent } from './record/organisation/detail/detail.component';
@@ -69,7 +78,6 @@ import { DetailComponent as UserDetailComponent } from './record/user/detail/det
 import { UserComponent } from './record/user/user.component';
 import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
-import { AdminComponent } from './_layout/admin/admin.component';
 
 export function appInitializerFactory(appInitializerService: AppInitializerService): () => Promise<any> {
   return () => appInitializerService.initialize().toPromise();
@@ -114,7 +122,9 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     SubdivisionDetailComponent,
     ContributorsPipe,
     ContributionsComponent,
-    ContributionComponent
+    ContributionComponent,
+    UploadFilesComponent,
+    FileItemComponent
   ],
   imports: [
     BrowserModule,
@@ -134,10 +144,17 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
       defaultLanguage: 'en'
     }),
     ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgxDropzoneModule,
-    RecordModule
+    RecordModule,
+    InputTextModule,
+    FileUploadModule,
+    OrderListModule,
+    DropdownModule,
+    PanelModule,
+    DividerModule
   ],
   providers: [
     {

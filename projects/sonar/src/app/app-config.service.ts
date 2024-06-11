@@ -28,6 +28,9 @@ export class AppConfigService extends CoreConfigService {
 
   globalviewName: string;
 
+  // maximum upload file size
+  maxFileSize = 500 * 1024 * 1024;
+
   // Languages map.
   languagesMap = [
     {

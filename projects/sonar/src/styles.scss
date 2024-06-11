@@ -16,83 +16,104 @@
  */
 
 // Font awesome
-$fa-font-path: "~font-awesome/fonts";
+$fa-font-path: '~font-awesome/fonts';
 
 // Bootstrap
-$font-family-base: "Roboto", sans-serif;
+$font-family-base: 'Roboto', sans-serif;
 $primary: #205078 !default;
 $secondary: rgb(246, 130, 17) !default;
 
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,700|Roboto+Condensed:300,700");
-@import "font-awesome/scss/font-awesome";
-@import "bootstrap/scss/bootstrap";
-@import "ngx-toastr/toastr-bs4-alert";
-// TODO: remove `node_modules` when this will be fixed in ngx-bootstrap
-@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
-@import "easymde/dist/easymde.min";
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,700|Roboto+Condensed:300,700');
+@import 'font-awesome/scss/font-awesome';
+@layer bootstrap {
+  @import 'bootstrap/scss/bootstrap';
+  @import 'ngx-toastr/toastr-bs4-alert';
+  @import 'node_modules/ngx-bootstrap/datepicker/bs-datepicker';
+  // TODO: remove `node_modules` when this will be fixed in ngx-bootstrap
+  @import 'easymde/dist/easymde.min';
+  body,
+  html {
+    line-height: normal;
+    font-size: 0.9rem;
+  }
+  pre {
+    white-space: pre-wrap;
+  }
 
-pre {
-  white-space: pre-wrap;
-}
+  .string {
+    color: $success;
+  }
 
-.string {
-  color: $success;
-}
+  .number {
+    color: $secondary;
+  }
 
-.number {
-  color: $secondary;
-}
+  .boolean {
+    color: $primary;
+  }
 
-.boolean {
-  color: $primary;
-}
+  .null {
+    color: $warning;
+  }
 
-.null {
-  color: $warning;
-}
+  .key {
+    color: $danger;
+  }
 
-.key {
-  color: $danger;
-}
+  .nav-item > a {
+    cursor: pointer;
+  }
 
-.nav-item > a {
-  cursor: pointer;
-}
+  .text-small {
+    font-size: 14px;
+  }
 
-.text-small {
-  font-size: 14px;
-}
-
-.card.wrapper {
-  border: none;
-  @extend .py-1;
-
-  .card-header {
+  .card.wrapper {
     border: none;
-    background: none;
-    padding-left: 0;
-  }
+    @extend .py-1;
 
-  .card-body {
-    padding-left: 0;
-  }
+    .card-header {
+      border: none;
+      background: none;
+      padding-left: 0;
+    }
 
-  .border-left, .object {
-    padding-left: map_get($spacers, 3) !important;
-    margin-bottom: map_get($spacers, 3) !important;
-    border-left: 3px solid #dee2e6 !important;
-  }
+    .card-body {
+      padding-left: 0;
+    }
 
-  .array-item {
-    margin-left: 0 !important;
-
+    .border-left,
     .object {
-      padding-left: 0 !important;
+      padding-left: map_get($spacers, 3) !important;
+      margin-bottom: map_get($spacers, 3) !important;
+      border-left: 3px solid #dee2e6 !important;
+    }
+
+    .array-item {
+      margin-left: 0 !important;
+
+      .object {
+        padding-left: 0 !important;
+      }
     }
   }
+
+  // Markdown editor
+  .CodeMirror,
+  .CodeMirror-scroll {
+    min-height: 120px;
+  }
 }
 
-// Markdown editor
-.CodeMirror, .CodeMirror-scroll {
-	min-height: 120px;
+@import 'primeng/resources/themes/bootstrap4-light-blue/theme';
+@import 'primeng/resources/primeng';
+@layer primengother {
+  @import 'primeicons/primeicons';
+  @import 'primeflex/primeflex';
+}
+
+@layer custom {
+  .p-inputtext {
+    font-size: 0.9rem;
+  }
 }

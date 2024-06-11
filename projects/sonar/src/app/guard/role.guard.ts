@@ -16,7 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { UserService } from '../user.service';
 
