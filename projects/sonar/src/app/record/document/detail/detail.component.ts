@@ -20,13 +20,14 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
+  inject,
 } from '@angular/core';
-import { ApiService } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { AppConfigService } from '../../../app-config.service';
 import { DocumentFile } from '../document.interface';
 
@@ -48,6 +49,8 @@ export class DetailComponent implements OnDestroy, OnInit {
 
   // Record retrieved from observable.
   record: any = null;
+
+  recordService = inject(RecordService);
 
   // Form modal reference.
   previewModalRef: BsModalRef;
@@ -97,7 +100,6 @@ export class DetailComponent implements OnDestroy, OnInit {
         element.full = false;
         return element;
       });
-      this.getStats();
     });
 
     // When language change, abstracts are sorted and first one is displayed.
@@ -110,7 +112,15 @@ export class DetailComponent implements OnDestroy, OnInit {
       })
     );
   }
+  updateFiles(files) {
+    this.recordService.getRecord('documents', this.record.pid, 1).pipe(
+      map(doc => this.record._files = doc.metadata._files)
+    ).subscribe();
+  }
 
+  get filteredKeys() {
+    return this.filteredFiles.map(file => file.key);
+  }
   /**
    * Component destruction.
    *
@@ -159,38 +169,6 @@ export class DetailComponent implements OnDestroy, OnInit {
     });
   }
 
-  /**
-   * Get the stats corresponding to given record.
-   */
-   private getStats() {
-    const data = {
-      'record-view': {
-        stat: 'record-view',
-        params: {
-          pid_value: this.record.pid,
-          pid_type: 'doc'
-        }
-      },
-      'file-download': {
-        stat: 'file-download',
-        params: {
-          bucket_id: this.record._bucket
-        }
-      }
-    };
-
-    this._httpClient.post(`${this._apiService.getEndpointByType('stats', true)}`, data)
-    .subscribe(results => {
-      const statistics = {};
-      if (results['file-download'] != null) {
-        results['file-download'].buckets.map(
-          res => statistics[res.key] = res.unique_count
-        );
-      }
-      statistics['record-view'] = results['record-view'].unique_count;
-      this.record.statistics = statistics;
-    });
-  }
 
   /**
    * Show abstract's full text when clicking on the show more link.
