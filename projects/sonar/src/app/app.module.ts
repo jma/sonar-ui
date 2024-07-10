@@ -31,11 +31,13 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { ToastrModule } from 'ngx-toastr';
 import { DividerModule } from 'primeng/divider';
+import { CarouselModule } from 'primeng/carousel';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { OrderListModule } from 'primeng/orderlist';
 import { PanelModule } from 'primeng/panel';
+import { PaginatorModule } from 'primeng/paginator';
 import { AdminComponent } from './_layout/admin/admin.component';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
@@ -78,6 +80,9 @@ import { DetailComponent as UserDetailComponent } from './record/user/detail/det
 import { UserComponent } from './record/user/user.component';
 import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
+import { OtherFilesComponent } from './record/files/other-files/other-files.component';
+import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
+import { StatsFilesComponent } from './record/files/stats-files/stats-files.component';
 
 export function appInitializerFactory(appInitializerService: AppInitializerService): () => Promise<any> {
   return () => appInitializerService.initialize().toPromise();
@@ -124,7 +129,10 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     ContributionsComponent,
     ContributionComponent,
     UploadFilesComponent,
-    FileItemComponent
+    FileItemComponent,
+    OtherFilesComponent,
+    FaIconClassPipe,
+    StatsFilesComponent
   ],
   imports: [
     BrowserModule,
@@ -154,7 +162,9 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     OrderListModule,
     DropdownModule,
     PanelModule,
-    DividerModule
+    DividerModule,
+    CarouselModule,
+    PaginatorModule
   ],
   providers: [
     {

@@ -16,7 +16,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild, effect, inject, input } from '@angular/core';
+import { Component, ViewChild, effect, inject, input, output } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService, RecordService } from '@rero/ng-core';
@@ -48,6 +48,8 @@ export class UploadFilesComponent {
   pid = input.required<string>();
   // record type such as documents
   recordType = input.required<string>();
+
+  filesChanged = output<any>();
 
   // initial record from pid and recordType
   initialRecord = toSignal(
@@ -156,6 +158,7 @@ export class UploadFilesComponent {
               'Metadata have been saved successfully.'
             )
           );
+          this.filesChanged.emit(this.files);
         });
     }
   }
@@ -193,6 +196,7 @@ export class UploadFilesComponent {
               this.translateService.instant('File uploaded successfully.')
             );
             this.nUploadedFiles = 0;
+            this.filesChanged.emit(this.files);
           })
         )
         .subscribe(() => this.spinner.hide('file-upload'));
@@ -223,6 +227,7 @@ export class UploadFilesComponent {
           this.getRecord();
         }),
         tap(() => {
+          this.filesChanged.emit(this.files);
           this.resetFilter();
           this.toastrService.success(
             this.translateService.instant('File uploaded successfully.')
@@ -338,6 +343,7 @@ export class UploadFilesComponent {
                   this.toastrService.success(
                     this.translateService.instant('File removed successfully.')
                   );
+                  this.filesChanged.emit(this.files);
                   return true;
                 })
               );
@@ -436,6 +442,7 @@ export class UploadFilesComponent {
         this.files.map((file) => {
           file.metadata = this._getFileInRecord(file.key);
         });
+        this.filesChanged.emit(this.files);
       });
   }
 
