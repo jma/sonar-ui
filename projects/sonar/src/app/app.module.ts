@@ -30,8 +30,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { ToastrModule } from 'ngx-toastr';
-import { DividerModule } from 'primeng/divider';
 import { CarouselModule } from 'primeng/carousel';
+import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
@@ -44,6 +44,7 @@ import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateLoader } from './app-translate-loader';
 import { AppComponent } from './app.component';
+import { FieldDescriptionComponent } from './core/field-description/field-description.component';
 import { FileLinkPipe } from './core/file-link.pipe';
 import { FileSizePipe } from './core/filesize.pipe';
 import { HighlightJsonPipe } from './core/highlight-json.pipe';
@@ -57,6 +58,7 @@ import { ReviewComponent } from './deposit/review/review.component';
 import { UploadComponent } from './deposit/upload/upload.component';
 import { HttpInterceptor } from './interceptor/http.interceptor';
 import { ContributorsPipe } from './pipe/contributors.pipe';
+import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
 import { LanguageValuePipe } from './pipe/language-value.pipe';
 import { BriefViewComponent as CollectionBriefViewComponent } from './record/collection/brief-view/brief-view.component';
 import { DetailComponent as CollectionDetailComponent } from './record/collection/detail/detail.component';
@@ -67,6 +69,8 @@ import { DocumentComponent } from './record/document/document.component';
 import { FileComponent } from './record/document/file/file.component';
 import { PublicationPipe } from './record/document/publication.pipe';
 import { FileItemComponent } from './record/files/file-item/file-item.component';
+import { OtherFilesComponent } from './record/files/other-files/other-files.component';
+import { StatsFilesComponent } from './record/files/stats-files/stats-files.component';
 import { UploadFilesComponent } from './record/files/upload-files/upload-files.component';
 import { DetailComponent as HepvsProjectDetailComponent } from './record/hepvs/project/detail/detail.component';
 import { IdentifierComponent } from './record/identifier/identifier.component';
@@ -75,14 +79,9 @@ import { OrganisationComponent } from './record/organisation/organisation.compon
 import { BriefViewComponent as ProjectBriefViewComponent } from './record/project/brief-view/brief-view.component';
 import { DetailComponent as ProjectDetailComponent } from './record/project/detail/detail.component';
 import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/subdivision/brief-view/brief-view.component';
-import { DetailComponent as SubdivisionDetailComponent } from './record/subdivision/detail/detail.component';
-import { DetailComponent as UserDetailComponent } from './record/user/detail/detail.component';
 import { UserComponent } from './record/user/user.component';
 import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
-import { OtherFilesComponent } from './record/files/other-files/other-files.component';
-import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
-import { StatsFilesComponent } from './record/files/stats-files/stats-files.component';
 
 export function appInitializerFactory(appInitializerService: AppInitializerService): () => Promise<any> {
   return () => appInitializerService.initialize().toPromise();
@@ -100,7 +99,6 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     UserComponent,
     DocumentDetailComponent,
     OrganisationDetailComponent,
-    UserDetailComponent,
     JoinPipe,
     LanguageValuePipe,
     DashboardComponent,
@@ -124,7 +122,6 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     CollectionBriefViewComponent,
     CollectionDetailComponent,
     SubdivisionBriefViewComponent,
-    SubdivisionDetailComponent,
     ContributorsPipe,
     ContributionsComponent,
     ContributionComponent,
@@ -132,7 +129,8 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     FileItemComponent,
     OtherFilesComponent,
     FaIconClassPipe,
-    StatsFilesComponent
+    StatsFilesComponent,
+    FieldDescriptionComponent
   ],
   imports: [
     BrowserModule,

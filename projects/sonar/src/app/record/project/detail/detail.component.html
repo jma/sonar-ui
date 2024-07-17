@@ -16,77 +16,63 @@
 -->
 <ng-container *ngIf="record$ | async as record">
   <h1 class="mb-4">{{ record.metadata.name }}</h1>
-  <dl class="row mt-4">
-    <ng-container *ngIf="record.metadata.description">
-      <dt class="col-sm-3" translate>Description</dt>
-      <dd class="col-sm-9" [innerHtml]="record.metadata.description | nl2br"></dd>
-    </ng-container>
+  <dl>
+    <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
+      <ng-template let-description pTemplate="template">
+       <span [innerHtml]="description | nl2br"></span>
+      </ng-template>
+    </sonar-field-description>
 
-    <dt class="col-sm-3" translate>Period</dt>
-    <dd class="col-sm-9">{{ record.metadata.startDate | dateTranslate: 'd/M/yyyy' }} -
-      {{ record.metadata.endDate | dateTranslate: 'd/M/yyyy' }}</dd>
+    <sonar-field-description [label]="'Start date' | translate" [field]="record.metadata.startDate | dateTranslate: 'longDate' ">
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.endDate">
-      <dt class="col-sm-3" translate>End date</dt>
-      <dd class="col-sm-9">{{ record.metadata.endDate | dateTranslate: 'longDate' }}</dd>
-    </ng-container>
+    <sonar-field-description [label]="'End date' | translate" [field]="record.metadata.endDate | dateTranslate: 'longDate' ">
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.identifiedBy">
-      <dt class="col-sm-3" translate>Identifier</dt>
-      <dd class="col-sm-9">
-        <sonar-record-identifier type="identifiedBy" [data]="record.metadata.identifiedBy"></sonar-record-identifier>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Identifier' | translate" [field]="record.metadata.identifiedBy">
+      <ng-template let-identifiedBy pTemplate="template">
+        <sonar-record-identifier type="identifiedBy" [data]="identifiedBy"/>
+      </ng-template>
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.investigators">
-      <dt class="col-sm-3" translate>Investigators</dt>
-      <dd class="col-sm-9">
-
-        <p class="m-0" *ngFor="let investigator of record.metadata.investigators">
-          {{ investigator.agent.preferred_name }} (<ng-container
-            *ngFor="let role of investigator.role; let last = last;">{{ role | translate }}<ng-container *ngIf="!last">
-              ,&nbsp;</ng-container>
-          </ng-container>)
+    <sonar-field-description [label]="'Investigators' | translate" [field]="record.metadata.investigators">
+      <ng-template let-investigator pTemplate="template">
+          {{ investigator.agent.preferred_name }}
+          (@for (role of investigator.role; track role; let last=$last) {
+              {{ role | translate }}@if (!last) {
+                ,&nbsp;
+              }
+          })
           <sonar-record-identifier type="identifiedBy" [data]="investigator.identifiedBy" *ngIf="investigator.identifiedBy">
           </sonar-record-identifier>
-          <ng-container *ngIf="investigator.affiliation">
-            <small class="ml-1" *ngIf="investigator.controlledAffiliation; else affiliation"
-              [tooltip]="investigator.controlledAffiliation | join:' ; '">
+          @if (investigator.affiliation) {
+            <small class="ml-1"
+              [tooltip]="investigator.controlledAffiliation ? (investigator.controlledAffiliation | join:' ; ') : null">
               <i class="text-muted">{{ investigator.affiliation }}</i>
             </small>
-            <ng-template #affiliation>
-              <small class="ml-1">
-                <i class="text-muted">{{ investigator.affiliation }}</i>
-              </small>
-            </ng-template>
-          </ng-container>
-        </p>
+          }
+      </ng-template>
+    </sonar-field-description>
 
-      </dd>
-    </ng-container>
-
-    <ng-container *ngIf="record.metadata.funding_organisations">
-      <dt class="col-sm-3" translate>Funding organisations</dt>
-      <dd class="col-sm-9">
-        <p class="m-0" *ngFor="let funding_organisation of record.metadata.funding_organisations">
-          {{ funding_organisation.agent.preferred_name }}
+    <sonar-field-description [label]="'Funding organisations' | translate" [field]="record.metadata.funding_organisations">
+      <ng-template let-funding_organisation pTemplate="template">
+        {{ funding_organisation.agent.preferred_name }}
           <sonar-record-identifier type="identifiedBy"
             [data]="funding_organisation.identifiedBy" *ngIf="funding_organisation.identifiedBy">
           </sonar-record-identifier>
-        </p>
-      </dd>
-    </ng-container>
+      </ng-template>
+    </sonar-field-description>
+
   </dl>
 
-  <ng-container *ngIf="user$ | async as user">
-    <ng-container *ngIf="record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator">
-      <h4 translate>Linked documents</h4>
-      <ul>
-        <li *ngFor="let document of record.metadata.documents">
+  @if (user$ | async; as user && record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
+    <h4 translate>Linked documents</h4>
+    <ul class="list-none p-0">
+      @for (document of record.metadata.documents; track document) {
+        <li>
           <a
             [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">{{ document.title[0].mainTitle | languageValue | async }}</a>
         </li>
-      </ul>
-    </ng-container>
-  </ng-container>
-</ng-container>
+      }
+    </ul>
+  }

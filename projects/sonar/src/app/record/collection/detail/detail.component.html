@@ -1,25 +1,23 @@
 <!--
- SONAR User Interface
- Copyright (C) 2021 RERO
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as published by
- the Free Software Foundation, version 3 of the License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  SONAR User Interface
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record$ | async as record">
   <h1 class="mb-4">{{ record.metadata.name | languageValue | async }}</h1>
-  <dl class="row mt-4">
-    <ng-container *ngIf="record.metadata.description">
-      <dt class="col-sm-3" translate>Description</dt>
-      <dd class="col-sm-9" [innerHtml]="record.metadata.description | languageValue | async | markdown"></dd>
-    </ng-container>
-  </dl>
+  @if(record.metadata.description) {
+    <h4 translate>Description</h4>
+    <p [innerHtml]="record.metadata.description | languageValue | async | markdown"></p>
+  }
 </ng-container>

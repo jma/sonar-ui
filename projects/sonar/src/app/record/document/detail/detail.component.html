@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record">
+@if(record) {
   <section class="mt-3">
     <div class="row">
       <div class="col-lg-3 text-center">
@@ -27,54 +27,57 @@
         </div>
 
         <!-- DOCUMENT TYPE -->
-        <h5 class="my-4" *ngIf="record.documentType">
-          {{ 'document_type_' + record.documentType | translate }}
-        </h5>
+        @if(record.documentType){
+          <h5 class="my-4">
+            {{ 'document_type_' + record.documentType | translate }}
+          </h5>
+        }
       </div>
       <div class="col">
         <h1 class="text-primary">
-          <i
-            class="fa fa-eye-slash mr-2"
-            [class]="
-              'text-' +
-              (record.masked === 'masked_for_all' ? 'danger' : 'warning')
-            "
-            *ngIf="record.masked && record.masked !== 'not_masked'"
-            [tooltip]="
-              record.masked === 'masked_for_all'
-                ? ('Masked for all' | translate)
-                : ('Masked for external IP addresses' | translate)
-            "
-          ></i>
+          @if(record.masked && record.masked !== 'not_masked') {
+            <i
+              class="fa fa-eye-slash mr-2"
+              [class]="
+                'text-' +
+                (record.masked === 'masked_for_all' ? 'danger' : 'warning')
+              "
+              [tooltip]="
+                record.masked === 'masked_for_all'
+                  ? ('Masked for all' | translate)
+                  : ('Masked for external IP addresses' | translate)
+              "
+            ></i>
+          }
           <span
             [innerHTML]="
               record.title[0].mainTitle | languageValue | async | nl2br
             "
           ></span>
-          <ng-container *ngIf="record.title[0].subtitle">
+          @if(record.title[0].subtitle) {
             &nbsp;:&nbsp;{{
               record.title[0].subtitle | languageValue | async
-            }}</ng-container
-          >
+            }}
+          }
         </h1>
 
         <h4 class="m-0">
-          <ng-container *ngIf="record.organisation">
+          @if(record.organisation) {
             <span
               class="badge badge-secondary text-light mr-1 font-weight-normal"
               *ngFor="let organisation of record.organisation"
             >
               {{ organisation.name }}
             </span>
-          </ng-container>
-          <ng-container *ngIf="record.subdivisions">
+          }
+          @if(record.subdivisions) {
             <span
               class="badge badge-secondary text-light mr-1 font-weight-normal"
               *ngFor="let subdivision of record.subdivisions"
             >
               {{ subdivision.name | languageValue | async }}
             </span>
-          </ng-container>
+          }
         </h4>
 
         <!-- CONTRIBUTORS Not bf:Meeting -->
@@ -83,57 +86,61 @@
         ></sonar-contributions>
 
         <!-- PUBLICATION STATEMENT -->
-        <ul
-          class="list-unstyled my-2"
-          *ngIf="
-            record.provisionActivity && record.provisionActivity.length > 0
-          "
-        >
-          <ng-container *ngFor="let statement of record.provisionActivity">
-            <ng-container
-              *ngIf="
-                statement.text && statement.text.default;
-                else statementDate
-              "
-            >
-              <li *ngFor="let item of statement.text | keyvalue">
-                {{ item.value }}
-              </li>
-            </ng-container>
-            <ng-template #statementDate>
-              <li>{{ statement.text }}</li>
-            </ng-template>
-          </ng-container>
-        </ul>
+        @if(record.provisionActivity && record.provisionActivity.length > 0) {
+          <ul
+            class="list-unstyled my-2"
+          >
+            @for(statement of record.provisionActivity; track statement) {
+              @if(statement.text && statement.text.default) {
+                @for(item of statement.text | keyvalue; track item) {
+                  <li>
+                    {{ item.value }}
+                  </li>
+                }
+              } @else {
+                <li>{{ statement.text }}</li>
+              }
+            }
+          </ul>
+        }
 
         <!-- EXTENT AND FORMAT -->
-        <p class="my-2" *ngIf="record.extent || record.formats">
-          <ng-container *ngIf="record.extent">{{ record.extent }}</ng-container>
-          <ng-container *ngIf="record.extent && record.formats">
-            ;
-          </ng-container>
-          <ng-container *ngIf="record.formats">{{
-            record.formats | join : ', '
-          }}</ng-container>
-        </p>
+        @if(record.extent || record.formats) {
+          <p class="my-2">
+            @if(record.extent) {
+              {{ record.extent }}
+            }
+            @if(record.extent && record.formats) { ; }
+            @if(record.formats) {
+              {{
+                record.formats | join : ', '
+              }}
+            }
+          </p>
+        }
 
         <!-- EDITION STATEMENT -->
-        <p class="my-2" *ngIf="record.editionStatement">
-          {{ record.editionStatement.editionDesignation.value }}
-          <ng-container *ngIf="record.editionStatement.responsibility">
-            / {{ record.editionStatement.responsibility.value }}
-          </ng-container>
-        </p>
+        @if(record.editionStatement) {
+          <p class="my-2">
+            {{ record.editionStatement.editionDesignation.value }}
+            @if(record.editionStatement.responsibility) {
+              / {{ record.editionStatement.responsibility.value }}
+            }
+          </p>
+        }
 
         <!-- DISSERTATION -->
-        <p class="my-2" *ngIf="record.dissertation">
-          {{ record.dissertation.text }}
-        </p>
+        @if(record.dissertation) {
+          <p class="my-2" record.dissertation>
+            {{ record.dissertation.text }}
+          </p>
+        }
+
 
         <!-- PART OF -->
+        @if (record.partOf && record.partOf.length > 0) {
         <div
           class="d-flex flex-row mb-3"
-          *ngIf="record.partOf && record.partOf.length > 0"
         >
           <!-- Type preprint (coar:c_816b): "Submitted to" other "Published in" -->
           <div class="mr-1">
@@ -146,168 +153,132 @@
               }}:</strong
             >
           </div>
-          <div class="">
+          <div>
             <ul class="list-unstyled mb-0">
-              <li *ngFor="let partOf of record.partOf">
-                {{ partOf.text }}
-              </li>
+              @for (partOf of record.partOf; track partOf) {
+                <li>
+                  {{ partOf.text }}
+                </li>
+              }
             </ul>
           </div>
         </div>
+        }
 
         <!-- ---------------------- SUBJECTS ---------------------- -->
-        <div class="my-3" *ngIf="record.subjects && record.subjects.length > 0">
-          <ng-container *ngFor="let subject of record.subjects">
-            <h5 class="d-inline mr-1" *ngFor="let value of subject.label.value">
-              <a
-                [routerLink]="['/', 'records', 'documents']"
-                [queryParams]="{ q: 'subjects.label.value:' + value }"
-              >
-                <span
-                  class="badge badge-secondary text-light font-weight-light"
+        @if(record.subjects && record.subjects.length > 0) {
+          <div class="my-3">
+            @for (subject of record.subjects; track subject) {
+              <h5 class="d-inline mr-1" *ngFor="let value of subject.label.value">
+                <a
+                  [routerLink]="['/', 'records', 'documents']"
+                  [queryParams]="{ q: 'subjects.label.value:' + value }"
                 >
-                  <i class="fa fa-tag mx-1"></i> {{ value }}
-                </span>
-              </a>
-            </h5>
-          </ng-container>
-        </div>
+                  <span
+                    class="badge badge-secondary text-light font-weight-light"
+                  >
+                    <i class="fa fa-tag mx-1"></i> {{ value }}
+                  </span>
+                </a>
+              </h5>
+            }
+          </div>
+        }
 
         <!-- ---------------------- ABSTRACT ---------------------- -->
-        <div class="my-4 text-justify" *ngIf="record.abstracts.length > 0">
-          <a
-            href="#"
-            class="abstract-lang badge badge-secondary text-light mr-1"
-            [ngClass]="{
-              'badge-secondary text-light': abstract.show,
-              'badge-light text-reset': !abstract.show
-            }"
-            (click)="$event.preventDefault(); changeAbstract(abstract)"
-            *ngFor="let abstract of record.abstracts"
-          >
-            {{ abstract.language | translateLanguage }}
-          </a>
-          <span *ngFor="let abstract of record.abstracts">
-            <ng-container *ngIf="abstract.show">
-              <ng-container
-                *ngIf="
-                  !abstract.full && abstract.value.length > 400;
-                  else fullAbstract
-                "
+        @if (record.abstracts.length > 0) {
+          <div class="my-4 text-justify">
+            @for (abstract of record.abstracts; track abstract) {
+              <a
+                href="#"
+                class="abstract-lang badge badge-secondary text-light mr-1"
+                [ngClass]="{
+                  'badge-secondary text-light': abstract.show,
+                  'badge-light text-reset': !abstract.show
+                }"
+                (click)="$event.preventDefault(); changeAbstract(abstract)"
               >
-                {{ abstract.value | slice : 0 : 400 }}
-                <a href="#" (click)="showMoreAbstract($event, abstract)">
-                  {{ 'Show more' | translate }}&hellip;
-                </a>
-              </ng-container>
-              <ng-template #fullAbstract>
-                <span [innerHtml]="abstract.value | nl2br"></span>
-              </ng-template>
-            </ng-container>
-          </span>
-        </div>
+                {{ abstract.language | translateLanguage }}
+              </a>
+            }
+            @for (abstract of record.abstracts; track abstract) {
+              @if (abstract.show) {
+                    @if (!abstract.full && abstract.value.length > 400) {
+                      <span>
+                        {{ abstract.value | slice : 0 : 400 }}
+                        <a href="#" (click)="showMoreAbstract($event, abstract)">
+                          {{ 'Show more' | translate }}&hellip;
+                        </a>
+                      </span>
+                    } @else {
+                      <span [innerHtml]="abstract.value | nl2br"></span>
+                    }
+              }
+            }
+          </div>
+        }
 
         <!-- ---------------------- ADDITIONAL INFOS / FIELDS ---------------------- -->
-        <dl class="row mb-0">
+        <dl class="mb-0">
           <!-- PROJECTS -->
-          <ng-container *ngIf="record.projects">
-            <dt class="col-lg-4" translate>Research projects</dt>
-            <dd class="col-lg-8">
-              <ul class="list-unstyled mb-0">
-                <li class="p-0" *ngFor="let project of record.projects">
-                  <a
-                    [routerLink]="[
-                      '/',
-                      'records',
-                      'projects',
-                      'detail',
-                      project.pid
-                    ]"
-                  >
-                    {{ project.name }}
-                  </a>
-                  {{ get_funding_organisations(project) }}
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Research project' | translate" [field]="record.projects">
+            <ng-template let-project pTemplate="template">
+              <a
+              [routerLink]="[
+                '/',
+                'records',
+                'projects',
+                'detail',
+                project.pid
+              ]"
+            >
+              {{ project.name }}
+            </a>
+            {{ get_funding_organisations(project) }}
+            </ng-template>
+          </sonar-field-description>
 
           <!-- COLLECTIONS -->
-          <ng-container *ngIf="record.collections">
-            <dt class="col-lg-4" translate>Collections</dt>
-            <dd class="col-lg-8">
-              <ul class="list-unstyled mb-0">
-                <li class="p-0" *ngFor="let collection of record.collections">
-                  <a
-                    [routerLink]="[
-                      '/',
-                      'records',
-                      'collections',
-                      'detail',
-                      collection.pid
-                    ]"
-                  >
-                    {{ collection.name | languageValue | async }}
-                  </a>
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
-
+          <sonar-field-description [label]="'Collections' | translate" [field]="record.collections">
+            <ng-template let-collection pTemplate="template">
+              <a
+              [routerLink]="[
+                '/',
+                'records',
+                'collections',
+                'detail',
+                collection.pid
+              ]"
+            >
+              {{ collection.name | languageValue | async }}
+            </a>
+            </ng-template>
+          </sonar-field-description>
           <!-- CUSTOM FIELDS -->
-          <ng-container *ngFor="let i of [1, 2, 3]">
-            <ng-container *ngIf="record['customField' + i]">
-              <dt class="col-lg-4">
-                {{ 'Custom field ' + i | translate }}
-              </dt>
-              <dd class="col-lg-8">
-                {{ record['customField' + i].join(', ') }}
-              </dd>
-            </ng-container>
-          </ng-container>
+          @for (i of [1, 2, 3]; track i) {
+            <sonar-field-description [label]="'Custom field ' + i | translate" [field]="record['customField' + i]?.join(', ')"/>
+          }
 
           <!-- LANGUAGE -->
-          <ng-container *ngIf="record.language">
-            <dt class="col-lg-4" translate>Language</dt>
-            <dd class="col-lg-8">
-              <ul class="list-unstyled mb-0">
-                <li *ngFor="let language of record.language">
-                  {{ language.value | translateLanguage }}
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Language' | translate" [field]="record.language">
+            <ng-template let-language pTemplate="template">
+              {{ language.value | translateLanguage }}
+            </ng-template>
+          </sonar-field-description>
 
           <!-- CONTRIBUTIONS -> TYPE: bf:Meeting -->
-          <sonar-contributions
-            class="col-lg-12"
-            [contributions]="record.contribution"
-            [meeting]="true"
-            [additionalInfosFields]="true"
-          ></sonar-contributions>
+            <sonar-contributions
+              [contributions]="record.contribution"
+              [meeting]="true"
+              [additionalInfosFields]="true"
+            ></sonar-contributions>
 
           <!-- CONTENT NOTE -->
-          <ng-container *ngIf="record.contentNote">
-            <dt class="col-lg-4" translate>Content</dt>
-            <dd class="col-lg-6">
-              <ul class="list-unstyled mb-0">
-                <li *ngFor="let note of record.contentNote">
-                  {{ note }}
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Content' | translate" [field]="record.contentNote"/>
 
           <!-- CLASSIFICATION -->
-          <ng-container *ngIf="UDCclassifiations.length">
-            <dt class="col-lg-4" translate>Classification</dt>
-            <dd class="col-lg-8">
-              <ng-container
-                *ngFor="
-                  let classification of UDCclassifiations;
-                  let last = last
-                "
-              >
+          <sonar-field-description [label]="'Classification' | translate" [field]="UDCclassifications">
+            <ng-template let-classification pTemplate="template">
                 <a
                   [routerLink]="['/', 'records', 'documents']"
                   [queryParams]="{
@@ -318,124 +289,83 @@
                   >{{
                     'classification_' + classification.classificationPortion
                       | translate
-                  }}</a
-                ><span *ngIf="!last">&nbsp;;&nbsp;</span>
-              </ng-container>
-            </dd>
-          </ng-container>
+                  }}
+                </a>
+              </ng-template>
+            </sonar-field-description>
+
 
           <!-- OTHER EDITION -->
-          <ng-container *ngIf="record.otherEdition">
-            <dt class="col-lg-4" translate>Other electronic version</dt>
-            <dd class="col-lg-8">
-              <p class="m-0" *ngFor="let otherEdition of record.otherEdition">
+          <sonar-field-description [label]="'Other electronic version' | translate" [field]="record.otherEdition">
+            <ng-template let-otherEdition pTemplate="template">
                 <a
                   [href]="otherEdition.document.electronicLocator"
                   target="_blank"
                 >
-                  <i class="fa fa-external-link mx-1"></i>
                   {{ otherEdition.publicNote }}
+                  <i class="fa fa-external-link mx-1"></i>
                 </a>
-              </p>
-            </dd>
-          </ng-container>
+            </ng-template>
+          </sonar-field-description>
 
           <!-- RELATED TO -->
-          <ng-container *ngIf="record.relatedTo">
-            <dt class="col-lg-4" translate>Related to</dt>
-            <dd class="col-lg-8">
-              <p class="m-0" *ngFor="let relatedTo of record.relatedTo">
+          <sonar-field-description [label]="'Related to' | translate" [field]="record.relatedTo">
+            <ng-template let-relatedTo pTemplate="template">
                 <a
                   [href]="relatedTo.document.electronicLocator"
                   target="_blank"
                 >
-                  <i class="fa fa-external-link mx-1"></i>
                   {{ relatedTo.publicNote }}
+                  <i class="fa fa-external-link mx-1"></i>
                 </a>
-              </p>
-            </dd>
-          </ng-container>
+            </ng-template>
+          </sonar-field-description>
 
           <!-- SERIES -->
-          <ng-container *ngIf="record.series">
-            <dt class="col-lg-4" translate>Series statement</dt>
-            <dd class="col-lg-6">
-              <ul class="list-unstyled mb-0">
-                <li *ngFor="let serie of record.series">
-                  {{ serie.name }}
-                  <ng-container *ngIf="serie.number"
-                    >; {{ serie.number }}</ng-container
-                  >
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
-
-          <!-- NOTES -->
-          <ng-container *ngIf="record.notes">
-            <dt class="col-lg-4" translate>Notes</dt>
-            <dd class="col-lg-6">
-              <ul class="list-unstyled mb-0">
-                <li *ngFor="let note of record.notes">
-                  {{ note }}
-                </li>
-              </ul>
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Series statement' | translate" [field]="record.series">
+            <ng-template let-serie pTemplate="template">
+              {{ serie.name }}
+              @if (serie.number) {
+                ; {{ serie.number }}
+              }
+            </ng-template>
+          </sonar-field-description>
 
           <!-- OTHER MATERIAL CHARACTERISTICS -->
-          <ng-container *ngIf="record.otherMaterialCharacteristics">
-            <dt class="col-lg-4" translate>Other material characteristics</dt>
-            <dd class="col-lg-6">
-              {{ record.otherMaterialCharacteristics }}
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Other material characteristics' | translate" [field]="record.otherMaterialCharacteristics"/>
 
           <!-- ADDITIONAL MATERIALS -->
-          <ng-container *ngIf="record.additionalMaterials">
-            <dt class="col-lg-4" translate>Accompanying material</dt>
-            <dd class="col-lg-6">
-              {{ record.additionalMaterials }}
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Accompanying material' | translate" [field]="record.additionalMaterials"/>
 
           <!-- LICENSE -->
-          <ng-container *ngIf="record.usageAndAccessPolicy">
-            <dt class="col-lg-4" translate>License</dt>
-            <dd class="col-lg-8">
-              {{ record.usageAndAccessPolicy.license | translate }}
-              <ng-container *ngIf="record.usageAndAccessPolicy.label">
-                <br />{{ record.usageAndAccessPolicy.label }}
-              </ng-container>
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'License' | translate" [field]="record.usageAndAccessPolicy">
+            <ng-template let-usageAndAccessPolicy pTemplate="template">
+              {{ usageAndAccessPolicy.license | translate }}
+              @if(usageAndAccessPolicy.label) {
+                <br />{{ usageAndAccessPolicy.label }}
+              }
+            </ng-template>
+          </sonar-field-description>
 
           <!-- OA STATUS -->
-          <ng-container *ngIf="record.oa_status">
-            <dt class="col-lg-4" translate>Open Access status</dt>
-            <dd class="col-lg-8">
-              {{ record.oa_status }}
-            </dd>
-          </ng-container>
+          <sonar-field-description [label]="'Open Access status' | translate" [field]="record.oa_status"/>
 
           <!-- IDENTIFIED BY -->
-          <ng-container *ngIf="record.identifiedBy">
-            <dt class="col-lg-4" translate>Identifiers</dt>
-            <dd class="col-lg-6">
-              <p class="m-0" *ngFor="let identifier of record.identifiedBy">
+          <sonar-field-description [label]="'Identifiers' | translate" [field]="record.identifiedBy">
+            <ng-template let-identifier pTemplate="template">
                 <sonar-record-identifier
                   type="identifiedBy"
                   [data]="identifier"
-                ></sonar-record-identifier>
-              </p>
-            </dd>
-          </ng-container>
+                />
+            </ng-template>
+          </sonar-field-description>
 
           <!-- PERMALINK -->
-          <dt class="col-lg-4" translate>Permalink</dt>
-          <dd class="col-lg-8 text-truncate">
-            <a [href]="record.permalink">{{ record.permalink }}</a>
-          </dd>
+          <sonar-field-description [label]="'Permalink' | translate" [field]="record.permalink">
+            <ng-template let-permalink pTemplate="template">
+              <a [href]="permalink">{{ permalink }}</a>
+            </ng-template>
+          </sonar-field-description>
         </dl>
       </div>
     </div>
@@ -478,4 +408,4 @@
       }
     </tab>
   </tabset>
-</ng-container>
+}
