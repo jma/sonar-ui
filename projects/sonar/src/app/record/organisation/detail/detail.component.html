@@ -16,111 +16,83 @@
 -->
 <ng-container *ngIf="record">
   <h1 class="mb-4">{{ record.metadata.name }}</h1>
-  <dl class="row mt-4">
-    <dt class="col-sm-3" translate>Code</dt>
-    <dd class="col-sm-9">{{ record.metadata.code }}</dd>
+  <dl>
+    <sonar-field-description [label]="'Code' | translate" [field]="record.metadata.code"/>
 
-    <dt class="col-sm-3" translate>Is shared</dt>
-    <dd class="col-sm-9">
-      <i class="fa fa-{{ record.metadata.isShared ? 'check' : 'close' }}"></i>
-    </dd>
+    <sonar-field-description [label]="'Is shared' | translate" [field]="record.metadata.isShared">
+      <ng-template let-isShared pTemplate="template">
+        <i class="fa fa-{{ isShared ? 'check' : 'close' }}"></i>
+      </ng-template>
+    </sonar-field-description>
 
-    <dt class="col-sm-3" translate>Is dedicated</dt>
-    <dd class="col-sm-9">
-      <i class="fa fa-{{ record.metadata.isDedicated ? 'check' : 'close' }}"></i>
-    </dd>
+    <sonar-field-description [label]="'Is dedicated' | translate" [field]="record.metadata.isDedicated">
+      <ng-template let-isDedicated pTemplate="template">
+        <i class="fa fa-{{ isDedicated ? 'check' : 'close' }}"></i>
+      </ng-template>
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.serverName">
-      <dt class="col-sm-3" translate>Server name (without http)</dt>
-      <dd class="col-sm-9">{{ record.metadata.serverName }}</dd>
-    </ng-container>
+    <sonar-field-description [label]="'Server name (without http)' | translate" [field]="record.metadata.serverName"/>
 
-    <ng-container *ngIf="record.metadata.platformName">
-      <dt class="col-sm-3" translate>Platform name</dt>
-      <dd class="col-sm-9"><span [innerHtml]="record.metadata.platformName | markdown"></span></dd>
-    </ng-container>
+    <sonar-field-description [label]="'Platform name' | translate" [field]="record.metadata.platformName">
+      <ng-template let-platformName pTemplate="template">
+        <span [innerHtml]="platformName | markdown"></span>
+      </ng-template>
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.arkNAAN">
-      <dt class="col-sm-3" translate>Ark Name Assigning Authority Number (NAAN)</dt>
-      <dd class="col-sm-9">{{ record.metadata.arkNAAN }}</dd>
-    </ng-container>
+    <sonar-field-description [label]="'Ark Name Assigning Authority Number (NAAN)' | translate" [field]="record.metadata.arkNAAN"/>
 
-    <ng-container *ngIf="record.metadata.allowedIps">
-      <dt class="col-sm-3" translate>Allowed IP addresses</dt>
-      <dd class="col-sm-9"><span [innerHtml]="record.metadata.allowedIps | nl2br"></span></dd>
-    </ng-container>
+    <sonar-field-description [label]="'Allowed IP addresses' | translate" [field]="record.metadata.allowedIps">
+      <ng-template let-allowedIps pTemplate="template">
+        <span [innerHtml]="allowedIps | nl2br"></span>
+      </ng-template>
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.description">
-      <dt class="col-sm-3" translate>Description</dt>
-      <dd class="col-sm-9">
-        <ng-container *ngFor="let desc of record.metadata.description">
-          <span class="font-weight-bold">{{ 'lang_' + desc.language | translate | ucfirst }}</span>
-          <span [innerHtml]="desc.value | markdown"></span>
-        </ng-container>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
+      <ng-template let-description pTemplate="template">
+        <span class="font-weight-bold">{{ 'lang_' + description.language | translate | ucfirst }}</span>
+        <span [innerHtml]="description.value | markdown"></span>
+      </ng-template>
+    </sonar-field-description>
 
-    <ng-container *ngIf="record.metadata.footer">
-      <dt class="col-sm-3" translate>Footer</dt>
-      <dd class="col-sm-9">
-        <ng-container *ngFor="let foot of record.metadata.footer">
-          <span class="font-weight-bold">{{ 'lang_' + foot.language | translate | ucfirst }}</span>
-          <span [innerHtml]="foot.value | markdown"></span>
-        </ng-container>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Footer' | translate" [field]="record.metadata.footer">
+      <ng-template let-footer pTemplate="template">
+        <span class="font-weight-bold">{{ 'lang_' + footer.language | translate | ucfirst }}</span>
+        <span [innerHtml]="footer.value | markdown"></span>
+      </ng-template>
+    </sonar-field-description>
 
-
-    <ng-container *ngFor="let i of [1, 2, 3]">
-      <ng-container *ngIf="record.metadata['documentsCustomField' + i]">
-        <dt class="col-sm-3">{{ 'Custom field' | translate }} {{ i }}</dt>
-        <dd class="col-sm-9">
-          <ng-container *ngIf="record.metadata['documentsCustomField' + i].label">
-            {{ 'Label' | translate }}: {{ record.metadata['documentsCustomField' + i].label | languageValue | async }}
+    @for (i of [1, 2, 3]; track i) {
+      <sonar-field-description [label]="'Custom field ' + i | translate" [field]="record.metadata['documentsCustomField' + i]">
+        <ng-template let-customField pTemplate="template">
+          @if (customField.label) {
+            {{ 'Label' | translate }}: {{ customField.label | languageValue | async }}
             <br>
-          </ng-container>
-          <i class="fa fa-{{ record.metadata['documentsCustomField' + i].includeInFacets ? 'check' : 'remove' }}"></i>
+          }
+          <i class="fa fa-{{ customField.includeInFacets ? 'check' : 'remove' }}"></i>
           {{ 'Include in facets' | translate }}
-        </dd>
-      </ng-container>
-    </ng-container>
+        </ng-template>
+      </sonar-field-description>
+    }
 
-    <ng-container *ngIf="record.metadata.publicDocumentFacets">
-      <dt class="col-sm-3">{{ 'Visible facets in the public interface for documents' | translate }}</dt>
-      <dd class="col-sm-9">
-        <ul class="list-unstyled">
-          <li *ngFor="let facet of record.metadata.publicDocumentFacets">
-            <i class="fa fa-check" aria-hidden="true"></i>
-            {{ facet | translate | ucfirst }}
-          </li>
-        </ul>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Visible facets in the public interface for documents' | translate" [field]="record.metadata.publicDocumentFacets">
+      <ng-template let-publicDocumentFacet pTemplate="template">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        {{ publicDocumentFacet | translate | ucfirst }}
+      </ng-template>
+    </sonar-field-description>
+
+    <sonar-field-description [label]="'Subdivisions' | translate" [field]="subdivisions">
+      <ng-template let-subdivision pTemplate="template">
+        {{ subdivision.metadata.name | languageValue | async }}
+      </ng-template>
+    </sonar-field-description>
+
+    <sonar-field-description [label]="'Collections' | translate" [field]="collections">
+      <ng-template let-collection pTemplate="template">
+        <a [routerLink]="['/', 'records', 'collections', 'detail', collection.id]">
+          {{ collection.metadata.name | languageValue | async }}
+        </a>
+      </ng-template>
+    </sonar-field-description>
   </dl>
-
-  <div class="row mt-3">
-    <div class="col" *ngIf="subdivisions.length">
-      <div class="card mt-3">
-        <div class="card-header font-weight-bold" translate>Subdivisions</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" *ngFor="let subdivision of subdivisions">
-            <a [routerLink]="['/', 'records', 'subdivisions', 'detail', subdivision.id]">
-              {{ subdivision.metadata.name | languageValue | async }}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col" *ngIf="collections.length">
-      <div class="card mt-3">
-        <div class="card-header font-weight-bold" translate>Collections</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" *ngFor="let collection of collections">
-            <a [routerLink]="['/', 'records', 'collections', 'detail', collection.id]">
-              {{ collection.metadata.name | languageValue | async }}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
 </ng-container>

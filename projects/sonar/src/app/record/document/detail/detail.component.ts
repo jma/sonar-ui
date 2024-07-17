@@ -159,7 +159,7 @@ export class DetailComponent implements OnDestroy, OnInit {
    *
    * @returns List of UDC classifications.
    */
-  get UDCclassifiations(): Array<any> {
+  get UDCclassifications(): Array<any> {
     if (!this.record.classification) {
       return [];
     }

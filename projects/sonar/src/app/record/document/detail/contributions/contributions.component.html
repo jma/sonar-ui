@@ -17,7 +17,7 @@
 <ng-container *ngVar="contributions|contributors:meeting as contributors">
   <ng-container *ngIf="contributors.length > 0">
     <div class="my-2" *ngIf="!additionalInfosFields; else additionalInfoField">
-      <ul class="list-unstyled m-0">
+      <ul class="list-none p-0 mb-0">
         <ng-container *ngFor="let contributor of contributors|slice:0:contributorsLength">
           <li>
             <sonar-contribution [contributor]="contributor" viewType="detail"></sonar-contribution>
@@ -29,11 +29,11 @@
       </a>
     </div>
     <ng-template #additionalInfoField>
-      <dl class="row mb-0">
-        <dt class="col-lg-4" translate>Conference</dt>
-        <dd class="col-lg-8">
-          <ul class="list-unstyled mb-0">
-            <li class="p-0" *ngFor="let contributor of contributors|slice:0:contributorsLength">
+      <dl class="grid mb-0">
+        <dt class="col-4" translate>Conference</dt>
+        <dd class="col mb-0">
+          <ul class="list-none p-0 mb-0">
+            <li *ngFor="let contributor of contributors|slice:0:contributorsLength">
               <sonar-contribution [contributor]="contributor" viewType="detail"></sonar-contribution>
             </li>
           </ul>

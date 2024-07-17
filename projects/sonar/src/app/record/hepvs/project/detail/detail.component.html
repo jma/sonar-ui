@@ -1,20 +1,20 @@
 <!--
- SONAR User Interface
- Copyright (C) 2021 RERO
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as published by
- the Free Software Foundation, version 3 of the License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  SONAR User Interface
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
+@if (record$ | async; as record) {
   <h1 class="mb-4">{{ record.metadata.name }}</h1>
 
   <sonar-record-validation [record]="record" [type]="type"></sonar-record-validation>
@@ -34,187 +34,158 @@
 
   <p>{{ record.metadata.projectSponsor }} ({{ 'Project sponsor' | translate }}, {{ record.metadata.statusHep }})</p>
 
-  <dl class="row">
+  <dl>
     <!-- Internal research associates -->
-    <ng-container *ngIf="record.metadata.innerSearcher">
-      <dt class="col-sm-4 mt-2" translate>Internal research associates</dt>
-      <dd class="col-sm-8 mt-2">{{ record.metadata.innerSearcher | join:', ' }}</dd>
-    </ng-container>
+    <sonar-field-description [label]="'Internal research associates' | translate" [field]="record.metadata.innerSearcher | join:', ' "/>
 
     <!-- Main team -->
-    <ng-container *ngIf="record.metadata.mainTeam">
-      <dt class="col-sm-4 mt-2" translate>Main team</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.mainTeam }}
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Main team' | translate" [field]="record.metadata.mainTeam"/>
 
     <!-- Secondary team -->
-    <ng-container *ngIf="record.metadata.secondaryTeam">
-      <dt class="col-sm-4 mt-2" translate>Secondary team</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.secondaryTeam }}
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Secondary team' | translate" [field]="record.metadata.secondaryTeam"/>
 
     <!-- External partners -->
-    <ng-container *ngIf="record.metadata.externalPartners?.choice">
-      <dt class="col-sm-4 mt-2" translate>External partners</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-container *ngFor="let partner of record.metadata.externalPartners.list; let last = last">
+    @if (record.metadata.externalPartners.choice) {
+      <sonar-field-description [label]="'External partners' | translate" [field]="record.metadata.externalPartners">
+      <ng-template let-externalPartner pTemplate="template">
+        @for (partner of record.metadata.externalPartners.list; track partner; let last=$last) {
           {{ partner.searcherName }}
           <i class="text-muted ml-1" *ngIf="partner.institution">{{ partner.institution }}</i>
-          <ng-container *ngIf="!last">, </ng-container>
-        </ng-container>
-      </dd>
-    </ng-container>
+          @if (!last) {
+            ,&nbsp;
+          }
+        }
+      </ng-template>
+      </sonar-field-description>
+    }
 
     <!-- Project summary -->
-    <ng-container *ngIf="record.metadata.description">
-      <dt class="col-sm-4 mt-2 mt-4" translate>Project summary</dt>
-      <dd class="col-sm-8 mt-2 mt-4">
-        <ng-core-text-read-more [text]="record.metadata.description"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Project summary' | translate" [field]="record.metadata.description">
+      <ng-template let-description pTemplate="template">
+        <ng-core-text-read-more [text]="description"/>
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Date of approval by the Team Leader -->
-    <ng-container *ngIf="record.metadata.approvalDate">
-      <dt class="col-sm-4 mt-2" translate>Date of approval by the Team Leader</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.approvalDate | dateTranslate: 'dd.MM.yyyy' }}
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Date of approval by the Team Leader' | translate" [field]="record.metadata.approvalDate | dateTranslate: 'longDate' ">
+    </sonar-field-description>
 
     <!-- Realization framework -->
-    <ng-container *ngIf="record.metadata.realizationFramework">
-      <dt class="col-sm-4 mt-2" translate>Realization framework</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.realizationFramework | join:', ' }}
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Realization framework' | translate" [field]="record.metadata.realizationFramework | join:', ' "/>
 
     <!-- Funding -->
-    <ng-container *ngIf="record.metadata.funding?.choice">
-      <dt class="col-sm-4 mt-2" translate>Funding</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-container *ngIf="record.metadata.funding.funder.number">
+    @if (record.metadata.funding.choice) {
+      <sonar-field-description [label]="'Funding' | translate" [field]="record.metadata.funding">
+      <ng-template let-funding pTemplate="template">
+        @if (funding?.funder?.number) {
           <span class="badge badge-secondary text-light mr-1">
-            {{ record.metadata.funding.funder.number }}
+            {{ funding.funder.number }}
           </span>
-        </ng-container>
-        <ng-container *ngIf="record.metadata.funding.funder.name">
-          {{ record.metadata.funding.funder.name }}
-          <i class="text-muted ml-1" *ngIf="record.metadata.funding.funder.type !== 'Other (free field)'">
+        }
+        @if (funding?.funder?.name) {
+          {{ funding.funder.name }}
+        }
+        @if (funding.funder.type != 'Other (free field)') {
+          <i class="text-muted ml-1">
             {{ record.metadata.funding.funder.type }}
           </i>
-        </ng-container>
-        <ng-container
-          *ngIf="['​Swiss National Science Foundation', 'Swissuniversities'].includes(record.metadata.funding.funder.type)">
-          {{ record.metadata.funding.funder.type }}
-        </ng-container>
+        }
+        @if (['​Swiss National Science Foundation', 'Swissuniversities'].includes(funding.funder.type)) {
+          {{ funding.funder.type }}
+        }
         <i class="ml-2 fa"
-          [ngClass]="{ 'fa-check text-success': record.metadata.funding.fundingReceived, 'fa-remove text-danger': !record.metadata.funding.fundingReceived }"></i>
-      </dd>
-    </ng-container>
+        [ngClass]="{ 'fa-check text-success': funding.fundingReceived, 'fa-remove text-danger': !funding.fundingReceived }"></i>
+      </ng-template>
+    </sonar-field-description>
+  }
 
     <!-- Actors involved -->
-    <ng-container *ngIf="record.metadata.actorsInvolved">
-      <dt class="col-sm-4 mt-2" translate>Actors involved</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-container *ngFor="let actor of record.metadata.actorsInvolved; let last = last">
-          {{ actor.choice !== 'Other' ? actor.choice : actor.other }} ({{ actor.count }})<ng-container *ngIf="!last">,
-          </ng-container>
-        </ng-container>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'Actors involved' | translate" [field]="record.metadata.actorsInvolved">
+      <ng-template let-actor let-last pTemplate="template">
+          {{ actor.choice !== 'Other' ? actor.choice : actor.other }}  ({{ actor.count }})
+          @if (!last) {
+            ,&nbsp;
+          }
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Benefits -->
-    <ng-container *ngIf="record.metadata.description">
-      <dt class="col-sm-4 mt-2" translate>What are the benefits and quality improvements in the research in this
-        project?
-      </dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.benefits"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'What are the benefits and quality improvements in the research in this project?' | translate" [field]="record.metadata.benefits">
+      <ng-template let-benefit pTemplate="template">
+        <ng-core-text-read-more [text]="benefit"/>
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Impact on formation -->
-    <ng-container *ngIf="record.metadata.impactOnFormation">
-      <dt class="col-sm-4 mt-2" translate>What are the impacts of training research?</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.impactOnFormation"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'What are the impacts of training research?' | translate" [field]="record.metadata.impactOnFormation">
+      <ng-template let-impactOnFormation pTemplate="template">
+        <ng-core-text-read-more [text]="impactOnFormation"/>
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Impact on professional environment -->
-    <ng-container *ngIf="record.metadata.impactOnProfessionalEnvironment">
-      <dt class="col-sm-4 mt-2" translate>What is the impact of the research on the professional environment?</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.impactOnProfessionalEnvironment"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'What are the impacts of training research?' | translate" [field]="record.metadata.impactOnProfessionalEnvironment">
+      <ng-template let-impactOnProfessionalEnvironment pTemplate="template">
+        <ng-core-text-read-more [text]="impactOnProfessionalEnvironment"/>
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Impact on public action -->
-    <ng-container *ngIf="record.metadata.impactOnPublicAction">
-      <dt class="col-sm-4 mt-2" translate>What is the impact of research on public action or on internal or external
-        governance?</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.impactOnPublicAction"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'What is the impact of research on public action or on internal or external governance?' | translate" [field]="record.metadata.impactOnPublicAction">
+      <ng-template let-impactOnPublicAction pTemplate="template">
+        <ng-core-text-read-more [text]="impactOnPublicAction"/>
+      </ng-template>
+    </sonar-field-description>
 
     <!-- Promote innovation -->
-    <ng-container *ngIf="record.metadata.promoteInnovation?.choice">
-      <dt class="col-sm-4 mt-2" translate>Why this project promote pedagogical or technological innovation?</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.promoteInnovation.reason }}
-      </dd>
-    </ng-container>
+    @if (record.metadata.promoteInnovation?.choice) {
+    <sonar-field-description [label]="'Why this project promote pedagogical or technological innovation?' | translate" [field]="record.metadata.promoteInnovation.reason"/>
+    }
 
     <!-- Related to mandate -->
-    <ng-container *ngIf="record.metadata.relatedToMandate?.choice">
-      <dt class="col-sm-4 mt-2" translate>Mandate</dt>
-      <dd class="col-sm-8 mt-2">
-        {{ record.metadata.relatedToMandate.mandate }}
-        <i class="text-muted ml-1" *ngIf="!['State of Valais, Education service', 'State of Valais, Higher education
-        service'].includes(record.metadata.relatedToMandate.mandate)">
-          {{ record.metadata.relatedToMandate.name }}
-        </i>
-      </dd>
+    @if (record.metadata.relatedToMandate?.choice) {
+      <sonar-field-description [label]="'Mandate' | translate" [field]="record.metadata.relatedToMandate">
+        <ng-template let-relatedToMandate pTemplate="template">
+          {{ relatedToMandate.mandate }}
+          @if (relatedToMandate.name) {
+            {{ relatedToMandate.name }}
+          }
+        </ng-template>
+      </sonar-field-description>
 
-      <dt class="col-sm-4 mt-2" translate>Brief description of the mandate</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.relatedToMandate.briefDescription"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+      <sonar-field-description [label]="'Brief description of the mandate' | translate" [field]="record.metadata.relatedToMandate.briefDescription">
+        <ng-template let-briefDescription pTemplate="template">
+          <ng-core-text-read-more [text]="briefDescription"></ng-core-text-read-more>
+        </ng-template>
+      </sonar-field-description>
+    }
 
     <!-- Educational document -->
-    <ng-container *ngIf="record.metadata.educationalDocument?.choice">
-      <dt class="col-sm-4 mt-2" translate>Brief description of the report</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.educationalDocument.briefDescription"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    @if (record.metadata.educationalDocument?.choice) {
+      <sonar-field-description [label]="'Brief description of the report' | translate" [field]="record.metadata.educationalDocument.briefDescription">
+        <ng-template let-briefDescription pTemplate="template">
+          <ng-core-text-read-more [text]="briefDescription"></ng-core-text-read-more>
+        </ng-template>
+      </sonar-field-description>
+    }
 
     <!-- Search results valorised -->
-    <ng-container *ngIf="record.metadata.searchResultsValorised">
-      <dt class="col-sm-4 mt-2" translate>How are research results used in training?</dt>
-      <dd class="col-sm-8 mt-2">
-        <ng-core-text-read-more [text]="record.metadata.searchResultsValorised"></ng-core-text-read-more>
-      </dd>
-    </ng-container>
+    <sonar-field-description [label]="'How are research results used in training?' | translate" [field]="record.metadata.searchResultsValorised">
+      <ng-template let-searchResultsValorised pTemplate="template">
+        <ng-core-text-read-more [text]="searchResultsValorised"></ng-core-text-read-more>
+      </ng-template>
+    </sonar-field-description>
   </dl>
 
-  <ng-container *ngIf="user$ | async as user">
-    <ng-container *ngIf="record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator">
-      <h4 translate>Linked documents</h4>
-      <ul>
-        <li *ngFor="let document of record.metadata.documents">
-          <a [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">
-            {{ document.title[0].mainTitle | languageValue | async }}
-          </a>
+  @if (user$ | async; as user && record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
+    <h4 translate>Linked documents</h4>
+    <ul class="list-none p-0">
+      @for (document of record.metadata.documents; track document) {
+        <li>
+          <a
+            [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">{{ document.title[0].mainTitle | languageValue | async }}</a>
         </li>
-      </ul>
-    </ng-container>
-  </ng-container>
-</ng-container>
+      }
+    </ul>
+  }
+}

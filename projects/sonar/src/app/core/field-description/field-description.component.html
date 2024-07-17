@@ -1,0 +1,30 @@
+
+@if (field()) {
+  <div class="grid">
+    <dt class="col-4">{{ label() }}</dt>
+    <dd class="col mb-0">
+      @if(type() === 'array') {
+        <ul class="list-none p-0 mb-0">
+          @for (value of field(); track value; let last=$last; let index=$index) {
+            <li>
+              @if (template) {
+                <ng-container
+                  *ngTemplateOutlet="template; context: { $implicit: value, last, index }"/>
+              } @else {
+                {{ value }}
+              }
+            </li>
+          }
+        </ul>
+      }
+      @else {
+        @if (template) {
+          <ng-container
+            *ngTemplateOutlet="template; context: { $implicit: field() }"/>
+        } @else {
+          {{ field() }}
+        }
+      }
+    </dd>
+  </div>
+}

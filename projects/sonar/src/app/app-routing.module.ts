@@ -41,8 +41,6 @@ import { OrganisationComponent } from './record/organisation/organisation.compon
 import { BriefViewComponent as ProjectBriefViewComponent } from './record/project/brief-view/brief-view.component';
 import { DetailComponent as ProjectDetailComponent } from './record/project/detail/detail.component';
 import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/subdivision/brief-view/brief-view.component';
-import { DetailComponent as SubdivisionDetailComponent } from './record/subdivision/detail/detail.component';
-import { DetailComponent as UserDetailComponent } from './record/user/detail/detail.component';
 import { UserComponent } from './record/user/user.component';
 import { UserService } from './user.service';
 
@@ -298,11 +296,8 @@ export class AppRoutingModule {
       {
         type: 'users',
         briefView: UserComponent,
-        detailView: UserDetailComponent,
         aggregationsOrder: ['subdivision'],
-        editorSettings: {
-          longMode: true,
-        },
+        redirectUrl: (record: any) => of(`/records/users?q=pid:${record.metadata.pid}`),
         sortOptions: [
           {
             label: _('Relevance'),
@@ -362,12 +357,12 @@ export class AppRoutingModule {
         label: 'Research projects',
         briefView: ProjectBriefViewComponent,
         detailView: projectDetail$,
-        editorSettings: {
-          longMode: true,
-        },
         recordResource: true,
         aggregationsExpand: ['organisation', 'user'],
         aggregationsOrder: ['organisation', 'user', 'status'],
+        editorSettings: {
+          longMode: true,
+        },
         exportFormats: [
           {
             label: 'CSV',
@@ -401,9 +396,6 @@ export class AppRoutingModule {
         briefView: CollectionBriefViewComponent,
         detailView: CollectionDetailComponent,
         files: fileConfig,
-        editorSettings: {
-          longMode: true,
-        },
         sortOptions: [
           {
             label: _('Relevance'),
@@ -421,10 +413,7 @@ export class AppRoutingModule {
         type: 'subdivisions',
         label: 'Subdivisions',
         briefView: SubdivisionBriefViewComponent,
-        detailView: SubdivisionDetailComponent,
-        editorSettings: {
-          longMode: true,
-        },
+        redirectUrl: (record: any) => of(`/records/subdivisions?q=pid:${record.metadata.pid}`),
         sortOptions: [
           {
             label: _('Relevance'),
@@ -449,12 +438,11 @@ export class AppRoutingModule {
         }
 
         recordsRoutesConfiguration.forEach((config: any) => {
-          const route = {
+          const route: any = {
             matcher: (url: any) => this._routeMatcher(url, config.type),
             canActivate: mapToCanActivate([RoleGuard]),
             children: [
               { path: '', component: RecordSearchPageComponent },
-              { path: 'detail/:pid', component: DetailComponent },
               { path: 'edit/:pid', component: EditorComponent },
               { path: 'new', component: EditorComponent, canActivate: mapToCanActivate([CanAddGuard]) }
             ],
@@ -466,7 +454,8 @@ export class AppRoutingModule {
                   key: config.type,
                   label: config.label || config.type.charAt(0).toUpperCase() + config.type.slice(1),
                   component: config.briefView || null,
-                  editorSettings: config.editorSettings || false,
+                  editorSettings: config.editorSettings || {},
+                  redirectUrl: config.redirectUrl || null,
                   detailComponent: config.detailView || null,
                   aggregations: config.aggregations || null,
                   aggregationsExpand: config.aggregationsExpand || [],
@@ -485,7 +474,9 @@ export class AppRoutingModule {
               ]
             }
           };
-
+          if (config.detailView) {
+            route.children.push({ path: 'detail/:pid', component: DetailComponent });
+          }
           this._router.config[0].children.push(route);
         });
       }
