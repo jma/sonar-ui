@@ -20,4 +20,8 @@
     <h4 translate>Description</h4>
     <p [innerHtml]="record.metadata.description | languageValue | async | markdown"></p>
   }
+  <sonar-upload-files
+  recordType="collections"
+  [pid]="record.metadata.pid"
+></sonar-upload-files>
 </ng-container>

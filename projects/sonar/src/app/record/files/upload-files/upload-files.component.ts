@@ -16,7 +16,14 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild, effect, inject, input, output } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  effect,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService, RecordService } from '@rero/ng-core';
@@ -147,7 +154,7 @@ export class UploadFilesComponent {
     );
     if (indexToUpdate >= 0) {
       this.fileService
-        .put(`/api/documents/${this.pid()}`, this.record)
+        .put(`/api/${this.recordType()}/${this.pid()}`, this.record)
         .subscribe((record: any) => {
           // update the current record
           this.record = record.metadata;
@@ -212,7 +219,10 @@ export class UploadFilesComponent {
     let fileUpload: File = event.fileUpload;
     this.spinner.show('file-upload');
     this.fileService
-      .put(`/api/documents/${this.pid()}/files/${file.key}`, fileUpload)
+      .put(
+        `/api/${this.recordType()}/${this.pid()}/files/${file.key}`,
+        fileUpload
+      )
       .pipe(
         catchError((e: any) => {
           let msg = this.translateService.instant('Server error');
@@ -261,7 +271,10 @@ export class UploadFilesComponent {
   private generateCreateRequests(event): Observable<any> {
     return from(event.files).pipe(
       concatMap((f: any) =>
-        this.fileService.put(`/api/documents/${this.pid()}/files/${f.name}`, f)
+        this.fileService.put(
+          `/api/${this.recordType()}/${this.pid()}/files/${f.name}`,
+          f
+        )
       ),
       map((file: any) => {
         this.nUploadedFiles += 1;
@@ -335,7 +348,9 @@ export class UploadFilesComponent {
           if (confirm === true) {
             // remove the file
             return this.fileService
-              .delete(`/api/documents/${this.pid()}/files/${file.key}`)
+              .delete(
+                `/api/${this.recordType()}/${this.pid()}/files/${file.key}`
+              )
               .pipe(
                 map((res) => {
                   this.files = this.files.filter((f) => f.key !== file.key);
@@ -368,7 +383,7 @@ export class UploadFilesComponent {
    */
   private getFiles(record): Observable<any> {
     return this.fileService
-      .get(`/api/documents/${record.pid}/files?versions`)
+      .get(`/api/${this.recordType()}/${record.pid}/files?versions`)
       .pipe(
         map((record: any) => {
           if (record?.contents) {
@@ -405,7 +420,10 @@ export class UploadFilesComponent {
     // get old versions
     let versions = {};
     files.map((file) => {
-      if (file?.metadata?.type === 'file' && file.is_head === false) {
+      if (file?.metadata?.type && file.metadata.type !== 'file') {
+        return;
+      }
+      if (file.is_head === false) {
         if (!(file.key in versions)) versions[file.key] = [];
         versions[file.key].push(file);
       }
@@ -413,7 +431,10 @@ export class UploadFilesComponent {
     // get head files only
     let headFiles = [];
     files.map((file) => {
-      if (file?.metadata?.type === 'file' && file.is_head) {
+      if (file?.metadata?.type && file.metadata.type !== 'file') {
+        return;
+      }
+      if (file.is_head) {
         // add versions if exists
         if (versions[file.key]) {
           let fileVersions = versions[file.key];
@@ -436,7 +457,7 @@ export class UploadFilesComponent {
       recordFile.order = index + 1;
     });
     this.fileService
-      .put(`/api/documents/${this.pid()}`, this.record)
+      .put(`/api/${this.recordType()}/${this.pid()}`, this.record)
       .subscribe((record: any) => {
         this.record = record.metadata;
         this.files.map((file) => {
