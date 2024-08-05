@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { combineLatest, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './detail.component.html',
@@ -28,6 +28,8 @@ export class DetailComponent implements OnInit {
 
   /** Organisation record. */
   record: any;
+
+  recordService = inject(RecordService);
 
   /** Subdivisions list. */
   subdivisions: Array<any> = [];
@@ -40,7 +42,7 @@ export class DetailComponent implements OnInit {
    *
    * @param _recordService: Record service.
    */
-  constructor(private _recordService: RecordService) {}
+  constructor() {}
 
   /**
    * Component init.
@@ -53,11 +55,11 @@ export class DetailComponent implements OnInit {
         switchMap((record: any) => {
           this.record = record;
           return combineLatest([
-            this._recordService.getRecords(
+            this.recordService.getRecords(
               'subdivisions',
               `organisation.pid:${record.id}`
             ),
-            this._recordService.getRecords(
+            this.recordService.getRecords(
               'collections',
               `organisation.pid:${record.id}`
             ),
@@ -68,5 +70,11 @@ export class DetailComponent implements OnInit {
         this.subdivisions = result[0].hits.hits;
         this.collections = result[1].hits.hits;
       });
+  }
+
+  updateFiles(files) {
+      this.recordService.getRecord('organisations', this.record.id, 1).pipe(
+        map(doc => this.record._files = doc.metadata._files)
+      ).subscribe();
   }
 }

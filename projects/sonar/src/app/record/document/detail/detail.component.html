@@ -373,16 +373,17 @@
 
   <!-- TABS -->
   <tabset>
-    <tab #tabOther="tab" id="documents-other-files-tab" [active]="true">
-      @if (filteredFiles.length > 1) {
-      <ng-template tabHeading translate>Other files</ng-template>
-      <!-- FILES -->
-      @if (tabOther.active) {
-      <div class="mt-4">
-        <sonar-other-files [documentPid]="record.pid"></sonar-other-files>
-      </div>
-      } }
-    </tab>
+    @if (filteredFiles.length > 1) {
+      <tab #tabOther="tab" id="documents-other-files-tab" [active]="true">
+        <ng-template tabHeading translate>Other files</ng-template>
+        <!-- FILES -->
+        @if (tabOther.active) {
+        <div class="mt-4">
+          <sonar-other-files [documentPid]="record.pid"></sonar-other-files>
+        </div>
+        }
+      </tab>
+    }
 
     <tab #tabStats="tab" id="documents-stats">
       <ng-template tabHeading translate>Statistics</ng-template>
