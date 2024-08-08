@@ -328,7 +328,9 @@ export class DepositService implements OnDestroy {
   extractPDFMetadata(deposit: any): Observable<any> {
     return this._httpClient
       .get(`${this.depositEndPoint}/${deposit.pid}/extract-pdf-metadata`)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(
+        catchError(err => this._handleError(err))
+      );
   }
 
   /**
@@ -336,7 +338,7 @@ export class DepositService implements OnDestroy {
    * @param error - HttpErrorResponse
    */
   private _handleError(error: HttpErrorResponse) {
-    this._toastrService.error(error.error.message);
-    return throwError('Something bad happened; please try again later.');
+    this._toastrService.error(error.statusText);
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

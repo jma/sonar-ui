@@ -1,0 +1,85 @@
+<h4>{{ 'Main file' | translate }}</h4>
+{{ mainFile().key }} ({{ mainFile().size | filesize }})
+<a
+  href="#"
+  class="ml-2"
+  (click)="
+    $event.preventDefault();
+    previewFileKey = mainFile().key;
+    previewModal.show()
+  "
+>
+  <i class="fa fa-eye"></i>
+</a>
+<a
+  [href]="mainFile().key | fileLink : 'deposits' : depositPid() : 'files'"
+  target="_blank"
+  class="ml-2"
+>
+  <i class="fa fa-download"></i>
+</a>
+
+<div class="mt-5" *ngIf="additionalFiles()?.length > 0">
+  <h4>{{ 'Additional files' | translate }}</h4>
+  <p *ngFor="let file of additionalFiles()">
+    {{ file.key }} ({{ file.size | filesize }})
+    <a
+      href="#"
+      class="ml-2"
+      (click)="
+        $event.preventDefault(); previewFileKey = file.key; previewModal.show()
+      "
+    >
+      <i class="fa fa-eye"></i>
+    </a>
+    <a
+      [href]="file.key | fileLink : 'deposits' : depositPid() : 'files'"
+      target="_blank"
+      class="ml-2"
+    >
+      <i class="fa fa-download"></i>
+    </a>
+  </p>
+</div>
+
+<!--Preview modal-->
+<div
+  bsModal
+  #previewModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  @if(previewFileKey){
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          {{ previewFileKey }}
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="previewModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe
+          class="preview-iframe"
+          id="preview-iframe"
+          width="100%"
+          height="500"
+          [src]="
+            previewFileKey | fileLink : 'deposits' : depositPid() : 'preview'
+          "
+          style="border: none"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+  }
+</div>

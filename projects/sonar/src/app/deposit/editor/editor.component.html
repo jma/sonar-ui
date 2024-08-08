@@ -14,182 +14,55 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="deposit">
-  <sonar-deposit-step [currentStep]="currentStep" [maxStep]="maxStep" [linkPrefix]="linkPrefix" [steps]="steps"
-    (cancel)="cancelDeposit()" (clicked)="view = 'form'">
-  </sonar-deposit-step>
 
-  <sonar-deposit-review [deposit]="deposit" *ngIf="currentStep === 'diffusion'"></sonar-deposit-review>
-</ng-container>
-
-<ng-container *ngIf="deposit">
-  <form [formGroup]="form">
-    <div class="row">
-      <div class="col-sm-8">
-        <ng-container *ngIf="view === 'form'">
-          <div class="row mb-4">
-            <div class="col-6">
-              <div class="btn-group" dropdown *ngIf="currentStep === 'metadata'">
-                <button id="import-button" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-                  aria-controls="dropdown-import">
-                  <i class="fa fa-mail-forward mr-2"></i> {{ 'Import metadata' | translate }}
-                  <span class="caret"></span>
-                </button>
-                <ul id="dropdown-import" *dropdownMenu class="dropdown-menu" role="menu">
-                  <li role="menuitem" *ngIf="mainFile">
-                    <a class="dropdown-item" href (click)="$event.preventDefault(); extractPdfMetadata()"
-                      translate>Analyze uploaded PDF</a>
-                  </li>
-                  <li role="menuitem">
-                    <a class="dropdown-item" href (click)="$event.preventDefault(); swisscoveryModal.show()"
-                      translate>Import from swisscovery</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-6 text-right">
-              <button type="submit" class="btn btn-primary" (click)="save()">
-                <i class="fa fa-floppy-o mr-2"></i>
-                {{ 'Save' | translate }}
-              </button>
-              <button type="submit" class="btn btn-primary ml-2 pull-right" (click)="publish()" *ngIf="canSubmit()">
-                <i class="fa fa-check mr-2"></i>
-                <span *ngIf="isAdminUser; else submitLabel">
-                  {{ 'Publish' | translate }}
-                </span>
-                <ng-template #submitLabel>{{ 'Submit' | translate }}</ng-template>
-              </button>
-            </div>
-          </div>
-
-          <formly-form [form]="form" [model]="model" [fields]="fields" [class]="'step-' + currentStep"></formly-form>
-        </ng-container>
-
-        <ng-container *ngIf="view === 'json'">
-          <pre class="bg-light p-3" [innerHTML]="deposit | json | highlightJson"></pre>
-        </ng-container>
-      </div>
-      <div class="col-sm-4 text-left text-sm-right">
-        <div class="btn-group mb-4" role="group" *ngIf="deposit.metadata">
-          <button type="button" class="btn" [ngClass]="{
-              'btn-primary': view === viewItem.key,
-              'btn-light': view !== viewItem.key
-            }" *ngFor="
-              let viewItem of [
-                { key: 'form', icon: 'tasks' },
-                { key: 'json', icon: 'code' }
-              ]
-            " (click)="view = viewItem.key">
-            <i [class]="'fa fa-' + viewItem.icon"></i>
-          </button>
-        </div>
-
-        <ng-container *ngIf="mainFile">
-          <h4>{{ 'Main file' | translate }}</h4>
-          {{ mainFile.key }} ({{ mainFile.size | filesize }})
-          <a href="#" class="ml-2"
-            (click)="$event.preventDefault(); previewFileKey = mainFile.key; previewModal.show()">
-            <i class="fa fa-eye"></i>
-          </a>
-          <a [href]="mainFile.key | fileLink: 'deposits':deposit.pid:'files'" target="_blank" class="ml-2">
-            <i class="fa fa-download"></i>
-          </a>
-
-          <div class="mt-5" *ngIf="additionalFiles && additionalFiles.length > 0">
-            <h4>{{ 'Additional files' | translate }}</h4>
-            <p *ngFor="let file of additionalFiles">
-              {{ file.key }} ({{ file.size | filesize }})
-              <a href="#" class="ml-2"
-                (click)="$event.preventDefault(); previewFileKey = file.key; previewModal.show()">
-                <i class="fa fa-eye"></i>
-              </a>
-              <a [href]="file.key | fileLink: 'deposits':deposit.pid:'files'" target="_blank" class="ml-2">
-                <i class="fa fa-download"></i>
-              </a>
-            </p>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-  </form>
-</ng-container>
-
-<!--Preview modal-->
-<div bsModal #previewModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-  aria-labelledby="dialog-sizes-name1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">{{ previewFileKey }}</h4>
-        <button type="button" class="close pull-right" (click)="previewModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe class="preview-iframe" id="preview-iframe" width="100%" height="500"
-          [src]="previewFileKey | fileLink: 'deposits':deposit.pid:'preview'" style="border: none;"
-          *ngIf="deposit && previewFileKey"></iframe>
-      </div>
+<form [formGroup]="form">
+  <div class="flex justify-content-end flex-wrap">
+    <div class="flex align-items-center justify-content-center">
+      @if(currentStep() === 'metadata') {
+      <p-splitButton
+        [label]="'Import metadata' | translate"
+        [model]="importMenuItems"
+      />
+      } @if(currentStep() === 'diffusion') {
+      <p-button
+        class="m-2"
+        (click)="save()"
+        [label]="'Save' | translate"
+        iconPos="right"
+      />
+      } @else {
+      <p-button
+        class="m-2"
+        (click)="save()"
+        icon="pi pi-chevron-right"
+        [label]="'Continue' | translate"
+        iconPos="right"
+      />
+      } @if(canSubmit()) {
+      <p-button
+        class="m-2"
+        (click)="confirmPublish()"
+        [label]="isAdminUser ? ('Publish' | translate) : ('Submit' | translate)"
+        iconPos="right"
+      />
+      }
     </div>
   </div>
-</div>
 
+  <!-- metadata editor -->
+  <formly-form
+    [form]="form"
+    [model]="model"
+    [fields]="fields"
+    [class]="'step-' + currentStep"
+  />
+</form>
 
-<!--swisscovery import modal-->
-<div bsModal #swisscoveryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" translate>Import from swisscovery</h4>
-        <button type="button" class="close pull-right" (click)="swisscoveryModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (submit)="$event.preventDefault(); searchSwisscovery()"
-          *ngIf="scResult === null || hasSwisscoveryResult === false">
-          <div class="form-group">
-            <label for="scType">Scope</label>
-            <select class="form-control" id="scType" #scType>
-              <option value="all_for_ui" selected="selected" translate>Everywhere</option>
-              <option value="digital_object_identifier" translate>DOI</option>
-              <option value="mms_id" translate>ID swisscovery (MARC 001)</option>
-              <option value="isbn" translate>ISBN</option>
-              <option value="issn" translate>ISSN</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="scQuery">Query</label>
-            <input type="text" class="form-control" id="scQuery" #scQuery>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block" translate>Search</button>
-        </form>
-        <ng-container *ngIf="scResult;">
-          <ng-container *ngIf="hasSwisscoveryResult; else noSwissCoveryResult">
-            <div class="alert alert-success my-3">
-              {{ 'Result found' | translate }}: {{ scResult.metadata.title }}
-            </div>
-            <div class="row">
-              <div class="col">
-                <button type="button" class="btn btn-primary btn-block"
-                  (click)="$event.preventDefault(); mapSwisscoverRecord(); swisscoveryModal.hide()"
-                  translate>Import</button>
-              </div>
-              <div class="col">
-                <button type="button" class="btn btn-outline-primary btn-block" (click)="scResult = null"
-                  translate>Cancel</button>
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #noSwissCoveryResult>
-            <div class="alert alert-info my-3" translate>No result found</div>
-          </ng-template>
-        </ng-container>
-        <div class="alert alert-warning mt-3">
-          <i class="fa fa-exclamation-circle"></i>
-          {{ 'If data has been entered in the form, it will be overwritten.' | translate }}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<p-dialog
+  [header]="'Import from swisscovery' | translate"
+  [modal]="true"
+  [(visible)]="importModalIsVisible"
+  styleClass="w-25rem"
+>
+<sonar-deposit-editor-swisscovery (data)="mapSwisscoverRecord($event)"/>
+</p-dialog>

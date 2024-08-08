@@ -74,6 +74,7 @@
       </p-fileUpload>
     </div>
 
+    @if(files?.length > 0) {
     <p-orderList
       #orderList
       [value]="files"
@@ -96,6 +97,7 @@
         ></sonar-file-item>
       </ng-template>
     </p-orderList>
+  }
   </div>
 } @else {
   <i class="fa fa-spinner fa-spin"></i>

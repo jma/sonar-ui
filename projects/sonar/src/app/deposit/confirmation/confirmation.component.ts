@@ -62,7 +62,7 @@ export class ConfirmationComponent implements OnInit {
       map((result) => result.metadata),
       catchError(() => {
         this._toastr.error(this._translateService.instant('Deposit not found'));
-        this._router.navigate(['deposit', '0', 'create']);
+        this._router.navigate(['records', 'deposits']);
         return of(null);
       })
     );

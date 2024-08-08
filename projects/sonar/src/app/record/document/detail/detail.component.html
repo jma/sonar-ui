@@ -15,233 +15,214 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if(record) {
-  <section class="mt-3">
-    <div class="row">
-      <div class="col-lg-3 text-center">
-        <div class="mb-4">
-          <sonar-document-file
-            [file]="mainFile"
-            [statistics]="record.statistics"
-            (previewClicked)="showPreview($event)"
-          ></sonar-document-file>
-        </div>
-
-        <!-- DOCUMENT TYPE -->
-        @if(record.documentType){
-          <h5 class="my-4">
-            {{ 'document_type_' + record.documentType | translate }}
-          </h5>
-        }
+<section class="mt-3">
+  <div class="row">
+    <div class="col-lg-3 text-center">
+      <div class="mb-4">
+        <sonar-document-file
+          [file]="mainFile"
+          [statistics]="record.statistics"
+          (previewClicked)="showPreview($event)"
+        ></sonar-document-file>
       </div>
-      <div class="col">
-        <h1 class="text-primary">
-          @if(record.masked && record.masked !== 'not_masked') {
-            <i
-              class="fa fa-eye-slash mr-2"
-              [class]="
-                'text-' +
-                (record.masked === 'masked_for_all' ? 'danger' : 'warning')
-              "
-              [tooltip]="
-                record.masked === 'masked_for_all'
-                  ? ('Masked for all' | translate)
-                  : ('Masked for external IP addresses' | translate)
-              "
-            ></i>
-          }
-          <span
-            [innerHTML]="
-              record.title[0].mainTitle | languageValue | async | nl2br
-            "
-          ></span>
-          @if(record.title[0].subtitle) {
-            &nbsp;:&nbsp;{{
-              record.title[0].subtitle | languageValue | async
-            }}
-          }
-        </h1>
 
-        <h4 class="m-0">
-          @if(record.organisation) {
-            <span
-              class="badge badge-secondary text-light mr-1 font-weight-normal"
-              *ngFor="let organisation of record.organisation"
-            >
-              {{ organisation.name }}
-            </span>
-          }
-          @if(record.subdivisions) {
-            <span
-              class="badge badge-secondary text-light mr-1 font-weight-normal"
-              *ngFor="let subdivision of record.subdivisions"
-            >
-              {{ subdivision.name | languageValue | async }}
-            </span>
-          }
-        </h4>
+      <!-- DOCUMENT TYPE -->
+      @if(record.documentType){
+      <h5 class="my-4">
+        {{ 'document_type_' + record.documentType | translate }}
+      </h5>
+      }
+    </div>
+    <div class="col">
+      <h1 class="text-primary">
+        @if(record.masked && record.masked !== 'not_masked') {
+        <i
+          class="fa fa-eye-slash mr-2"
+          [class]="
+            'text-' +
+            (record.masked === 'masked_for_all' ? 'danger' : 'warning')
+          "
+          [tooltip]="
+            record.masked === 'masked_for_all'
+              ? ('Masked for all' | translate)
+              : ('Masked for external IP addresses' | translate)
+          "
+        ></i>
+        }
+        <span
+          [innerHTML]="
+            record.title[0].mainTitle | languageValue | async | nl2br
+          "
+        ></span>
+        @if(record.title[0].subtitle) { &nbsp;:&nbsp;{{
+          record.title[0].subtitle | languageValue | async
+        }}
+        }
+      </h1>
 
-        <!-- CONTRIBUTORS Not bf:Meeting -->
-        <sonar-contributions
-          [contributions]="record.contribution"
-        ></sonar-contributions>
+      <h4 class="m-0">
+        @if(record.organisation) {
+        <span
+          class="badge badge-secondary text-light mr-1 font-weight-normal"
+          *ngFor="let organisation of record.organisation"
+        >
+          {{ organisation.name }}
+        </span>
+        } @if(record.subdivisions) {
+        <span
+          class="badge badge-secondary text-light mr-1 font-weight-normal"
+          *ngFor="let subdivision of record.subdivisions"
+        >
+          {{ subdivision.name | languageValue | async }}
+        </span>
+        }
+      </h4>
 
-        <!-- PUBLICATION STATEMENT -->
-        @if(record.provisionActivity && record.provisionActivity.length > 0) {
-          <ul
-            class="list-unstyled my-2"
+      <!-- CONTRIBUTORS Not bf:Meeting -->
+      <sonar-contributions
+        [contributions]="record.contribution"
+      ></sonar-contributions>
+
+      <!-- PUBLICATION STATEMENT -->
+      @if(record.provisionActivity && record.provisionActivity.length > 0) {
+      <ul class="list-unstyled my-2">
+        @for(statement of record.provisionActivity; track statement) {
+        @if(statement.text && statement.text.default) { @for(item of
+        statement.text | keyvalue; track item) {
+        <li>
+          {{ item.value }}
+        </li>
+        } } @else {
+        <li>{{ statement.text }}</li>
+        } }
+      </ul>
+      }
+
+      <!-- EXTENT AND FORMAT -->
+      @if(record.extent || record.formats) {
+      <p class="my-2">
+        @if(record.extent) {
+        {{ record.extent }}
+        } @if(record.extent && record.formats) { ; } @if(record.formats) {
+        {{ record.formats | join : ', ' }}
+        }
+      </p>
+      }
+
+      <!-- EDITION STATEMENT -->
+      @if(record.editionStatement) {
+      <p class="my-2">
+        {{ record.editionStatement.editionDesignation.value }}
+        @if(record.editionStatement.responsibility) { /
+        {{ record.editionStatement.responsibility.value }}
+        }
+      </p>
+      }
+
+      <!-- DISSERTATION -->
+      @if(record.dissertation) {
+      <p class="my-2" record.dissertation>
+        {{ record.dissertation.text }}
+      </p>
+      }
+
+      <!-- PART OF -->
+      @if (record.partOf && record.partOf.length > 0) {
+      <div class="d-flex flex-row mb-3">
+        <!-- Type preprint (coar:c_816b): "Submitted to" other "Published in" -->
+        <div class="mr-1">
+          <strong
+            >{{
+              (record.documentType !== 'coar:c_816b'
+                ? 'Published in'
+                : 'Submitted to'
+              ) | translate
+            }}:</strong
           >
-            @for(statement of record.provisionActivity; track statement) {
-              @if(statement.text && statement.text.default) {
-                @for(item of statement.text | keyvalue; track item) {
-                  <li>
-                    {{ item.value }}
-                  </li>
-                }
-              } @else {
-                <li>{{ statement.text }}</li>
-              }
+        </div>
+        <div>
+          <ul class="list-unstyled mb-0">
+            @for (partOf of record.partOf; track partOf) {
+            <li>
+              {{ partOf.text }}
+            </li>
             }
           </ul>
-        }
-
-        <!-- EXTENT AND FORMAT -->
-        @if(record.extent || record.formats) {
-          <p class="my-2">
-            @if(record.extent) {
-              {{ record.extent }}
-            }
-            @if(record.extent && record.formats) { ; }
-            @if(record.formats) {
-              {{
-                record.formats | join : ', '
-              }}
-            }
-          </p>
-        }
-
-        <!-- EDITION STATEMENT -->
-        @if(record.editionStatement) {
-          <p class="my-2">
-            {{ record.editionStatement.editionDesignation.value }}
-            @if(record.editionStatement.responsibility) {
-              / {{ record.editionStatement.responsibility.value }}
-            }
-          </p>
-        }
-
-        <!-- DISSERTATION -->
-        @if(record.dissertation) {
-          <p class="my-2" record.dissertation>
-            {{ record.dissertation.text }}
-          </p>
-        }
-
-
-        <!-- PART OF -->
-        @if (record.partOf && record.partOf.length > 0) {
-        <div
-          class="d-flex flex-row mb-3"
-        >
-          <!-- Type preprint (coar:c_816b): "Submitted to" other "Published in" -->
-          <div class="mr-1">
-            <strong
-              >{{
-                (record.documentType !== 'coar:c_816b'
-                  ? 'Published in'
-                  : 'Submitted to'
-                ) | translate
-              }}:</strong
-            >
-          </div>
-          <div>
-            <ul class="list-unstyled mb-0">
-              @for (partOf of record.partOf; track partOf) {
-                <li>
-                  {{ partOf.text }}
-                </li>
-              }
-            </ul>
-          </div>
         </div>
-        }
+      </div>
+      }
 
-        <!-- ---------------------- SUBJECTS ---------------------- -->
-        @if(record.subjects && record.subjects.length > 0) {
-          <div class="my-3">
-            @for (subject of record.subjects; track subject) {
-              <h5 class="d-inline mr-1" *ngFor="let value of subject.label.value">
-                <a
-                  [routerLink]="['/', 'records', 'documents']"
-                  [queryParams]="{ q: 'subjects.label.value:' + value }"
-                >
-                  <span
-                    class="badge badge-secondary text-light font-weight-light"
-                  >
-                    <i class="fa fa-tag mx-1"></i> {{ value }}
-                  </span>
-                </a>
-              </h5>
-            }
-          </div>
+      <!-- ---------------------- SUBJECTS ---------------------- -->
+      @if(record.subjects && record.subjects.length > 0) {
+      <div class="my-3">
+        @for (subject of record.subjects; track subject) {
+        <h5 class="d-inline mr-1" *ngFor="let value of subject.label.value">
+          <a
+            [routerLink]="['/', 'records', 'documents']"
+            [queryParams]="{ q: 'subjects.label.value:' + value }"
+          >
+            <span class="badge badge-secondary text-light font-weight-light">
+              <i class="fa fa-tag mx-1"></i> {{ value }}
+            </span>
+          </a>
+        </h5>
         }
+      </div>
+      }
 
-        <!-- ---------------------- ABSTRACT ---------------------- -->
-        @if (record.abstracts.length > 0) {
-          <div class="my-4 text-justify">
-            @for (abstract of record.abstracts; track abstract) {
-              <a
-                href="#"
-                class="abstract-lang badge badge-secondary text-light mr-1"
-                [ngClass]="{
-                  'badge-secondary text-light': abstract.show,
-                  'badge-light text-reset': !abstract.show
-                }"
-                (click)="$event.preventDefault(); changeAbstract(abstract)"
-              >
-                {{ abstract.language | translateLanguage }}
-              </a>
-            }
-            @for (abstract of record.abstracts; track abstract) {
-              @if (abstract.show) {
-                    @if (!abstract.full && abstract.value.length > 400) {
-                      <span>
-                        {{ abstract.value | slice : 0 : 400 }}
-                        <a href="#" (click)="showMoreAbstract($event, abstract)">
-                          {{ 'Show more' | translate }}&hellip;
-                        </a>
-                      </span>
-                    } @else {
-                      <span [innerHtml]="abstract.value | nl2br"></span>
-                    }
-              }
-            }
-          </div>
-        }
+      <!-- ---------------------- ABSTRACT ---------------------- -->
+      @if (record.abstracts.length > 0) {
+      <div class="my-4 text-justify">
+        @for (abstract of record.abstracts; track abstract) {
+        <a
+          href="#"
+          class="abstract-lang badge badge-secondary text-light mr-1"
+          [ngClass]="{
+            'badge-secondary text-light': abstract.show,
+            'badge-light text-reset': !abstract.show
+          }"
+          (click)="$event.preventDefault(); changeAbstract(abstract)"
+        >
+          {{ abstract.language | translateLanguage }}
+        </a>
+        } @for (abstract of record.abstracts; track abstract) { @if
+        (abstract.show) { @if (!abstract.full && abstract.value.length > 400) {
+        <span>
+          {{ abstract.value | slice : 0 : 400 }}
+          <a href="#" (click)="showMoreAbstract($event, abstract)">
+            {{ 'Show more' | translate }}&hellip;
+          </a>
+        </span>
+        } @else {
+        <span [innerHtml]="abstract.value | nl2br"></span>
+        } } }
+      </div>
+      }
 
-        <!-- ---------------------- ADDITIONAL INFOS / FIELDS ---------------------- -->
-        <dl class="mb-0">
-          <!-- PROJECTS -->
-          <sonar-field-description [label]="'Research project' | translate" [field]="record.projects">
-            <ng-template let-project pTemplate="template">
-              <a
-              [routerLink]="[
-                '/',
-                'records',
-                'projects',
-                'detail',
-                project.pid
-              ]"
+      <!-- ---------------------- ADDITIONAL INFOS / FIELDS ---------------------- -->
+      <dl class="mb-0">
+        <!-- PROJECTS -->
+        <sonar-field-description
+          [label]="'Research project' | translate"
+          [field]="record.projects"
+        >
+          <ng-template let-project pTemplate="template">
+            <a
+              [routerLink]="['/', 'records', 'projects', 'detail', project.pid]"
             >
               {{ project.name }}
             </a>
             {{ get_funding_organisations(project) }}
-            </ng-template>
-          </sonar-field-description>
+          </ng-template>
+        </sonar-field-description>
 
-          <!-- COLLECTIONS -->
-          <sonar-field-description [label]="'Collections' | translate" [field]="record.collections">
-            <ng-template let-collection pTemplate="template">
-              <a
+        <!-- COLLECTIONS -->
+        <sonar-field-description
+          [label]="'Collections' | translate"
+          [field]="record.collections"
+        >
+          <ng-template let-collection pTemplate="template">
+            <a
               [routerLink]="[
                 '/',
                 'records',
@@ -252,161 +233,196 @@
             >
               {{ collection.name | languageValue | async }}
             </a>
-            </ng-template>
-          </sonar-field-description>
-          <!-- CUSTOM FIELDS -->
-          @for (i of [1, 2, 3]; track i) {
-            <sonar-field-description [label]="'Custom field ' + i | translate" [field]="record['customField' + i]?.join(', ')"/>
-          }
-
-          <!-- LANGUAGE -->
-          <sonar-field-description [label]="'Language' | translate" [field]="record.language">
-            <ng-template let-language pTemplate="template">
-              {{ language.value | translateLanguage }}
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- CONTRIBUTIONS -> TYPE: bf:Meeting -->
-            <sonar-contributions
-              [contributions]="record.contribution"
-              [meeting]="true"
-              [additionalInfosFields]="true"
-            ></sonar-contributions>
-
-          <!-- CONTENT NOTE -->
-          <sonar-field-description [label]="'Content' | translate" [field]="record.contentNote"/>
-
-          <!-- CLASSIFICATION -->
-          <sonar-field-description [label]="'Classification' | translate" [field]="UDCclassifications">
-            <ng-template let-classification pTemplate="template">
-                <a
-                  [routerLink]="['/', 'records', 'documents']"
-                  [queryParams]="{
-                    q:
-                      'classification.classificationPortion:' +
-                      classification.classificationPortion
-                  }"
-                  >{{
-                    'classification_' + classification.classificationPortion
-                      | translate
-                  }}
-                </a>
-              </ng-template>
-            </sonar-field-description>
-
-
-          <!-- OTHER EDITION -->
-          <sonar-field-description [label]="'Other electronic version' | translate" [field]="record.otherEdition">
-            <ng-template let-otherEdition pTemplate="template">
-                <a
-                  [href]="otherEdition.document.electronicLocator"
-                  target="_blank"
-                >
-                  {{ otherEdition.publicNote }}
-                  <i class="fa fa-external-link mx-1"></i>
-                </a>
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- RELATED TO -->
-          <sonar-field-description [label]="'Related to' | translate" [field]="record.relatedTo">
-            <ng-template let-relatedTo pTemplate="template">
-                <a
-                  [href]="relatedTo.document.electronicLocator"
-                  target="_blank"
-                >
-                  {{ relatedTo.publicNote }}
-                  <i class="fa fa-external-link mx-1"></i>
-                </a>
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- SERIES -->
-          <sonar-field-description [label]="'Series statement' | translate" [field]="record.series">
-            <ng-template let-serie pTemplate="template">
-              {{ serie.name }}
-              @if (serie.number) {
-                ; {{ serie.number }}
-              }
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- OTHER MATERIAL CHARACTERISTICS -->
-          <sonar-field-description [label]="'Other material characteristics' | translate" [field]="record.otherMaterialCharacteristics"/>
-
-          <!-- ADDITIONAL MATERIALS -->
-          <sonar-field-description [label]="'Accompanying material' | translate" [field]="record.additionalMaterials"/>
-
-          <!-- LICENSE -->
-          <sonar-field-description [label]="'License' | translate" [field]="record.usageAndAccessPolicy">
-            <ng-template let-usageAndAccessPolicy pTemplate="template">
-              {{ usageAndAccessPolicy.license | translate }}
-              @if(usageAndAccessPolicy.label) {
-                <br />{{ usageAndAccessPolicy.label }}
-              }
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- OA STATUS -->
-          <sonar-field-description [label]="'Open Access status' | translate" [field]="record.oa_status"/>
-
-          <!-- IDENTIFIED BY -->
-          <sonar-field-description [label]="'Identifiers' | translate" [field]="record.identifiedBy">
-            <ng-template let-identifier pTemplate="template">
-                <sonar-record-identifier
-                  type="identifiedBy"
-                  [data]="identifier"
-                />
-            </ng-template>
-          </sonar-field-description>
-
-          <!-- PERMALINK -->
-          <sonar-field-description [label]="'Permalink' | translate" [field]="record.permalink">
-            <ng-template let-permalink pTemplate="template">
-              <a [href]="permalink">{{ permalink }}</a>
-            </ng-template>
-          </sonar-field-description>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <!-- TABS -->
-  <tabset>
-    @if (filteredFiles.length > 1) {
-      <tab #tabOther="tab" id="documents-other-files-tab" [active]="true">
-        <ng-template tabHeading translate>Other files</ng-template>
-        <!-- FILES -->
-        @if (tabOther.active) {
-        <div class="mt-4">
-          <sonar-other-files [documentPid]="record.pid"></sonar-other-files>
-        </div>
+          </ng-template>
+        </sonar-field-description>
+        <!-- CUSTOM FIELDS -->
+        @for (i of [1, 2, 3]; track i) {
+        <sonar-field-description
+          [label]="'Custom field ' + i | translate"
+          [field]="record['customField' + i]?.join(', ')"
+        />
         }
-      </tab>
-    }
 
-    <tab #tabStats="tab" id="documents-stats">
-      <ng-template tabHeading translate>Statistics</ng-template>
-      <!-- Stats   -->
-      @if (tabStats.active) {
+        <!-- LANGUAGE -->
+        <sonar-field-description
+          [label]="'Language' | translate"
+          [field]="record.language"
+        >
+          <ng-template let-language pTemplate="template">
+            {{ language.value | translateLanguage }}
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- CONTRIBUTIONS -> TYPE: bf:Meeting -->
+        <sonar-contributions
+          [contributions]="record.contribution"
+          [meeting]="true"
+          [additionalInfosFields]="true"
+        ></sonar-contributions>
+
+        <!-- CONTENT NOTE -->
+        <sonar-field-description
+          [label]="'Content' | translate"
+          [field]="record.contentNote"
+        />
+
+        <!-- CLASSIFICATION -->
+        <sonar-field-description
+          [label]="'Classification' | translate"
+          [field]="UDCclassifications"
+        >
+          <ng-template let-classification pTemplate="template">
+            <a
+              [routerLink]="['/', 'records', 'documents']"
+              [queryParams]="{
+                q:
+                  'classification.classificationPortion:' +
+                  classification.classificationPortion
+              }"
+              >{{
+                'classification_' + classification.classificationPortion
+                  | translate
+              }}
+            </a>
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- OTHER EDITION -->
+        <sonar-field-description
+          [label]="'Other electronic version' | translate"
+          [field]="record.otherEdition"
+        >
+          <ng-template let-otherEdition pTemplate="template">
+            <a [href]="otherEdition.document.electronicLocator" target="_blank">
+              {{ otherEdition.publicNote }}
+              <i class="fa fa-external-link mx-1"></i>
+            </a>
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- RELATED TO -->
+        <sonar-field-description
+          [label]="'Related to' | translate"
+          [field]="record.relatedTo"
+        >
+          <ng-template let-relatedTo pTemplate="template">
+            <a [href]="relatedTo.document.electronicLocator" target="_blank">
+              {{ relatedTo.publicNote }}
+              <i class="fa fa-external-link mx-1"></i>
+            </a>
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- SERIES -->
+        <sonar-field-description
+          [label]="'Series statement' | translate"
+          [field]="record.series"
+        >
+          <ng-template let-serie pTemplate="template">
+            {{ serie.name }}
+            @if (serie.number) { ; {{ serie.number }}
+            }
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- OTHER MATERIAL CHARACTERISTICS -->
+        <sonar-field-description
+          [label]="'Other material characteristics' | translate"
+          [field]="record.otherMaterialCharacteristics"
+        />
+
+        <!-- ADDITIONAL MATERIALS -->
+        <sonar-field-description
+          [label]="'Accompanying material' | translate"
+          [field]="record.additionalMaterials"
+        />
+
+        <!-- LICENSE -->
+        <sonar-field-description
+          [label]="'License' | translate"
+          [field]="record.usageAndAccessPolicy"
+        >
+          <ng-template let-usageAndAccessPolicy pTemplate="template">
+            {{ usageAndAccessPolicy.license | translate }}
+            @if(usageAndAccessPolicy.label) {
+            <br />{{ usageAndAccessPolicy.label }}
+            }
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- OA STATUS -->
+        <sonar-field-description
+          [label]="'Open Access status' | translate"
+          [field]="record.oa_status"
+        />
+
+        <!-- IDENTIFIED BY -->
+        <sonar-field-description
+          [label]="'Identifiers' | translate"
+          [field]="record.identifiedBy"
+        >
+          <ng-template let-identifier pTemplate="template">
+            <sonar-record-identifier type="identifiedBy" [data]="identifier" />
+          </ng-template>
+        </sonar-field-description>
+
+        <!-- PERMALINK -->
+        <sonar-field-description
+          [label]="'Permalink' | translate"
+          [field]="record.permalink"
+        >
+          <ng-template let-permalink pTemplate="template">
+            <a [href]="permalink">{{ permalink }}</a>
+          </ng-template>
+        </sonar-field-description>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+
+<p-tabView>
+  <p-tabPanel
+    [disabled]="filteredFiles.length > 1? false: true"
+    id="documents-other-files-tab"
+    [header]="'Other files' | translate"
+    cache="false"
+  >
+    <ng-template pTemplate="content">
+      <div class="mt-4">
+        <sonar-other-files [documentPid]="record.pid"></sonar-other-files>
+      </div>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel
+    id="documents-stats"
+    cache="false"
+    [header]="'Statistics' | translate"
+  >
+    <ng-template pTemplate="content">
       <div class="mt-4">
         <sonar-stats-files
           [record]="record"
           [filteredKeys]="filteredKeys"
         ></sonar-stats-files>
       </div>
-      }
-    </tab>
-    <tab #tabEditFiles="tab" id="documents-edit-files">
-      <ng-template tabHeading translate>Edit Files</ng-template>
-      <!-- Stats   -->
-      @if (tabEditFiles.active) {
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel
+    id="documents-edit-files"
+    cache="false"
+    [header]="'Edit Files' | translate"
+  >
+    <ng-template pTemplate="content">
       <sonar-upload-files
         recordType="documents"
         [pid]="record.pid"
         (filesChanged)="updateFiles($event)"
       ></sonar-upload-files>
-      }
-    </tab>
-  </tabset>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>
 }

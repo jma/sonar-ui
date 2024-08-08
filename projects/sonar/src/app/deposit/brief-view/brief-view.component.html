@@ -85,13 +85,13 @@
   </div>
 
   <div *ngIf="canContinueProcess()">
-    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'create']" translate>
+    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'files']" translate>
       Continue process
     </a>
   </div>
 
   <div *ngIf="canReview()">
-    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'create']" translate>
+    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'files']" translate>
       Review deposit
     </a>
   </div>
