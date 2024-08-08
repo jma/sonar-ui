@@ -71,10 +71,4 @@ export class DetailComponent implements OnInit {
         this.collections = result[1].hits.hits;
       });
   }
-
-  updateFiles(files) {
-      this.recordService.getRecord('organisations', this.record.id, 1).pipe(
-        map(doc => this.record._files = doc.metadata._files)
-      ).subscribe();
-  }
 }

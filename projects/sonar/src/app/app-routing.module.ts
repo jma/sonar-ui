@@ -43,6 +43,7 @@ import { DetailComponent as ProjectDetailComponent } from './record/project/deta
 import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/subdivision/brief-view/brief-view.component';
 import { UserComponent } from './record/user/user.component';
 import { UserService } from './user.service';
+import { MetadataComponent } from './deposit/metadata/metadata.component';
 
 const adminModeDisabled = (): Observable<ActionStatus> => {
   return of({
@@ -58,6 +59,11 @@ const routes: Routes = [
     children: [
       { path: '', component: DashboardComponent },
       {
+        path: 'deposit/create',
+        canActivate: mapToCanActivate([RoleGuard]),
+        component: UploadComponent,
+      },
+      {
         path: 'deposit/:id',
         canActivate: mapToCanActivate([RoleGuard]),
         data: {
@@ -65,7 +71,7 @@ const routes: Routes = [
         },
         children: [
           {
-            path: 'create',
+            path: 'files',
             component: UploadComponent
           },
           {
@@ -74,7 +80,7 @@ const routes: Routes = [
           },
           {
             path: ':step',
-            component: DepositEditorComponent
+            component: MetadataComponent
           }
         ]
       }

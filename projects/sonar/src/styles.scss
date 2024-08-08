@@ -25,6 +25,7 @@ $secondary: rgb(246, 130, 17) !default;
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,700|Roboto+Condensed:300,700');
 @import 'font-awesome/scss/font-awesome';
+
 @layer bootstrap {
   @import 'bootstrap/scss/bootstrap';
   @import 'ngx-toastr/toastr-bs4-alert';
@@ -32,6 +33,9 @@ $secondary: rgb(246, 130, 17) !default;
   // TODO: remove `node_modules` when this will be fixed in ngx-bootstrap
   @import 'easymde/dist/easymde.min';
   body,
+  .invalid-feedback {
+    display: block !important;
+  }
   html {
     line-height: normal;
     font-size: 0.9rem;
@@ -105,7 +109,7 @@ $secondary: rgb(246, 130, 17) !default;
   }
 }
 
-@import 'primeng/resources/themes/bootstrap4-light-blue/theme';
+@import 'primeng/resources/themes/lara-light-blue/theme';
 @import 'primeng/resources/primeng';
 @layer primengother {
   @import 'primeicons/primeicons';
@@ -117,3 +121,7 @@ $secondary: rgb(246, 130, 17) !default;
     font-size: 0.9rem;
   }
 }
+@layer ng-core {
+  @import 'node_modules/@rero/ng-core/assets/scss/ng-core';
+}
+

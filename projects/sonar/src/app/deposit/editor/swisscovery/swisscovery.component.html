@@ -1,0 +1,46 @@
+<p-dropdown
+  styleClass="w-full mb-4"
+  [options]="types"
+  [(ngModel)]="scType"
+  optionLabel="name"
+  [placeholder]="'Search in ...' | translate"
+/>
+<p-inputGroup>
+  <input
+    type="text"
+    pAutoFocus
+    [autofocus]="true"
+    [(ngModel)]="searchTerms"
+    (keyup.enter)="searchSwisscovery()"
+    pInputText
+    placeholder="Keyword"
+  />
+  <button
+    type="button"
+    (click)="searchSwisscovery()"
+    pButton
+    icon="pi pi-search"
+    class="p-button"
+  ></button>
+</p-inputGroup>
+
+@if(scResult) {
+  @if(hasSwisscoveryResult){
+<dl class="mt-4">
+  <dt translate>Title</dt>
+  <dd>{{ scResult?.metadata?.title ? scResult.metadata.title : ('no title' | translate) }}</dd>
+  @if(scResult?.contributors) {
+  <dt translate>Contributors</dt>
+  <dd>{{ scResult.contributors }}</dd>
+  }
+</dl>
+<button type="button" pButton class="p-button" (click)="save()" translate>
+  Import
+</button>
+} @else {
+<p-messages
+  [value]="[{ severity: 'warn', detail: 'No result found' | translate }]"
+  [enableService]="false"
+  [closable]="false"
+/>
+} }

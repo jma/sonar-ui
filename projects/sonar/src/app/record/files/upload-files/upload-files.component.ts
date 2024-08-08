@@ -189,14 +189,17 @@ export class UploadFilesComponent {
         .pipe(
           catchError((e: any) => {
             let msg = this.translateService.instant('Server error');
-            if (e.error.message) {
+            if (e?.error?.message) {
               msg = `${msg}: ${e.error.message}`;
             }
             this.toastrService.error(msg);
             return of([]);
           }),
+          switchMap(() => this.getRecord()),
+          switchMap(() => {
+            return this._reorder();
+          }),
           tap(() => {
-            this.getRecord();
             this.resetFilter();
             this.fileUpload.clear();
             this.toastrService.success(
@@ -232,10 +235,10 @@ export class UploadFilesComponent {
           this.toastrService.error(msg);
           return of(null);
         }),
-        map((file: any) => {
+        switchMap((file: any) =>
           // update the record and the files
-          this.getRecord();
-        }),
+          this.getRecord()
+        ),
         tap(() => {
           this.filesChanged.emit(this.files);
           this.resetFilter();
@@ -251,15 +254,14 @@ export class UploadFilesComponent {
    * Get the record and the files from the backend.
    */
   getRecord() {
-    this.fileService
+    return this.fileService
       .get(`/api/${this.recordType()}/${this.pid()}`)
       .pipe(
         map((rec: any) => (rec = rec.metadata)),
         tap((record) => (this.record = record)),
         switchMap((record) => this.getFiles(record)),
         tap((files) => (this.files = files))
-      )
-      .subscribe();
+      );
   }
 
   /**
@@ -279,7 +281,7 @@ export class UploadFilesComponent {
       map((file: any) => {
         this.nUploadedFiles += 1;
         this.files = this.processFiles([
-          { label: file.key, ...file },
+          { label: file.key, metadata:{order: this.files.length + 1}, ...file },
           ...this.files,
         ]);
       }),
@@ -352,14 +354,19 @@ export class UploadFilesComponent {
                 `/api/${this.recordType()}/${this.pid()}/files/${file.key}`
               )
               .pipe(
-                map((res) => {
+                tap(() => {
                   this.files = this.files.filter((f) => f.key !== file.key);
+                  this.record._files = this.record._files.filter(
+                    (item: any) => file.key !== item.key
+                  );
+                }),
+                switchMap(() => this._reorder()),
+                tap(() => {
                   this.resetFilter();
                   this.toastrService.success(
                     this.translateService.instant('File removed successfully.')
                   );
                   this.filesChanged.emit(this.files);
-                  return true;
                 })
               );
           }
@@ -452,19 +459,28 @@ export class UploadFilesComponent {
    * Reorder the files.
    */
   reorder() {
+
+      this._reorder().subscribe((record: any) => {
+        this.filesChanged.emit(this.files);
+      });
+  }
+
+  _reorder() {
     this.files.map((file, index) => {
       let recordFile = this._getFileInRecord(file.key);
       recordFile.order = index + 1;
     });
-    this.fileService
+    return this.fileService
       .put(`/api/${this.recordType()}/${this.pid()}`, this.record)
-      .subscribe((record: any) => {
+      .pipe(
+        tap((record: any) => {
         this.record = record.metadata;
         this.files.map((file) => {
           file.metadata = this._getFileInRecord(file.key);
         });
-        this.filesChanged.emit(this.files);
-      });
+
+        })
+      );
   }
 
   /**

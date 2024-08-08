@@ -91,6 +91,7 @@
 </p-panel>
 
 <ng-template #fileLink let-file="file" let-name="name">
+  {{file.metadata.order}}. &nbsp;
   @if (file?.links?.self) {
   <a
     tabindex="-1"

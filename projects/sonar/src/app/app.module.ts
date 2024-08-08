@@ -36,8 +36,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { OrderListModule } from 'primeng/orderlist';
-import { PanelModule } from 'primeng/panel';
 import { PaginatorModule } from 'primeng/paginator';
+import { PanelModule } from 'primeng/panel';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { StepsModule } from 'primeng/steps';
+import { TabViewModule } from 'primeng/tabview';
+import { ToolbarModule } from 'primeng/toolbar';
 import { AdminComponent } from './_layout/admin/admin.component';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
@@ -73,6 +77,11 @@ import { OtherFilesComponent } from './record/files/other-files/other-files.comp
 import { StatsFilesComponent } from './record/files/stats-files/stats-files.component';
 import { UploadFilesComponent } from './record/files/upload-files/upload-files.component';
 import { DetailComponent as HepvsProjectDetailComponent } from './record/hepvs/project/detail/detail.component';
+
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { FilesComponent } from './deposit/files/files.component';
+import { MetadataComponent } from './deposit/metadata/metadata.component';
 import { IdentifierComponent } from './record/identifier/identifier.component';
 import { DetailComponent as OrganisationDetailComponent } from './record/organisation/detail/detail.component';
 import { OrganisationComponent } from './record/organisation/organisation.component';
@@ -82,6 +91,9 @@ import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/su
 import { UserComponent } from './record/user/user.component';
 import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
+import { SwisscoveryComponent } from './deposit/editor/swisscovery/swisscovery.component';
+import { MessagesModule } from 'primeng/messages';
+
 
 export function appInitializerFactory(appInitializerService: AppInitializerService): () => Promise<any> {
   return () => appInitializerService.initialize().toPromise();
@@ -130,7 +142,10 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     OtherFilesComponent,
     FaIconClassPipe,
     StatsFilesComponent,
-    FieldDescriptionComponent
+    FieldDescriptionComponent,
+    MetadataComponent,
+    FilesComponent,
+    SwisscoveryComponent
   ],
   imports: [
     BrowserModule,
@@ -138,6 +153,9 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     AppRoutingModule,
     HttpClientModule,
     CollapseModule.forRoot(),
+    StepsModule,
+    ToolbarModule,
+    TabViewModule ,
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
@@ -162,7 +180,11 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     PanelModule,
     DividerModule,
     CarouselModule,
-    PaginatorModule
+    PaginatorModule,
+    SplitButtonModule,
+    DialogModule,
+    ConfirmDialogModule,
+    MessagesModule
   ],
   providers: [
     {

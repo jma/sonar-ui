@@ -165,8 +165,8 @@ export class OtherFilesComponent implements OnInit, OnDestroy {
             const data = {};
             // retrieve main files
             res.map((entry) => {
-              // main file (such as pdf)
-              if (entry.type == 'file') {
+              // main file (such as pdf) and avoid the first
+              if (entry.type == 'file' && entry?.order != '1') {
                 const dataFile: any = {
                   label: entry?.label ? entry.label : entry.key,
                   mimetype: entry.mimetype,
