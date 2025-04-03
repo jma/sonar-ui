@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 /*
  * SONAR User Interface
  * Copyright (C) 2021 RERO
@@ -30,20 +30,18 @@ describe('FileComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [FileComponent],
-      imports: [
-        HttpClientModule,
-        RouterTestingModule,
+    declarations: [FileComponent],
+    imports: [RouterTestingModule,
         TranslateModule.forRoot({
-          loader: {
-            provide: BaseTranslateLoader,
-            useClass: TranslateLoader,
-            deps: [CoreConfigService, HttpClient]
-          },
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient]
+            },
         }),
-        RecordModule,
-      ],
-    }).compileComponents();
+        RecordModule],
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   }));
 
   beforeEach(() => {

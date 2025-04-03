@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DatePipe } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,7 +52,7 @@ describe('EditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         EditorComponent,
         StepComponent,
         ReviewComponent,
@@ -60,30 +60,28 @@ describe('EditorComponent', () => {
         FileLinkPipe,
         FileSizePipe,
         HighlightJsonPipe
-      ],
-      imports: [
-        BrowserAnimationsModule,
+    ],
+    imports: [BrowserAnimationsModule,
         ReactiveFormsModule,
         RecordModule,
         RouterTestingModule,
-        HttpClientModule,
         TranslateModule.forRoot({
-          loader: {
-            provide: BaseTranslateLoader,
-            useClass: TranslateLoader,
-            deps: [CoreConfigService, HttpClient]
-          }
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient]
+            }
         }),
         FormlyModule,
-        ModalModule.forRoot()
-      ],
-      providers: [
+        ModalModule.forRoot()],
+    providers: [
         DatePipe,
         { provide: ActivatedRoute, useValue: route },
         { provide: UserService, useValue: userTestingService },
-        { provide: DepositService, useValue: depositTestingService }
-      ]
-    }).compileComponents();
+        { provide: DepositService, useValue: depositTestingService },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

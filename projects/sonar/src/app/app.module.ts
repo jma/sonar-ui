@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DatePipe } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -103,114 +103,108 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
   return `This field must contain at least ${field.templateOptions.minItems} element.`;
 }
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    OrganisationComponent,
-    DocumentComponent,
-    UserComponent,
-    DocumentDetailComponent,
-    OrganisationDetailComponent,
-    JoinPipe,
-    LanguageValuePipe,
-    DashboardComponent,
-    UploadComponent,
-    FileSizePipe,
-    EditorComponent,
-    StepComponent,
-    ConfirmationComponent,
-    BriefViewComponent,
-    FileLinkPipe,
-    HighlightJsonPipe,
-    ReviewComponent,
-    AdminComponent,
-    PublicationPipe,
-    FileComponent,
-    ProjectBriefViewComponent,
-    ProjectDetailComponent,
-    IdentifierComponent,
-    HepvsProjectDetailComponent,
-    ValidationComponent,
-    CollectionBriefViewComponent,
-    CollectionDetailComponent,
-    SubdivisionBriefViewComponent,
-    ContributorsPipe,
-    ContributionsComponent,
-    ContributionComponent,
-    UploadFilesComponent,
-    FileItemComponent,
-    OtherFilesComponent,
-    FaIconClassPipe,
-    StatsFilesComponent,
-    FieldDescriptionComponent,
-    MetadataComponent,
-    FilesComponent,
-    SwisscoveryComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    CollapseModule.forRoot(),
-    StepsModule,
-    ToolbarModule,
-    TabViewModule ,
-    TabsModule.forRoot(),
-    TooltipModule.forRoot(),
-    ModalModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: AppTranslateLoader,
-        deps: [CoreConfigService, HttpClient, UserService]
-      },
-      defaultLanguage: 'en'
-    }),
-    ReactiveFormsModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(),
-    NgxDropzoneModule,
-    RecordModule,
-    InputTextModule,
-    FileUploadModule,
-    OrderListModule,
-    DropdownModule,
-    PanelModule,
-    DividerModule,
-    CarouselModule,
-    PaginatorModule,
-    SplitButtonModule,
-    DialogModule,
-    ConfirmDialogModule,
-    MessagesModule
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpInterceptor,
-      multi: true
-    },
-    {
-      provide: CoreConfigService,
-      useClass: AppConfigService
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [
-        AppInitializerService,
-        UserService
-      ],
-      multi: true
-    },
-    BsLocaleService,
-    DatePipe
-  ],
-  bootstrap: [AppComponent],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        OrganisationComponent,
+        DocumentComponent,
+        UserComponent,
+        DocumentDetailComponent,
+        OrganisationDetailComponent,
+        JoinPipe,
+        LanguageValuePipe,
+        DashboardComponent,
+        UploadComponent,
+        FileSizePipe,
+        EditorComponent,
+        StepComponent,
+        ConfirmationComponent,
+        BriefViewComponent,
+        FileLinkPipe,
+        HighlightJsonPipe,
+        ReviewComponent,
+        AdminComponent,
+        PublicationPipe,
+        FileComponent,
+        ProjectBriefViewComponent,
+        ProjectDetailComponent,
+        IdentifierComponent,
+        HepvsProjectDetailComponent,
+        ValidationComponent,
+        CollectionBriefViewComponent,
+        CollectionDetailComponent,
+        SubdivisionBriefViewComponent,
+        ContributorsPipe,
+        ContributionsComponent,
+        ContributionComponent,
+        UploadFilesComponent,
+        FileItemComponent,
+        OtherFilesComponent,
+        FaIconClassPipe,
+        StatsFilesComponent,
+        FieldDescriptionComponent,
+        MetadataComponent,
+        FilesComponent,
+        SwisscoveryComponent
+    ],
+    bootstrap: [AppComponent],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        CollapseModule.forRoot(),
+        StepsModule,
+        ToolbarModule,
+        TabViewModule,
+        TabsModule.forRoot(),
+        TooltipModule.forRoot(),
+        ModalModule.forRoot(),
+        TranslateModule.forRoot({
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: AppTranslateLoader,
+                deps: [CoreConfigService, HttpClient, UserService]
+            },
+            defaultLanguage: 'en'
+        }),
+        ReactiveFormsModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        NgxDropzoneModule,
+        RecordModule,
+        InputTextModule,
+        FileUploadModule,
+        OrderListModule,
+        DropdownModule,
+        PanelModule,
+        DividerModule,
+        CarouselModule,
+        PaginatorModule,
+        SplitButtonModule,
+        DialogModule,
+        ConfirmDialogModule,
+        MessagesModule], providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpInterceptor,
+            multi: true
+        },
+        {
+            provide: CoreConfigService,
+            useClass: AppConfigService
+        },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: appInitializerFactory,
+            deps: [
+                AppInitializerService,
+                UserService
+            ],
+            multi: true
+        },
+        BsLocaleService,
+        DatePipe,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
