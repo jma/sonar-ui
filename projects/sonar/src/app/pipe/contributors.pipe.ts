@@ -18,7 +18,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { IContribution } from '../record/document/contribution.interface';
 
 @Pipe({
-  name: 'contributors'
+    name: 'contributors',
+    standalone: false
 })
 export class ContributorsPipe implements PipeTransform {
 

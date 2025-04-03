@@ -23,7 +23,8 @@ import { map, startWith } from 'rxjs/operators';
  * Return the value of source array, corresponding of given language.
  */
 @Pipe({
-  name: 'languageValue',
+    name: 'languageValue',
+    standalone: false
 })
 export class LanguageValuePipe implements PipeTransform {
   /**

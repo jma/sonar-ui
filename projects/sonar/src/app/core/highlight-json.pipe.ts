@@ -21,7 +21,8 @@ import { DomSanitizer } from '@angular/platform-browser';
  * Highlight a JSON structure.
  */
 @Pipe({
-  name: 'highlightJson'
+    name: 'highlightJson',
+    standalone: false
 })
 export class HighlightJsonPipe implements PipeTransform {
   /**

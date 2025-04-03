@@ -18,8 +18,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DocumentFile } from '../document.interface';
 
 @Component({
-  selector: 'sonar-document-file',
-  templateUrl: './file.component.html'
+    selector: 'sonar-document-file',
+    templateUrl: './file.component.html',
+    standalone: false
 })
 export class FileComponent {
   // File object.

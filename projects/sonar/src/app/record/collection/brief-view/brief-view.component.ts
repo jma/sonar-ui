@@ -18,7 +18,8 @@ import { Component } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  templateUrl: './brief-view.component.html'
+    templateUrl: './brief-view.component.html',
+    standalone: false
 })
 export class BriefViewComponent implements ResultItem {
   // Record data.

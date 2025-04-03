@@ -25,8 +25,9 @@ import { UserService } from '../../user.service';
 import { DepositService } from '../deposit.service';
 
 @Component({
-  selector: 'sonar-deposit-review',
-  templateUrl: './review.component.html'
+    selector: 'sonar-deposit-review',
+    templateUrl: './review.component.html',
+    standalone: false
 })
 export class ReviewComponent implements OnInit, OnDestroy {
   /** Deposit record */

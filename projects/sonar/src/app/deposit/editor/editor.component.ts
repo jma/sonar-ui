@@ -31,8 +31,9 @@ import { UserService } from '../../user.service';
 import { DepositService } from '../deposit.service';
 
 @Component({
-  selector: 'sonar-deposit-editor',
-  templateUrl: './editor.component.html',
+    selector: 'sonar-deposit-editor',
+    templateUrl: './editor.component.html',
+    standalone: false
 })
 export class EditorComponent implements OnInit, OnDestroy {
   /** Deposit object */

@@ -18,6 +18,7 @@ import { Component } from '@angular/core';
 import { DetailComponent as BaseProjectDetailComponent } from '../../../project/detail/detail.component';
 
 @Component({
-  templateUrl: './detail.component.html',
+    templateUrl: './detail.component.html',
+    standalone: false
 })
 export class DetailComponent extends BaseProjectDetailComponent {}

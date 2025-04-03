@@ -20,7 +20,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Join the array with given separator and return the result string.
  */
 @Pipe({
-  name: 'join'
+    name: 'join',
+    standalone: false
 })
 export class JoinPipe implements PipeTransform {
   /**

@@ -3,8 +3,9 @@ import { PrimeTemplate } from 'primeng/api';
 import { Nullable } from 'primeng/ts-helpers';
 
 @Component({
-  selector: 'sonar-field-description',
-  templateUrl: './field-description.component.html'
+    selector: 'sonar-field-description',
+    templateUrl: './field-description.component.html',
+    standalone: false
 })
 export class FieldDescriptionComponent implements AfterContentInit {
   label = input<string>();

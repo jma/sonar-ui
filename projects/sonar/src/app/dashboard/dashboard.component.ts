@@ -20,7 +20,8 @@ import { Component } from '@angular/core';
  * Dashboard page
  */
 @Component({
-  selector: 'sonar-dashboard',
-  templateUrl: './dashboard.component.html'
+    selector: 'sonar-dashboard',
+    templateUrl: './dashboard.component.html',
+    standalone: false
 })
 export class DashboardComponent {}

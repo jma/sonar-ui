@@ -18,7 +18,8 @@ import { Component } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  templateUrl: './organisation.component.html'
+    templateUrl: './organisation.component.html',
+    standalone: false
 })
 export class OrganisationComponent implements ResultItem {
   // Record data.

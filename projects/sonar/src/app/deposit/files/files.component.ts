@@ -1,9 +1,10 @@
 import { Component, ElementRef, ViewChild, input } from '@angular/core';
 
 @Component({
-  selector: 'sonar-deposit-files',
-  templateUrl: './files.component.html',
-  styleUrl: './files.component.css',
+    selector: 'sonar-deposit-files',
+    templateUrl: './files.component.html',
+    styleUrl: './files.component.css',
+    standalone: false
 })
 export class FilesComponent {
   mainFile = input.required<any>();

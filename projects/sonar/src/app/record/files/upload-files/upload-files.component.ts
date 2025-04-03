@@ -46,9 +46,10 @@ import {
 import { AppConfigService } from '../../../app-config.service';
 
 @Component({
-  selector: 'sonar-upload-files',
-  templateUrl: './upload-files.component.html',
-  styleUrl: './upload-files.component.scss',
+    selector: 'sonar-upload-files',
+    templateUrl: './upload-files.component.html',
+    styleUrl: './upload-files.component.scss',
+    standalone: false
 })
 export class UploadFilesComponent {
   // resource pid

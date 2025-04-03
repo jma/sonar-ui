@@ -18,7 +18,8 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
-  templateUrl: './detail.component.html'
+    templateUrl: './detail.component.html',
+    standalone: false
 })
 export class DetailComponent {
   /** Observable resolving record data */

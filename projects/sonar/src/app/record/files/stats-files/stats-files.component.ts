@@ -20,8 +20,9 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 
 @Component({
-  selector: 'sonar-stats-files',
-  templateUrl: './stats-files.component.html'
+    selector: 'sonar-stats-files',
+    templateUrl: './stats-files.component.html',
+    standalone: false
 })
 export class StatsFilesComponent implements OnInit{
   statistics = {};

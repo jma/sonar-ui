@@ -19,8 +19,9 @@ import { Subscription } from 'rxjs';
 import { UserService } from '../../user.service';
 
 @Component({
-  selector: 'sonar-deposit-brief-view',
-  templateUrl: './brief-view.component.html'
+    selector: 'sonar-deposit-brief-view',
+    templateUrl: './brief-view.component.html',
+    standalone: false
 })
 export class BriefViewComponent implements OnInit, OnDestroy {
   /** Record data */

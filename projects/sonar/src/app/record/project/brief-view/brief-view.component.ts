@@ -19,7 +19,8 @@ import { ResultItem } from '@rero/ng-core';
 import { validation_status } from '../../validation/constants';
 
 @Component({
-  templateUrl: './brief-view.component.html'
+    templateUrl: './brief-view.component.html',
+    standalone: false
 })
 export class BriefViewComponent implements ResultItem {
   // Constant for validation status.

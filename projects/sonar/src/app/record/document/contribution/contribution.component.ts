@@ -18,8 +18,9 @@ import { Component, Input } from '@angular/core';
 import { IContribution } from '../contribution.interface';
 
 @Component({
-  selector: 'sonar-contribution',
-  templateUrl: './contribution.component.html'
+    selector: 'sonar-contribution',
+    templateUrl: './contribution.component.html',
+    standalone: false
 })
 export class ContributionComponent {
 

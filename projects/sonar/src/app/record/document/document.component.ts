@@ -24,7 +24,8 @@ import { DocumentFile } from './document.interface';
 const SORT_CONTRIBUTOR_PRIORITY = ['cre', 'ctb', 'dgs', 'edt', 'prt'];
 
 @Component({
-  templateUrl: './document.component.html',
+    templateUrl: './document.component.html',
+    standalone: false
 })
 export class DocumentComponent implements ResultItem, OnDestroy, OnInit {
   // Record object

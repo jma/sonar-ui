@@ -18,8 +18,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IContribution } from '../../contribution.interface';
 
 @Component({
-  selector: 'sonar-contributions',
-  templateUrl: './contributions.component.html'
+    selector: 'sonar-contributions',
+    templateUrl: './contributions.component.html',
+    standalone: false
 })
 export class ContributionsComponent implements OnInit {
 

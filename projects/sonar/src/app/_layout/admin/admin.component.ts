@@ -23,8 +23,9 @@ import { AppConfigService } from '../../app-config.service';
 import { UserService } from '../../user.service';
 
 @Component({
-  selector: 'sonar-layout-admin',
-  templateUrl: './admin.component.html',
+    selector: 'sonar-layout-admin',
+    templateUrl: './admin.component.html',
+    standalone: false
 })
 export class AdminComponent implements OnInit, OnDestroy {
   // Logged user

@@ -22,8 +22,9 @@ import { AppConfigService } from '../../app-config.service';
  * Component that display an identifier.
  */
 @Component({
-  selector: 'sonar-record-identifier',
-  templateUrl: './identifier.component.html',
+    selector: 'sonar-record-identifier',
+    templateUrl: './identifier.component.html',
+    standalone: false
 })
 export class IdentifierComponent implements OnInit {
   /** Type of field (agent, identifiedBy) */

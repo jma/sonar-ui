@@ -19,7 +19,8 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../../user.service';
 
 @Component({
-  templateUrl: './detail.component.html'
+    templateUrl: './detail.component.html',
+    standalone: false
 })
 export class DetailComponent {
   /** Observable resolving record data */

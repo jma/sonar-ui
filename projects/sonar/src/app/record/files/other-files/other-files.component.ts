@@ -41,9 +41,10 @@ export interface File {
 
 // Component itself
 @Component({
-  selector: 'sonar-other-files',
-  templateUrl: './other-files.component.html',
-  styleUrl: './other-files.component.scss'
+    selector: 'sonar-other-files',
+    templateUrl: './other-files.component.html',
+    styleUrl: './other-files.component.scss',
+    standalone: false
 })
 export class OtherFilesComponent implements OnInit, OnDestroy {
   // input document pid

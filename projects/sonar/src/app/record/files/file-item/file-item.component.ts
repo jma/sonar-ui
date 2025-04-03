@@ -33,8 +33,9 @@ import {
 } from '@rero/ng-core';
 import { AppConfigService } from '../../../app-config.service';
 @Component({
-  selector: 'sonar-file-item',
-  templateUrl: './file-item.component.html'
+    selector: 'sonar-file-item',
+    templateUrl: './file-item.component.html',
+    standalone: false
 })
 export class FileItemComponent {
   // file to display

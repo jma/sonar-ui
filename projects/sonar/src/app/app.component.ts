@@ -20,8 +20,9 @@ import { TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { AppConfigService } from './app-config.service';
 
 @Component({
-  selector: 'sonar-root',
-  templateUrl: './app.component.html',
+    selector: 'sonar-root',
+    templateUrl: './app.component.html',
+    standalone: false
 })
 export class AppComponent implements OnInit {
 

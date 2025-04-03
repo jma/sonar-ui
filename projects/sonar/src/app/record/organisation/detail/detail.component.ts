@@ -20,7 +20,8 @@ import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
-  templateUrl: './detail.component.html',
+    templateUrl: './detail.component.html',
+    standalone: false
 })
 export class DetailComponent implements OnInit {
   /** Observable resolving record data */

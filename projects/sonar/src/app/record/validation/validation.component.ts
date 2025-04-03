@@ -28,9 +28,10 @@ import { validation_action, validation_status } from './constants';
  * Component to manage validation on a record.
  */
 @Component({
-  selector: 'sonar-record-validation',
-  templateUrl: './validation.component.html',
-  styles: [],
+    selector: 'sonar-record-validation',
+    templateUrl: './validation.component.html',
+    styles: [],
+    standalone: false
 })
 export class ValidationComponent implements OnInit {
   // Constant for validation status.

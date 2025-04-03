@@ -29,8 +29,9 @@ import { DepositService } from '../deposit.service';
 const MAX_FILE_SIZE = 500; // Max file size in Mb.
 
 @Component({
-  selector: 'sonar-deposit-upload',
-  templateUrl: './upload.component.html',
+    selector: 'sonar-deposit-upload',
+    templateUrl: './upload.component.html',
+    standalone: false
 })
 export class UploadComponent implements OnInit {
   /**

@@ -21,7 +21,8 @@ import { TranslateService } from '@rero/ng-core';
  * Pipe for displaying publication for a document
  */
 @Pipe({
-  name: 'publication',
+    name: 'publication',
+    standalone: false
 })
 export class PublicationPipe implements PipeTransform {
   /**

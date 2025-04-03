@@ -24,8 +24,9 @@ import { UserService } from '../../user.service';
 import { DepositService } from '../deposit.service';
 
 @Component({
-  selector: 'sonar-deposit-confirmation',
-  templateUrl: './confirmation.component.html',
+    selector: 'sonar-deposit-confirmation',
+    templateUrl: './confirmation.component.html',
+    standalone: false
 })
 export class ConfirmationComponent implements OnInit {
   deposit$: Observable<any> = null;

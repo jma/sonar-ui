@@ -21,7 +21,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
  * Generate a file link.
  */
 @Pipe({
-  name: 'fileLink'
+    name: 'fileLink',
+    standalone: false
 })
 export class FileLinkPipe implements PipeTransform {
   /**
