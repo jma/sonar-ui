@@ -1,127 +1,172 @@
-/*
- * SONAR User Interface
- * Copyright (C) 2021 RERO
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, version 3 of the License.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// /*
+//  * SONAR User Interface
+//  * Copyright (C) 2021 RERO
+//  *
+//  * This program is free software: you can redistribute it and/or modify
+//  * it under the terms of the GNU Affero General Public License as published by
+//  * the Free Software Foundation, version 3 of the License.
+//  *
+//  * This program is distributed in the hope that it will be useful,
+//  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  * GNU Affero General Public License for more details.
+//  *
+//  * You should have received a copy of the GNU Affero General Public License
+//  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  */
 
-// Font awesome
-$fa-font-path: '~font-awesome/fonts';
+@use 'sass:meta';
+@use "font-awesome/scss/font-awesome.scss";
+@use "easymde/dist/easymde.min";
+@use "node_modules/ngx-spinner/animations/ball-zig-zag.css";
+@use "@rero/ng-core/assets/scss/ng-core-tailwind";
+@import "tailwindcss/theme.css" layer(theme) prefix(ui);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(ui);
 
-// Bootstrap
-$font-family-base: 'Roboto', sans-serif;
-$primary: #205078 !default;
-$secondary: rgb(246, 130, 17) !default;
+@plugin "tailwindcss-primeui";
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,700|Roboto+Condensed:300,700');
-@import 'font-awesome/scss/font-awesome';
+@layer sonar-ui {
+  .sonar-ui {
+    @import "@rero/ng-core/assets/scss/ng-core";
+    @import "tailwindcss/preflight.css" layer(base) prefix(ui);
+    legend {
+      @apply ui:text-base;
+      width: auto;
+    }
+    body {
+      margin: 0;
+    }
+    .container {
+      max-width: 1440px;
+      margin: auto;
+    }
+  }
+}
 
 @layer bootstrap {
-  @import 'bootstrap/scss/bootstrap';
-  @import 'ngx-toastr/toastr-bs4-alert';
-  @import 'node_modules/ngx-bootstrap/datepicker/bs-datepicker';
-  // TODO: remove `node_modules` when this will be fixed in ngx-bootstrap
-  @import 'easymde/dist/easymde.min';
-  body,
-  .invalid-feedback {
-    display: block !important;
-  }
-  html {
-    line-height: normal;
-    font-size: 0.9rem;
-  }
-  pre {
-    white-space: pre-wrap;
-  }
-
-  .string {
-    color: $success;
-  }
-
-  .number {
-    color: $secondary;
-  }
-
-  .boolean {
-    color: $primary;
-  }
-
-  .null {
-    color: $warning;
-  }
-
-  .key {
-    color: $danger;
-  }
-
-  .nav-item > a {
-    cursor: pointer;
-  }
-
-  .text-small {
-    font-size: 14px;
-  }
-
-  .card.wrapper {
-    border: none;
-    @extend .py-1;
-
-    .card-header {
-      border: none;
-      background: none;
-      padding-left: 0;
-    }
-
-    .card-body {
-      padding-left: 0;
-    }
-
-    .border-left,
-    .object {
-      padding-left: map_get($spacers, 3) !important;
-      margin-bottom: map_get($spacers, 3) !important;
-      border-left: 3px solid #dee2e6 !important;
-    }
-
-    .array-item {
-      margin-left: 0 !important;
-
-      .object {
-        padding-left: 0 !important;
-      }
-    }
-  }
-
-  // Markdown editor
-  .CodeMirror,
-  .CodeMirror-scroll {
-    min-height: 120px;
-  }
+  $font-family-base: "Roboto", sans-serif;
+  $primary: #205078 !default;
+  $secondary: rgb(246, 130, 17) !default;
+  // @include meta.load-css('bootstrap/dist/css/bootstrap');
+  @import "bootstrap/scss/bootstrap";
 }
 
-@import 'primeng/resources/themes/lara-light-blue/theme';
-@import 'primeng/resources/primeng';
-@layer primengother {
-  @import 'primeicons/primeicons';
-  @import 'primeflex/primeflex';
+:root {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
 }
 
-@layer custom {
-  .p-inputtext {
-    font-size: 0.9rem;
-  }
-}
-@layer ng-core {
-  @import 'node_modules/@rero/ng-core/assets/scss/ng-core';
-}
+
+// // Font awesome
+// $fa-font-path: '~font-awesome/fonts';
+
+// // Bootstrap
+// $font-family-base: 'Roboto', sans-serif;
+// $primary: #205078 !default;
+// $secondary: rgb(246, 130, 17) !default;
+
+// @import url('https://fonts.googleapis.com/css?family=Roboto:300,700|Roboto+Condensed:300,700');
+// @import 'font-awesome/scss/font-awesome';
+
+// @layer bootstrap {
+//   // @import 'bootstrap/scss/bootstrap';
+//   @import 'ngx-toastr/toastr-bs4-alert';
+//   @import 'node_modules/ngx-bootstrap/datepicker/bs-datepicker';
+//   // TODO: remove `node_modules` when this will be fixed in ngx-bootstrap
+//   @import 'easymde/dist/easymde.min';
+//   body,
+//   .invalid-feedback {
+//     display: block !important;
+//   }
+//   html {
+//     line-height: normal;
+//     font-size: 0.9rem;
+//   }
+//   pre {
+//     white-space: pre-wrap;
+//   }
+
+//   .string {
+//     color: $success;
+//   }
+
+//   .number {
+//     color: $secondary;
+//   }
+
+//   .boolean {
+//     color: $primary;
+//   }
+
+//   .null {
+//     color: $warning;
+//   }
+
+//   .key {
+//     color: $danger;
+//   }
+
+//   .nav-item > a {
+//     cursor: pointer;
+//   }
+
+//   .text-small {
+//     font-size: 14px;
+//   }
+
+//   .card.wrapper {
+//     border: none;
+//     @extend .py-1;
+
+//     .card-header {
+//       border: none;
+//       background: none;
+//       padding-left: 0;
+//     }
+
+//     .card-body {
+//       padding-left: 0;
+//     }
+
+//     .border-left,
+//     .object {
+//       padding-left: map_get($spacers, 3) !important;
+//       margin-bottom: map_get($spacers, 3) !important;
+//       border-left: 3px solid #dee2e6 !important;
+//     }
+
+//     .array-item {
+//       margin-left: 0 !important;
+
+//       .object {
+//         padding-left: 0 !important;
+//       }
+//     }
+//   }
+
+//   // Markdown editor
+//   .CodeMirror,
+//   .CodeMirror-scroll {
+//     min-height: 120px;
+//   }
+// }
+
+// @import 'primeng/resources/themes/lara-light-blue/theme';
+// @import 'primeng/resources/primeng';
+// @layer primengother {
+//   @import 'primeicons/primeicons';
+//   @import 'primeflex/primeflex';
+// }
+
+// @layer custom {
+//   .p-inputtext {
+//     font-size: 0.9rem;
+//   }
+// }
+// @layer ng-core {
+//   @import 'node_modules/@rero/ng-core/assets/scss/ng-core';
+// }
 

@@ -14,21 +14,30 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="deposit$ | async as deposit">
-  <h1>{{ 'Confirmation' | translate }}</h1>
-  <p>{{ 'Thank you for submitting a publication!' | translate }}</p>
-  <div class="alert alert-warning" *ngIf="deposit.status === 'to_validate'">
-    {{ 'This deposit will be reviewed and published shortly.' | translate }}
-  </div>
-  <div class="alert alert-success" *ngIf="deposit.status === 'validated'">
-    {{ 'This deposit will be published shortly.' | translate }}
-  </div>
-  <ul *ngIf="isSubmitter">
-    <li>
+@if(deposit$ | async; as deposit) {
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <p-message
+      [text]="'Thank you for submitting a publication!' | translate"
+      severity="success"
+      showTransitionOptions="0ms"
+    />
+    @if(deposit.status === 'to_validate') {
+      <p-message
+        [text]="'This deposit will be reviewed and published shortly.' | translate"
+        severity="warn"
+        showTransitionOptions="0ms"
+      />
+    }
+    @if(deposit.status === 'validateed') {
+      <p-message
+        [text]="'This deposit will be published shortly.' | translate"
+        severity="danger"
+        showTransitionOptions="0ms"
+      />
+    }
+    @if(isSubmitter) {
       <a [href]="publicInterfaceLink" translate>Back to public interface</a>
-    </li>
-    <li>
-      <a routerLink="/deposit/create" translate>Deposit another publication</a>
-    </li>
-  </ul>
-</ng-container>
+      <a routerLink="['/deposit', 'create']" translate>Deposit another publication</a>
+    }
+  </div>
+}

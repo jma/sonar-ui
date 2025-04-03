@@ -15,14 +15,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 class="mb-4">{{ record.metadata.name }}</h1>
+  <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
 
   <sonar-record-validation [record]="record" [type]="type"></sonar-record-validation>
 
-  <div class="my-3" *ngIf="record.metadata.keywords">
-    <h5 class="d-inline mr-1" *ngFor="let keyword of record.metadata.keywords">
+  <div class="ui:my-3" *ngIf="record.metadata.keywords">
+    <h5 class="d-inline ui:mr-1" *ngFor="let keyword of record.metadata.keywords">
       <span class="badge badge-secondary text-light font-weight-light">
-        <i class="fa fa-tag mx-1"></i> {{ keyword }}
+        <i class="fa fa-tag ui:mx-1"></i> {{ keyword }}
       </span>
     </h5>
   </div>
@@ -50,7 +50,7 @@
       <ng-template let-externalPartner pTemplate="template">
         @for (partner of record.metadata.externalPartners.list; track partner; let last=$last) {
           {{ partner.searcherName }}
-          <i class="text-muted ml-1" *ngIf="partner.institution">{{ partner.institution }}</i>
+          <i class="ui:text-muted-color ui:ml-1" *ngIf="partner.institution">{{ partner.institution }}</i>
           @if (!last) {
             ,&nbsp;
           }
@@ -78,7 +78,7 @@
       <sonar-field-description [label]="'Funding' | translate" [field]="record.metadata.funding">
       <ng-template let-funding pTemplate="template">
         @if (funding?.funder?.number) {
-          <span class="badge badge-secondary text-light mr-1">
+          <span class="badge badge-secondary text-light ui:mr-1">
             {{ funding.funder.number }}
           </span>
         }
@@ -86,14 +86,14 @@
           {{ funding.funder.name }}
         }
         @if (funding.funder.type != 'Other (free field)') {
-          <i class="text-muted ml-1">
+          <i class="ui:text-muted-color ui:ml-1">
             {{ record.metadata.funding.funder.type }}
           </i>
         }
         @if (['​Swiss National Science Foundation', 'Swissuniversities'].includes(funding.funder.type)) {
           {{ funding.funder.type }}
         }
-        <i class="ml-2 fa"
+        <i class="ui:ml-2 fa"
         [ngClass]="{ 'fa-check text-success': funding.fundingReceived, 'fa-remove text-danger': !funding.fundingReceived }"></i>
       </ng-template>
     </sonar-field-description>
@@ -177,15 +177,18 @@
     </sonar-field-description>
   </dl>
 
-  @if (user$ | async; as user && record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
-    <h4 translate>Linked documents</h4>
-    <ul class="list-none p-0">
-      @for (document of record.metadata.documents; track document) {
-        <li>
-          <a
-            [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">{{ document.title[0].mainTitle | languageValue | async }}</a>
-        </li>
-      }
-    </ul>
+  @if (user$ | async; as user) {
+    @if (record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
+      <h4 translate>Linked documents</h4>
+      <ul class="ui:list-none">
+        @for (document of record.metadata.documents; track document) {
+          <li>
+            <a [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">
+              {{ document.title[0].mainTitle | languageValue | async }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
   }
 }

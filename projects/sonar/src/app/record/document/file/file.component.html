@@ -14,72 +14,84 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="text-center">
-  <ng-container *ngIf="file; else noFile">
-    <ng-container *ngIf="link; else previewOrExternal">
-      <a [routerLink]="link" *ngIf="inRouter; else normalLink">
-        <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
+<div class="ui:text-center">
+@if(file) {
+  @if(link) {
+    @if(inRouter) {
+      <a [routerLink]="link">
+        <ng-container [ngTemplateOutlet]="thumbnail" />
       </a>
-      <ng-template #normalLink>
-        <a [href]="link">
-          <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
+    }
+    @else {
+      <a [href]="link">
+        <ng-container [ngTemplateOutlet]="thumbnail" />
+      </a>
+    }
+  }
+  @else {
+    @if (showExternalLink && file.links.external) {
+      <a href="{{ file.links.external }}" target="_blank">
+        <ng-container [ngTemplateOutlet]="thumbnail" />
+      </a>
+    }
+    @else {
+      @if(showPreview && file.links.preview) {
+        <a href="{{ file.links.preview }}" (click)="preview(file); $event.preventDefault()">
+          <ng-container [ngTemplateOutlet]="thumbnail" />
         </a>
-      </ng-template>
-    </ng-container>
-    <ng-template #previewOrExternal>
-      <ng-container *ngIf="showExternalLink && file.links.external; else previewLink">
-        <a href="{{ file.links.external }}" target="_blank">
-          <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
-        </a>
-      </ng-container>
-      <ng-template #previewLink>
-        <ng-container *ngIf="showPreview && file.links.preview; else downloadLink">
-          <a href="{{ file.links.preview }}" (click)="preview(file); $event.preventDefault()">
-            <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
+      }
+      @else {
+        @if(showDownload && file.links.download) {
+          <a href="{{ file.links.download }}?download">
+            <ng-container [ngTemplateOutlet]="thumbnail" />
           </a>
-        </ng-container>
-        <ng-template #downloadLink>
-          <ng-container *ngIf="showDownload && file.links.download; else noLink">
-            <a href="{{ file.links.download }}?download" *ngIf="showDownload && file.links.download">
-              <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
-            </a>
-          </ng-container>
-          <ng-template #noLink>
-            <img src="{{ file.thumbnail }}" class="img-fluid" alt="{{ file.label }}">
-          </ng-template>
-        </ng-template>
-      </ng-template>
-    </ng-template>
-    <div class="my-2">
-      <span class="badge badge-secondary text-light" *ngIf="file.restriction && file.restriction.restricted && file.restriction.date">
-        {{ 'Public access from' | translate }}<br>{{ file.restriction.date }}
-      </span>
-    </div>
-    <div class="my-1">
-      <a href="{{ file.links.external }}" target="_blank" *ngIf="showExternalLink && file.links.external">
-        <i class="fa fa-external-link mx-1"></i>
+        }
+        @else {
+          <ng-container [ngTemplateOutlet]="thumbnail" />
+        }
+      }
+    }
+  }
+  <div class="ui:my-2">
+    <p-tag severity="secondary">
+      {{ 'Public access from' | translate }}<br>{{ file.restriction.date }}
+    </p-tag>
+  </div>
+  <div class="ui:flex ui:gap-1 ui:justify-center">
+    @if(showExternalLink && file.links.external) {
+      <a href="{{ file.links.external }}" target="_blank">
+        <i class="fa fa-external-link ui:mx-1"></i>
       </a>
-      <a href="{{ file.links.preview }}" *ngIf="showPreview && file.links.preview"
-        (click)="preview(file); $event.preventDefault()">
-        <i class="fa fa-eye mx-1"></i>
+    }
+    @if(showPreview && file.links.preview) {
+      <a href="{{ file.links.preview }}" (click)="preview(file); $event.preventDefault()">
+        <i class="fa fa-eye ui:mx-1"></i>
       </a>
-      <a href="{{ file.links.download }}?download" *ngIf="showDownload && file.links.download">
-        <i class="fa fa-download mx-1"></i>
+    }
+    @if (showDownload && file.links.download) {
+      <a href="{{ file.links.download }}?download">
+        <i class="fa fa-download ui:mx-1"></i>
       </a>
-      <a href="" *ngIf="statistics && showStatistics"
-      (click)="goToElement($event, 'stats')"
-      [tooltip]="templateStats">
-        <i class="fa fa-bar-chart mx-1"></i>
+    }
+    @if(statistics && showStatistics) {
+      <a href="" (click)="goToElement($event, 'stats')" [pTooltip]="templateStats">
+        <i class="fa fa-bar-chart ui:mx-1"></i>
       </a>
       <ng-template #templateStats>
-        <div  *ngIf="statistics[file.key]; else noDownloads">{{ 'Downloads' | translate }}: {{ statistics[file.key] }}</div>
-        <ng-template #noDownloads>
+        @if(statistics[file.key]) {
+          <div>{{ 'Downloads' | translate }}: {{ statistics[file.key] }}</div>
+        }
+        @else {
           <div>{{ 'Downloads' | translate }}: 0</div>
-        </ng-template>
+        }
       </ng-template>
-    </div>
-  </ng-container>
-  <ng-template #noFile>
-    <img src="/static/images/no-image.png" class="img-fluid">
-  </ng-template>
+    }
+  </div>
+}
+@else {
+  <img src="/static/images/no-image.png" class="ui:max-w-full ui:h-auto ui:inline">
+}
 </div>
+<ng-template #thumbnail>
+  <img src="{{ file.thumbnail }}" class="ui:max-w-full ui:h-auto ui:inline" alt="{{ file.label }}">
+</ng-template>

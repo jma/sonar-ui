@@ -14,85 +14,99 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-template #defaultTitle>{{ 'Deposit' | translate }} #{{ record.id }}</ng-template>
 
-<ng-container *ngIf="record && user">
-  <div class="float-right"></div>
-  <h4>
-    <ng-container *ngIf="record.metadata.metadata; else defaultTitle">
-      <span [innerHtml]="record.metadata.metadata.title | nl2br"></span>
-    </ng-container>
-    <small *ngIf="!record.metadata.logs || record.metadata.logs.length === 1"></small>
-  </h4>
-  <div class="my-2" [ngSwitch]="record.metadata.status">
-    <span class="badge badge-dark mr-2" *ngIf="!record.metadata.logs || record.metadata.logs.length === 1"
-      translate>New</span>
-    <span class="badge badge-dark" *ngSwitchCase="'in_progress'">{{
-      ('deposit_status_' + record.metadata.status) | translate
-    }}</span>
-    <span class="badge badge-info" *ngSwitchCase="'to_validate'">{{
-      ('deposit_status_' + record.metadata.status) | translate
-    }}</span>
-    <span class="badge badge-warning" *ngSwitchCase="'ask_for_changes'">{{
-      ('deposit_status_' + record.metadata.status) | translate
-    }}</span>
-    <span class="badge badge-success" *ngSwitchCase="'validated'">{{
-      ('deposit_status_' + record.metadata.status) | translate
-    }}</span>
-    <span class="badge badge-danger" *ngSwitchCase="'rejected'">{{
-      ('deposit_status_' + record.metadata.status) | translate
-    }}</span>
+@if(record && user) {
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <h4>
+      @if(record?.metadata?.metadata) {
+        <span [innerHtml]="record.metadata.metadata.title | nl2br"></span>
+      }
+      @else {
+        {{ 'Deposit' | translate }} #{{ record.id }}
+      }
+    </h4>
+    <div class="ui:flex ui:gap-1">
+      @if(!record.metadata.logs || record.metadata.logs.length === 1) {
+        <p-tag severity="contrast" [value]="'New' | translate" />
+      }
+      @switch(record.metadata.status) {
+        @case('in_progress') {
+          <p-tag severity="contrast" [value]="('deposit_status_' + record.metadata.status) | translate" />
+        }
+        @case('to_validate') {
+          <p-tag severity="info" [value]="('deposit_status_' + record.metadata.status) | translate" />
+        }
+        @case('ask_for_changes') {
+          <p-tag severity="warn" [value]="('deposit_status_' + record.metadata.status) | translate" />
+        }
+        @case('validated') {
+          <p-tag severity="success" [value]="('deposit_status_' + record.metadata.status) | translate" />
+        }
+        @case('rejected') {
+          <p-tag severity="danger" [value]="('deposit_status_' + record.metadata.status) | translate" />
+        }
+      }
+    </div>
+
+    @if(record?.metadata?.metadata?.abstracts) {
+      <p>{{record.metadata.metadata.abstracts[0].abstract | truncateText: 30 }}</p>
+    }
+
+    <div class="ui:flex ui:gap-1">
+      <p-tag severity="secondary">
+        {{ 'Created by' | translate }}: {{ record.metadata.user.first_name }} {{ record.metadata.user.last_name }}
+      </p-tag>
+      <p-tag severity="secondary">
+        {{ 'Created at' | translate }}: {{ record.created | dateTranslate: 'medium' }}
+      </p-tag>
+      <p-tag severity="secondary">
+        {{ 'Updated at' | translate }}: {{ record.updated | dateTranslate: 'medium' }}
+      </p-tag>
+    </div>
+
+    @if(record.metadata.logs) {
+      <p-panel header="Header" [toggleable]="true" [collapsed]="true">
+        <ng-template #header>
+          <div class="flex items-center gap-2">
+          <span translate>History</span>&nbsp;<p-badge [value]="record.metadata.logs.length" severity="secondary"></p-badge>
+          </div>
+        </ng-template>
+        <p-table [value]="record.metadata.logs" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template #header>
+              <tr>
+                <th translate>Action</th>
+                <th translate>Date</th>
+                <th translate>User</th>
+                <th translate>Comment</th>
+              </tr>
+          </ng-template>
+          <ng-template #body let-log>
+            <tr>
+              <td>{{ ('deposit_log_action_' + log.action) | translate }}</td>
+              <td>{{ log.date | dateTranslate: 'medium' }}</td>
+              <td>{{ log.user.first_name }} {{ log.user.last_name }}</td>
+              <td [innerHtml]="log.comment | nl2br"></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-panel>
+    }
+
+    @if(canContinueProcess()) {
+        <p-bu tton
+          severity="primary"
+          size="small"
+          [routerLink]="['/deposit', record.id, 'files']"
+          [label]="'Continue process'"
+        />
+    }
+    @if(canReview()) {
+        <p-button
+          severity="primary"
+          size="small"
+          [routerLink]="['/deposit', record.id, 'files']"
+          [label]="' Review deposit'"
+        />
+    }
   </div>
-
-  <div class="my-2 text-justify" *ngIf="record.metadata.metadata && record.metadata.metadata.abstracts">
-    {{ record.metadata.metadata.abstracts[0].abstract | truncateText: 50 }}
-  </div>
-
-  <p>
-    <span class="badge badge-light">
-      {{ 'Created by' | translate }}: {{ record.metadata.user.first_name }} {{ record.metadata.user.last_name }}
-    </span>
-    <span class="badge badge-light ml-1">
-      {{ 'Created at' | translate }}: {{ record.created | dateTranslate: 'medium' }}
-    </span>
-    <span class="badge badge-light ml-1">
-      {{ 'Updated at' | translate }}: {{ record.updated | dateTranslate: 'medium' }}
-    </span>
-  </p>
-
-  <div class="my-2" *ngIf="record.metadata.logs">
-    <button type="button" class="btn btn-secondary btn-sm text-light" (click)="toggleHistory(record)">
-      {{ 'History' | translate }} ({{ record.metadata.logs.length }})
-    </button>
-    <ng-container *ngIf="record.showHistory">
-      <table class="table table-bordered table-sm mt-3">
-        <thead>
-          <tr>
-            <th translate>Action</th>
-            <th translate>Date</th>
-            <th translate>User</th>
-            <th translate>Comment</th>
-          </tr>
-        </thead>
-        <tr *ngFor="let log of record.metadata.logs">
-          <td>{{ ('deposit_log_action_' + log.action) | translate }}</td>
-          <td>{{ log.date | dateTranslate: 'medium' }}</td>
-          <td>{{ log.user.first_name }} {{ log.user.last_name }}</td>
-          <td [innerHtml]="log.comment | nl2br"></td>
-        </tr>
-      </table>
-    </ng-container>
-  </div>
-
-  <div *ngIf="canContinueProcess()">
-    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'files']" translate>
-      Continue process
-    </a>
-  </div>
-
-  <div *ngIf="canReview()">
-    <a href class="btn btn-primary btn-small" [routerLink]="['/deposit', record.id, 'files']" translate>
-      Review deposit
-    </a>
-  </div>
-</ng-container>
+}

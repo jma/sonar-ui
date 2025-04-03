@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card mt-3" *ngIf="validation && user && (!isModerator() || !isOwner())">
+<div class="card ui:mt-3" *ngIf="validation && user && (!isModerator() || !isOwner())">
   <div class="card-header">
     <h5 class="m-0" translate>Validation</h5>
   </div>
@@ -41,20 +41,20 @@
     </div>
 
     <ng-container *ngIf="validation.status === validationStatus.TO_VALIDATE && isModerator()">
-      <div class="row my-3 justify-content-center">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:my-3 justify-content-center">
         <div class="col-sm-12">
-          <textarea class="form-control" rows="4" [placeholder]="'Leave a comment...' | translate" #comment></textarea>
+          <textarea class="form-control ui:grid ui:grid-cols-12 ui:gap-4" [placeholder]="'Leave a comment...' | translate" #comment></textarea>
         </div>
       </div>
     </ng-container>
-    <div class="row my-3">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:my-3">
       <ng-container *ngIf="validation.status === validationStatus.TO_VALIDATE && isModerator()">
-        <div class="col-sm-3 mb-1 mb-sm-0">
+        <div class="col-sm-3 ui:mb-1 ui:mb-sm-0">
           <button class="btn btn-success btn-sm btn-block" (click)="updateValidation(validationAction.APPROVE)">
             {{ 'Approve' | translate }}
           </button>
         </div>
-        <div class="col-sm-3 mb-1 mb-sm-0">
+        <div class="col-sm-3 ui:mb-1 ui:mb-sm-0">
           <button class="btn btn-warning btn-sm btn-block" (click)="updateValidation(validationAction.ASK_FOR_CHANGES)">
             {{ 'Ask for changes' | translate }}
           </button>
@@ -65,14 +65,14 @@
           </button>
         </div>
       </ng-container>
-      <div class="col text-center text-sm-right">
+      <div class="col ui:text-center text-sm-right">
         <a href="#" (click)="$event.preventDefault(); showLogs = !showLogs" *ngIf="validation.logs">
           <small translate>Show logs</small>
         </a>
       </div>
     </div>
     <div class="table-responsive" *ngIf="showLogs">
-      <table class="table table-bordered table-sm mt-2">
+      <table class="table table-bordered table-sm ui:mt-2">
         <thead>
           <tr>
             <th translate>Status</th>

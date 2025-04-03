@@ -16,7 +16,6 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { AppConfigService } from './app-config.service';
 
 @Component({
@@ -33,9 +32,8 @@ export class AppComponent implements OnInit {
    * @param _configService AppConfigService.
    */
   constructor(
-    private _translateService: TranslateService,
-    private _coreTranslateService: CoreTranslateService,
-    private _configService: AppConfigService
+    private translateService: TranslateService,
+    private appConfigService: AppConfigService,
   ) {}
 
   /**
@@ -43,10 +41,15 @@ export class AppComponent implements OnInit {
    */
   ngOnInit() {
     // Ex: <html lang="en" data-view="global">
-    this._configService.view = document.querySelector('html').getAttribute('data-view');
-    const lang = document.documentElement.lang || 'en';
-    this._translateService.use(lang);
-    this._coreTranslateService.setLanguage(lang);
+    this.appConfigService.view = document.querySelector('html').getAttribute('data-view');
+    let language = document.documentElement.lang || 'en';
+    if (language == null) {
+      const browserLang = this.translateService.getBrowserLang();
+      language = browserLang.match(this.appConfigService.languages.join('|')) ?
+        browserLang : this.appConfigService.defaultLanguage;
+    }
+
+    return this.translateService.use(language);
   }
 
 }

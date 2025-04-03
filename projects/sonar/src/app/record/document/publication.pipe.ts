@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Pipe, PipeTransform } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Pipe for displaying publication for a document
@@ -51,19 +51,19 @@ export class PublicationPipe implements PipeTransform {
 
     if (value.numberingVolume) {
       journal.push(
-        this._translateService.translate('vol.') + ' ' + value.numberingVolume
+        this._translateService.instant('vol.') + ' ' + value.numberingVolume
       );
     }
 
     if (value.numberingIssue) {
       journal.push(
-        this._translateService.translate('no.') + ' ' + value.numberingIssue
+        this._translateService.instant('no.') + ' ' + value.numberingIssue
       );
     }
 
     if (value.numberingPages) {
       journal.push(
-        this._translateService.translate('p.') + ' ' + value.numberingPages
+        this._translateService.instant('p.') + ' ' + value.numberingPages
       );
     }
 

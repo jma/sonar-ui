@@ -227,9 +227,6 @@ export class EditorComponent implements OnInit, OnDestroy {
         'Do you really want to extract metadata from PDF and overwrite current data ?'
       ),
       header: this.translateService.instant('Confirmation'),
-      acceptIcon:"none",
-      rejectIcon:"none",
-      rejectButtonStyleClass:"p-button-text",
       accept: () => {
         this.extractPdfMetadata();
       }
@@ -349,7 +346,6 @@ export class EditorComponent implements OnInit, OnDestroy {
             },
           };
         }
-
         return field;
       },
     });

@@ -15,38 +15,36 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<form [formGroup]="form">
-  <div class="flex justify-content-end flex-wrap">
-    <div class="flex align-items-center justify-content-center">
+  <div class="ui:flex ui:justify-end ui:items-center ui:flex-wrap ui:gap-2">
       @if(currentStep() === 'metadata') {
       <p-splitButton
         [label]="'Import metadata' | translate"
         [model]="importMenuItems"
+        appendTo="body"
       />
-      } @if(currentStep() === 'diffusion') {
+      }
+      @if(currentStep() === 'diffusion') {
       <p-button
-        class="m-2"
-        (click)="save()"
+        (onClick)="save()"
         [label]="'Save' | translate"
         iconPos="right"
       />
-      } @else {
+      }
+      @else {
       <p-button
-        class="m-2"
-        (click)="save()"
+        (onClick)="save()"
         icon="pi pi-chevron-right"
         [label]="'Continue' | translate"
         iconPos="right"
       />
-      } @if(canSubmit()) {
+      }
+      @if(canSubmit()) {
       <p-button
-        class="m-2"
-        (click)="confirmPublish()"
+        (onClick)="confirmPublish()"
         [label]="isAdminUser ? ('Publish' | translate) : ('Submit' | translate)"
         iconPos="right"
       />
       }
-    </div>
   </div>
 
   <!-- metadata editor -->
@@ -56,7 +54,6 @@
     [fields]="fields"
     [class]="'step-' + currentStep"
   />
-</form>
 
 <p-dialog
   [header]="'Import from swisscovery' | translate"

@@ -15,37 +15,47 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if(deposit()) {
-<sonar-deposit-step [maxStep]="maxStep" [steps]="steps" />
-@if(currentStep === 'diffusion') {
-<sonar-deposit-review [deposit]="deposit()" />
-}
-
-<!--- form -->
-<p-tabView [(activeIndex)]="activeIndex">
-  <p-tabPanel [header]="'Editor' | translate">
-    <sonar-deposit-editor
-      [deposit]="deposit()"
-      [currentStep]="currentStep"
-      [steps]="steps"
-      [mainFile]="mainFile()"
-    />
-  </p-tabPanel>
-
-  <p-tabPanel [header]="'JSON' | translate">
-    <!-- JSON -->
-    <ng-template pTemplate="content">
-      <pre class="p-3" [innerHTML]="deposit() | json | highlightJson"></pre>
-    </ng-template>
-  </p-tabPanel>
-
-  @if(mainFile()) {
-  <p-tabPanel [header]="'Files' | translate">
-    <sonar-deposit-files
-      [mainFile]="mainFile()"
-      [depositPid]="deposit().pid"
-      [additionalFiles]="additionalFiles()"
-    />
-  </p-tabPanel>
+  <sonar-deposit-step [maxStep]="maxStep" [steps]="steps" />
+  @if(currentStep === 'diffusion') {
+    <sonar-deposit-review [deposit]="deposit()" />
   }
-</p-tabView>
+
+  <!--- form -->
+  <p-tabs value="editor">
+    <p-tablist>
+      <p-tab value="editor">
+        {{ 'Editor' | translate}}
+      </p-tab>
+      <p-tab value="json">
+        {{ 'JSON' | translate}}
+      </p-tab>
+      @if(mainFile()) {
+        <p-tab value="files">
+          {{ 'Files' | translate}}
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="editor">
+        <sonar-deposit-editor
+          [deposit]="deposit()"
+          [currentStep]="currentStep"
+          [steps]="steps"
+          [mainFile]="mainFile()"
+        />
+      </p-tabpanel>
+      <p-tabpanel value="json">
+        <pre class="p-3" [innerHTML]="deposit() | json | highlightJson"></pre>
+      </p-tabpanel>
+      @if(mainFile()) {
+        <p-tabpanel value="files">
+          <sonar-deposit-files
+            [mainFile]="mainFile()"
+            [depositPid]="deposit().pid"
+            [additionalFiles]="additionalFiles()"
+          />
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 }

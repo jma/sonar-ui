@@ -26,9 +26,10 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { OrderList } from 'primeng/orderlist';
 import {
@@ -46,10 +47,10 @@ import {
 import { AppConfigService } from '../../../app-config.service';
 
 @Component({
-    selector: 'sonar-upload-files',
-    templateUrl: './upload-files.component.html',
-    styleUrl: './upload-files.component.scss',
-    standalone: false
+  selector: 'sonar-upload-files',
+  templateUrl: './upload-files.component.html',
+  styleUrl: './upload-files.component.scss',
+  standalone: false,
 })
 export class UploadFilesComponent {
   // resource pid
@@ -113,8 +114,8 @@ export class UploadFilesComponent {
   translateService = inject(TranslateService);
   // toaster service
   toastrService = inject(ToastrService);
-  // dialog service
-  dialogService = inject(DialogService);
+  // confirmation service
+  confirmationService: ConfirmationService = inject(ConfirmationService);
   // spinner service
   spinner = inject(NgxSpinnerService);
   // number of uploaded files
@@ -255,14 +256,12 @@ export class UploadFilesComponent {
    * Get the record and the files from the backend.
    */
   getRecord() {
-    return this.fileService
-      .get(`/api/${this.recordType()}/${this.pid()}`)
-      .pipe(
-        map((rec: any) => (rec = rec.metadata)),
-        tap((record) => (this.record = record)),
-        switchMap((record) => this.getFiles(record)),
-        tap((files) => (this.files = files))
-      );
+    return this.fileService.get(`/api/${this.recordType()}/${this.pid()}`).pipe(
+      map((rec: any) => (rec = rec.metadata)),
+      tap((record) => (this.record = record)),
+      switchMap((record) => this.getFiles(record)),
+      tap((files) => (this.files = files))
+    );
   }
 
   /**
@@ -282,7 +281,11 @@ export class UploadFilesComponent {
       map((file: any) => {
         this.nUploadedFiles += 1;
         this.files = this.processFiles([
-          { label: file.key, metadata:{order: this.files.length + 1}, ...file },
+          {
+            label: file.key,
+            metadata: { order: this.files.length + 1 },
+            ...file,
+          },
           ...this.files,
         ]);
       }),
@@ -332,49 +335,36 @@ export class UploadFilesComponent {
    * @param file - the file to delete.
    */
   deleteFile(file: any) {
-    // dialog confirmation
-    this.dialogService
-      .show({
-        ignoreBackdropClick: true,
-        initialState: {
-          title: this.translateService.instant('Confirmation'),
-          body: this.translateService.instant(
-            'Do you really want to remove this file and all versions?'
-          ),
-          confirmButton: true,
-          confirmTitleButton: this.translateService.instant('OK'),
-          cancelTitleButton: this.translateService.instant('Cancel'),
-        },
-      })
-      .pipe(
-        switchMap((confirm: boolean) => {
-          if (confirm === true) {
-            // remove the file
-            return this.fileService
-              .delete(
-                `/api/${this.recordType()}/${this.pid()}/files/${file.key}`
-              )
-              .pipe(
-                tap(() => {
-                  this.files = this.files.filter((f) => f.key !== file.key);
-                  this.record._files = this.record._files.filter(
-                    (item: any) => file.key !== item.key
-                  );
-                }),
-                switchMap(() => this._reorder()),
-                tap(() => {
-                  this.resetFilter();
-                  this.toastrService.success(
-                    this.translateService.instant('File removed successfully.')
-                  );
-                  this.filesChanged.emit(this.files);
-                })
+    this.confirmationService.confirm({
+      header: this.translateService.instant('Confirmation'),
+      message: this.translateService.instant(
+        'Do you really want to remove this file and all versions?'
+      ),
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.fileService
+          .delete(`/api/${this.recordType()}/${this.pid()}/files/${file.key}`)
+          .pipe(
+            tap(() => {
+              this.files = this.files.filter((f) => f.key !== file.key);
+              this.record._files = this.record._files.filter(
+                (item: any) => file.key !== item.key
               );
-          }
-          return of(false);
-        })
-      )
-      .subscribe();
+            }),
+            switchMap(() => this._reorder()),
+            tap(() => {
+              this.resetFilter();
+              this.toastrService.success(
+                this.translateService.instant('File removed successfully.')
+              );
+              this.filesChanged.emit(this.files);
+            })
+          )
+          .subscribe();
+      },
+    });
   }
 
   /**
@@ -460,10 +450,9 @@ export class UploadFilesComponent {
    * Reorder the files.
    */
   reorder() {
-
-      this._reorder().subscribe((record: any) => {
-        this.filesChanged.emit(this.files);
-      });
+    this._reorder().subscribe((record: any) => {
+      this.filesChanged.emit(this.files);
+    });
   }
 
   _reorder() {
@@ -475,11 +464,10 @@ export class UploadFilesComponent {
       .put(`/api/${this.recordType()}/${this.pid()}`, this.record)
       .pipe(
         tap((record: any) => {
-        this.record = record.metadata;
-        this.files.map((file) => {
-          file.metadata = this._getFileInRecord(file.key);
-        });
-
+          this.record = record.metadata;
+          this.files.map((file) => {
+            file.metadata = this._getFileInRecord(file.key);
+          });
         })
       );
   }

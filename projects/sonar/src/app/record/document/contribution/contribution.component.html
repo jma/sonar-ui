@@ -18,17 +18,28 @@
   [routerLink]="route"
   [queryParams]="{ q: 'contribution.agent.preferred_name:' + contributor.agent.preferred_name, page: 1, size: 10 }"
 >{{ contributor.agent.preferred_name }}</a>
-<ng-container *ngIf="contributor.agent.type === 'bf:Person' && contributor.role && contributor.role[0] !== 'cre'"> ({{ ('contribution_role_' + contributor.role[0]) | translate }})</ng-container>
-<ng-container *ngIf="contributor.agent.type === 'bf:Meeting' && meetingInfo"> ({{ meetingInfo }})</ng-container>
-<sonar-record-identifier *ngIf="contributor.agent.identifiedBy" type="agent" [data]="contributor.agent.identifiedBy"></sonar-record-identifier>
-<ng-container *ngIf="viewType === 'detail' && contributor.affiliation">
-  <small class="ml-1" *ngIf="contributor.controlledAffiliation; else affiliation"
-    [tooltip]="contributor.controlledAffiliation | join:' ; '">
-    <i class="text-muted">{{ contributor.affiliation }}</i>
-  </small>
-  <ng-template #affiliation>
-    <small class="ml-1">
-      <i class="text-muted">{{ contributor.affiliation }}</i>
+
+@if (contributor.agent.type === 'bf:Person' && contributor.role && contributor.role[0] !== 'cre') {
+  ({{ ('contribution_role_' + contributor.role[0]) | translate }})
+}
+
+@if (contributor.agent.type === 'bf:Meeting' && meetingInfo) {
+  ({{ meetingInfo }})
+}
+@if (contributor.agent.identifiedBy) {
+  <sonar-record-identifier type="agent" [data]="contributor.agent.identifiedBy" />
+}
+@if(viewType === 'detail' && contributor.affiliation) {
+  @if(contributor.controlledAffiliation) {
+    <small class="ui:ml-1"
+    [pTooltip]="contributor.controlledAffiliation | join:' ; '">
+    <i class="ui:text-muted-color">{{ contributor.affiliation }}</i>
     </small>
-  </ng-template>
-</ng-container>
+
+  }
+  @else {
+    <small class="ui:ml-1">
+      <i class="ui:text-muted-color">{{ contributor.affiliation }}</i>
+    </small>
+  }
+}

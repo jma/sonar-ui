@@ -41,7 +41,7 @@ export class AppTranslateLoader extends NgCoreTranslateLoader {
     _http: HttpClient,
     private _userService: UserService
   ) {
-    super(_coreConfigService, _http);
+    super();
     this._config = _coreConfigService;
   }
 
@@ -50,31 +50,31 @@ export class AppTranslateLoader extends NgCoreTranslateLoader {
    * @param lang - current language string
    * @returns Object translation
    */
-  getTranslation(lang: string): Observable<any> {
-    return combineLatest([this._userService.user$, super.getTranslation(lang)]).pipe(
-      map(([user, translation]) => {
-        if (user) {
-          const bibLanguage = this._config.languagesMap.find(
-            (mapping: {code: string, bibCode: string}) => mapping.code === lang
-          ).bibCode;
-          [1, 2, 3].forEach((id: number) => {
-            const key = `documentsCustomField${id}`;
-            if ((key in user.organisation) && ('label' in user.organisation[key])) {
-              const label = user.organisation[key].label;
-              const entry = label.find((lab: any) => lab.language === bibLanguage);
-              const customKey = `Custom field ${id}`;
-              if (entry) {
-                translation[customKey] = entry.value;
-              } else {
-                // If we do not have a value for the selected language,
-                // we take the first value in the array.
-                translation[customKey] = label[0].value;
-              }
-            }
-          });
-        }
-        return translation;
-      })
-    );
-  }
+  // getTranslation(lang: string): Observable<any> {
+  //   return combineLatest([this._userService.user$, super.getTranslation(lang)]).pipe(
+  //     map(([user, translation]) => {
+  //       if (user) {
+  //         const bibLanguage = this._config.languagesMap.find(
+  //           (mapping: {code: string, bibCode: string}) => mapping.code === lang
+  //         ).bibCode;
+  //         [1, 2, 3].forEach((id: number) => {
+  //           const key = `documentsCustomField${id}`;
+  //           if ((key in user.organisation) && ('label' in user.organisation[key])) {
+  //             const label = user.organisation[key].label;
+  //             const entry = label.find((lab: any) => lab.language === bibLanguage);
+  //             const customKey = `Custom field ${id}`;
+  //             if (entry) {
+  //               translation[customKey] = entry.value;
+  //             } else {
+  //               // If we do not have a value for the selected language,
+  //               // we take the first value in the array.
+  //               translation[customKey] = label[0].value;
+  //             }
+  //           }
+  //         });
+  //       }
+  //       return translation;
+  //     })
+  //   );
+  // }
 }

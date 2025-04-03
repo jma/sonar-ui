@@ -15,80 +15,99 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="row">
-  <div class="col-2 d-none d-lg-block text-center">
-    <ng-container *ngIf="detailUrl; else imageWithoutLink">
-      <sonar-document-file [file]="mainFile" [showLabel]="false" [showPreview]="false" [showDownload]="false"
-        [showStatistics]="false" [showExternalLink]="false" [link]="detailUrl.link"
-        [inRouter]="!detailUrl.external"></sonar-document-file>
-    </ng-container>
-    <ng-template #imageWithoutLink>
-      <sonar-document-file [file]="mainFile" [showLabel]="false" [showPreview]="false" [showDownload]="false"
-        [showStatistics]="false" [showExternalLink]="false"></sonar-document-file>
-    </ng-template>
-    <p class="my-2" *ngIf="record.metadata.documentType">
+<div class="ui:grid ui:grid-cols-12 ui:gap-4">
+  <div class="ui:col-span-2 ui:hidden ui:lg:block ui:text-center">
+    @if(detailUrl) {
+      <sonar-document-file
+        [file]="mainFile"
+        [showLabel]="false"
+        [showPreview]="false"
+        [showDownload]="false"
+        [showStatistics]="false"
+        [showExternalLink]="false"
+        [link]="detailUrl.link"
+        [inRouter]="!detailUrl.external"
+      />
+    }
+    @else {
+      <sonar-document-file
+        file]="mainFile"
+        [showLabel]="false"
+        [showPreview]="false"
+        [showDownload]="false"
+        [showStatistics]="false"
+        [showExternalLink]="false"
+      />
+    }
+    <p class="ui:my-2" *ngIf="record.metadata.documentType">
       <small>{{ ('document_type_' + record.metadata.documentType) | translate }}</small>
     </p>
   </div>
-  <div class="col-12 col-lg-10">
-    <h4 class="mb-2">
-      <ng-container *ngIf="detailUrl; else titleWithoutLink">
-        <a [href]="detailUrl.link" *ngIf="detailUrl.external; else routingLink">
+  <div class="ui:col-span-12 ui:md:col-span-10 ui:flex ui:flex-col ui:gap-1">
+    <h4 class="ui:mb-2">
+      @if(detailUrl) {
+        <a
+          [href]="detailUrl.external? detailUrl.link: undefined"
+          [routerLink]="detailUrl.external? undefined: detailUrl.link"
+        >
           <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
-          <ng-container *ngIf="record.metadata.title[0].subtitle">
+          @if(record.metadata.title[0].subtitle) {
             :&nbsp;{{ record.metadata.title[0].subtitle | languageValue | async }}
-          </ng-container>
+          }
         </a>
-        <ng-template #routingLink>
-          <a [routerLink]="detailUrl.link">
-            <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
-            <ng-container *ngIf="record.metadata.title[0].subtitle">:&nbsp;{{ record.metadata.title[0].subtitle |
-              languageValue | async }}
-            </ng-container>
-          </a>
-        </ng-template>
-      </ng-container>
-      <ng-template #titleWithoutLink>
+      }
+      @else {
         <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
-        <ng-container *ngIf="record.metadata.title[0].subtitle">:&nbsp;{{ record.metadata.title[0].subtitle |
-          languageValue | async }}
-        </ng-container>
-      </ng-template>
+        @if(record.metadata.title[0].subtitle) {
+          :&nbsp;{{ record.metadata.title[0].subtitle | languageValue | async }}
+        }
+      }
     </h4>
-    <p class="mt-0 mb-1">
-      <ng-container *ngIf="isGlobalView && record.metadata.organisation">
-        <span class="badge badge-secondary text-light mr-1" *ngFor="let organisation of record.metadata.organisation">
-          {{ organisation.name }}
-        </span>
-      </ng-container>
-      <ng-container *ngIf="record.metadata.subdivisions">
-        <span class="badge badge-secondary text-light mr-1" *ngFor="let subdivision of record.metadata.subdivisions">
-          {{ subdivision.name | languageValue | async }}
-        </span>
-      </ng-container>
-    </p>
-    <p class="mb-0">
-      <ng-container *ngFor="let contributor of record.metadata.contribution|contributors; let first = first;">
-        <ng-container *ngIf="!first">&nbsp;;&nbsp;</ng-container>
-        <sonar-contribution [view]="view" [contributor]="contributor"></sonar-contribution>
-      </ng-container>
-    </p>
-    <p class="my-0 d-none d-lg-block" *ngIf="record.metadata.partOf && record.metadata.partOf.length > 0">
-      {{ record.metadata.partOf[0] | publication }}
-    </p>
-    <p class="my-0  d-none d-lg-block" *ngIf="record.metadata.dissertation">{{ record.metadata.dissertation.text }}</p>
-    <ul class="list-unstyled m-0"
-      *ngIf="record.metadata.provisionActivity && record.metadata.provisionActivity.length > 0">
-      <ng-container *ngFor="let statement of record.metadata.provisionActivity">
-        <ng-container *ngIf="statement.text && statement.text.default">
-          <li *ngFor="let item of statement.text | keyvalue">
-            {{ item.value }}
+    @if(isGlobalView && record.metadata.organisation) {
+      <div class="ui:flex ui:gap-1">
+        @for(organisation of record.metadata.organisation; track organisation) {
+        <p-tag severity="secondary"  [value]="organisation.name" />
+        }
+      </div>
+    }
+    @if(record.metadata.subdivisions) {
+      <div class="ui:flex ui:gap-1">
+        @for(subdivision of record.metadata.subdivisions; track subdivision) {
+        <p-tag severity="secondary"  [value]="subdivision.name | languageValue | async" />
+        }
+      </div>
+    }
+    @if (record.metadata.contribution) {
+      <span>
+        @for (contributor of record.metadata.contribution|contributors; track contributor; let first=$first) {
+          @if(!first) {
+            &nbsp;;&nbsp;
+          }
+          <sonar-contribution [view]="view" [contributor]="contributor" />
+        }
+      </span>
+    }
+    @if(record.metadata.partOf && record.metadata.partOf.length > 0) {
+      <span>{{ record.metadata.partOf[0] | publication }}</span>
+    }
+    @if(record.metadata.dissertation) {
+      <span>{{ record.metadata.dissertation.text }}</span>
+    }
+    @if(record.metadata?.provisionActivity?.length > 0) {
+      <ul class="ui:list-none">
+      @for(statement of record.metadata.provisionActivity; track statement) {
+        @if(statement.text && statement.text.default) {
+          @for(item of statement.text | keyvalue; track item) {
+            <li>
+            {{item.value}}
           </li>
-        </ng-container>
-      </ng-container>
+          }
+        }
+      }
     </ul>
-    <div class="d-none d-lg-block text-muted text-justify text-small mt-2" *ngIf="abstract">
-      {{ abstract | truncateText: 30 }}
-    </div>
+    }
+    @if(abstract) {
+      <p>{{ abstract | truncateText: 30 }}</p>
+    }
   </div>
 </div>

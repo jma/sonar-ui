@@ -18,14 +18,14 @@
 <h4>
   <a routerLink="{{ detailUrl.link }}">{{ record.metadata.name }}</a>
 </h4>
-<p class="mb-2">
+<p class="ui:mb-2">
   <span class="badge badge-primary">{{ record.metadata.organisation.name }}</span>
-  <span class="badge badge-warning ml-1"
+  <span class="badge badge-warning ui:ml-1"
     *ngIf="record.metadata.validation && record.metadata.validation.status !== validationStatus.VALIDATED" translate>
     This record is not published
   </span>
 </p>
-<p class="mb-0">
+<p class="ui:mb-0">
   {{ record.metadata.startDate | dateTranslate: 'd/M/yyyy' }} -
   {{ record.metadata.endDate | dateTranslate: 'd/M/yyyy' }}
 </p>

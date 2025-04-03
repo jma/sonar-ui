@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record">
-  <h1 class="mb-4">{{ record.metadata.name }}</h1>
+  <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
   <dl>
     <sonar-field-description [label]="'Code' | translate" [field]="record.metadata.code"/>
 
@@ -49,14 +49,14 @@
 
     <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
       <ng-template let-description pTemplate="template">
-        <span class="font-weight-bold">{{ 'lang_' + description.language | translate | ucfirst }}</span>
+        <span class="ui:font-bold">{{ 'lang_' + description.language | translate | ucfirst }}</span>
         <span [innerHtml]="description.value | markdown"></span>
       </ng-template>
     </sonar-field-description>
 
     <sonar-field-description [label]="'Footer' | translate" [field]="record.metadata.footer">
       <ng-template let-footer pTemplate="template">
-        <span class="font-weight-bold">{{ 'lang_' + footer.language | translate | ucfirst }}</span>
+        <span class="ui:font-bold">{{ 'lang_' + footer.language | translate | ucfirst }}</span>
         <span [innerHtml]="footer.value | markdown"></span>
       </ng-template>
     </sonar-field-description>

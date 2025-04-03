@@ -15,22 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DatePipe } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import {
+  APP_INITIALIZER,
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule } from '@rero/ng-core';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NgxDropzoneModule } from 'ngx-dropzone';
+import {
+  TranslateLoader as BaseTranslateLoader,
+  TranslateModule,
+} from '@ngx-translate/core';
+import { CoreConfigService, primeNGConfig, RecordModule, RemoteAutocompleteService } from '@rero/ng-core';
+// import { CollapseModule } from 'ngx-bootstrap/collapse';
+// import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+// import { ModalModule } from 'ngx-bootstrap/modal';
+// import { TooltipModule } from 'ngx-bootstrap/tooltip';
+// import { NgxDropzoneModule } from 'ngx-dropzone';
+import { TabsModule } from 'primeng/tabs';
+
 import { ToastrModule } from 'ngx-toastr';
 import { CarouselModule } from 'primeng/carousel';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -39,8 +53,10 @@ import { OrderListModule } from 'primeng/orderlist';
 import { PaginatorModule } from 'primeng/paginator';
 import { PanelModule } from 'primeng/panel';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { ButtonGroupModule } from 'primeng/buttongroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { ButtonModule } from 'primeng/button';
 import { StepsModule } from 'primeng/steps';
-import { TabViewModule } from 'primeng/tabview';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AdminComponent } from './_layout/admin/admin.component';
 import { AppConfigService } from './app-config.service';
@@ -78,8 +94,16 @@ import { StatsFilesComponent } from './record/files/stats-files/stats-files.comp
 import { UploadFilesComponent } from './record/files/upload-files/upload-files.component';
 import { DetailComponent as HepvsProjectDetailComponent } from './record/hepvs/project/detail/detail.component';
 
+import { providePrimeNG } from 'primeng/config';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { MenubarModule } from 'primeng/menubar';
+import { MessagesModule } from 'primeng/messages';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { ContributionsAutocompleteService } from './contributions-autocomplete.service';
+import { SwisscoveryComponent } from './deposit/editor/swisscovery/swisscovery.component';
 import { FilesComponent } from './deposit/files/files.component';
 import { MetadataComponent } from './deposit/metadata/metadata.component';
 import { IdentifierComponent } from './record/identifier/identifier.component';
@@ -91,11 +115,11 @@ import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/su
 import { UserComponent } from './record/user/user.component';
 import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
-import { SwisscoveryComponent } from './deposit/editor/swisscovery/swisscovery.component';
-import { MessagesModule } from 'primeng/messages';
 
-
-export function appInitializerFactory(appInitializerService: AppInitializerService): () => Promise<any> {
+import { TextareaModule } from 'primeng/textarea';
+export function appInitializerFactory(
+  appInitializerService: AppInitializerService
+): () => Promise<any> {
   return () => appInitializerService.initialize().toPromise();
 }
 
@@ -103,108 +127,119 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
   return `This field must contain at least ${field.templateOptions.minItems} element.`;
 }
 
-@NgModule({ declarations: [
-        AppComponent,
-        OrganisationComponent,
-        DocumentComponent,
-        UserComponent,
-        DocumentDetailComponent,
-        OrganisationDetailComponent,
-        JoinPipe,
-        LanguageValuePipe,
-        DashboardComponent,
-        UploadComponent,
-        FileSizePipe,
-        EditorComponent,
-        StepComponent,
-        ConfirmationComponent,
-        BriefViewComponent,
-        FileLinkPipe,
-        HighlightJsonPipe,
-        ReviewComponent,
-        AdminComponent,
-        PublicationPipe,
-        FileComponent,
-        ProjectBriefViewComponent,
-        ProjectDetailComponent,
-        IdentifierComponent,
-        HepvsProjectDetailComponent,
-        ValidationComponent,
-        CollectionBriefViewComponent,
-        CollectionDetailComponent,
-        SubdivisionBriefViewComponent,
-        ContributorsPipe,
-        ContributionsComponent,
-        ContributionComponent,
-        UploadFilesComponent,
-        FileItemComponent,
-        OtherFilesComponent,
-        FaIconClassPipe,
-        StatsFilesComponent,
-        FieldDescriptionComponent,
-        MetadataComponent,
-        FilesComponent,
-        SwisscoveryComponent
-    ],
-    bootstrap: [AppComponent],
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-    ], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        CollapseModule.forRoot(),
-        StepsModule,
-        ToolbarModule,
-        TabViewModule,
-        TabsModule.forRoot(),
-        TooltipModule.forRoot(),
-        ModalModule.forRoot(),
-        TranslateModule.forRoot({
-            loader: {
-                provide: BaseTranslateLoader,
-                useClass: AppTranslateLoader,
-                deps: [CoreConfigService, HttpClient, UserService]
-            },
-            defaultLanguage: 'en'
-        }),
-        ReactiveFormsModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        NgxDropzoneModule,
-        RecordModule,
-        InputTextModule,
-        FileUploadModule,
-        OrderListModule,
-        DropdownModule,
-        PanelModule,
-        DividerModule,
-        CarouselModule,
-        PaginatorModule,
-        SplitButtonModule,
-        DialogModule,
-        ConfirmDialogModule,
-        MessagesModule], providers: [
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpInterceptor,
-            multi: true
-        },
-        {
-            provide: CoreConfigService,
-            useClass: AppConfigService
-        },
-        {
-            provide: APP_INITIALIZER,
-            useFactory: appInitializerFactory,
-            deps: [
-                AppInitializerService,
-                UserService
-            ],
-            multi: true
-        },
-        BsLocaleService,
-        DatePipe,
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
-export class AppModule { }
+@NgModule({
+  declarations: [
+    AppComponent,
+    OrganisationComponent,
+    DocumentComponent,
+    UserComponent,
+    DocumentDetailComponent,
+    OrganisationDetailComponent,
+    JoinPipe,
+    LanguageValuePipe,
+    DashboardComponent,
+    UploadComponent,
+    FileSizePipe,
+    EditorComponent,
+    StepComponent,
+    ConfirmationComponent,
+    BriefViewComponent,
+    FileLinkPipe,
+    HighlightJsonPipe,
+    ReviewComponent,
+    AdminComponent,
+    PublicationPipe,
+    FileComponent,
+    ProjectBriefViewComponent,
+    ProjectDetailComponent,
+    IdentifierComponent,
+    HepvsProjectDetailComponent,
+    ValidationComponent,
+    CollectionBriefViewComponent,
+    CollectionDetailComponent,
+    SubdivisionBriefViewComponent,
+    ContributorsPipe,
+    ContributionsComponent,
+    ContributionComponent,
+    UploadFilesComponent,
+    FileItemComponent,
+    OtherFilesComponent,
+    FaIconClassPipe,
+    StatsFilesComponent,
+    FieldDescriptionComponent,
+    MetadataComponent,
+    FilesComponent,
+    SwisscoveryComponent,
+  ],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    StepsModule,
+    ToolbarModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: BaseTranslateLoader,
+        useClass: AppTranslateLoader,
+        deps: [CoreConfigService, HttpClient, UserService],
+      },
+      // defaultLanguage: 'en'
+    }),
+    ReactiveFormsModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    // NgxDropzoneModule,
+    RecordModule,
+    InputTextModule,
+    FileUploadModule,
+    OrderListModule,
+    DropdownModule,
+    PanelModule,
+    DividerModule,
+    CarouselModule,
+    PaginatorModule,
+    SplitButtonModule,
+    ButtonModule,
+    ButtonGroupModule,
+    DialogModule,
+    ConfirmDialogModule,
+    MessagesModule,
+    MenubarModule,
+    TagModule,
+    TabsModule,
+    ScrollPanelModule,
+    TableModule,
+    TextareaModule,
+    InputGroupModule,
+    InputGroupAddonModule
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptor,
+      multi: true,
+    },
+    {
+      provide: CoreConfigService,
+      useClass: AppConfigService,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [AppInitializerService, UserService],
+      multi: true,
+    },
+    {
+      provide: RemoteAutocompleteService,
+      useClass: ContributionsAutocompleteService,
+    },
+    // BsLocaleService,
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi()),
+    providePrimeNG(primeNGConfig),
+  ],
+})
+export class AppModule {}

@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record$ | async as record">
-  <h1 class="mb-4">{{ record.metadata.name }}</h1>
+  <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
   <dl>
     <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
       <ng-template let-description pTemplate="template">
@@ -46,9 +46,9 @@
           <sonar-record-identifier type="identifiedBy" [data]="investigator.identifiedBy" *ngIf="investigator.identifiedBy">
           </sonar-record-identifier>
           @if (investigator.affiliation) {
-            <small class="ml-1"
-              [tooltip]="investigator.controlledAffiliation ? (investigator.controlledAffiliation | join:' ; ') : null">
-              <i class="text-muted">{{ investigator.affiliation }}</i>
+            <small class="ui:ml-1"
+              [pTooltip]="investigator.controlledAffiliation ? (investigator.controlledAffiliation | join:' ; ') : null">
+              <i class="ui:text-muted-color">{{ investigator.affiliation }}</i>
             </small>
           }
       </ng-template>
@@ -65,14 +65,17 @@
 
   </dl>
 
-  @if (user$ | async; as user && record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
+  @if (user$ | async; as user){
+    @if (record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
     <h4 translate>Linked documents</h4>
-    <ul class="list-none p-0">
+    <ul class="ui:list-none">
       @for (document of record.metadata.documents; track document) {
         <li>
-          <a
-            [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">{{ document.title[0].mainTitle | languageValue | async }}</a>
+          <a [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">
+            {{ document.title[0].mainTitle | languageValue | async }}
+          </a>
         </li>
       }
     </ul>
   }
+}

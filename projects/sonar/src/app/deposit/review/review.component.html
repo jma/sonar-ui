@@ -14,37 +14,39 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card my-5" *ngIf="user && deposit && deposit.status === 'to_validate' && user.is_moderator">
-  <div class="card-header">
-    <h5>{{ 'Deposit review' | translate }}</h5>
-  </div>
-  <div class="card-body">
-    <div class="row my-3 justify-content-center">
-      <div class="col-sm-6">
-        <textarea
-          class="form-control"
-          rows="6"
-          [placeholder]="'Leave a comment for the user...' | translate"
-          #comment
-        ></textarea>
-      </div>
+@if(user && deposit && deposit.status === 'to_validate' && user.is_moderator) {
+  <p-panel [header]="'Deposit review' | translate">
+      <div class="ui:flex ui:justify-center">
+    <textarea
+      class="ui:min-w-lg ui:my-4"
+      pTextarea
+      [autoResize]="true"
+      [placeholder]="'Leave a comment for the user...' | translate"
+    ></textarea>
     </div>
-    <div class="row justify-content-center my-3">
-      <div class="col-sm-3">
-        <button class="btn btn-success btn-lg btn-block" (click)="review('approve')">
-          {{ 'Approve' | translate }}
-        </button>
-      </div>
-      <div class="col-sm-3">
-        <button class="btn btn-warning btn-lg btn-block" (click)="review('ask_for_changes')">
-          {{ 'Ask for changes' | translate }}
-        </button>
-      </div>
-      <div class="col-sm-3">
-        <button class="btn btn-danger btn-lg btn-block" (click)="review('reject')">
-          {{ 'Reject' | translate }}
-        </button>
-      </div>
+    <ng-template #footer>
+      <div class="ui:flex ui:justify-center">
+        <p-buttongroup class="ui:mx-auto">
+        <p-button
+          size="large"
+          severity="success"
+          (onClick)="review('approve')"
+          [label]="'Approve' | translate"
+        />
+        <p-button
+          size="large"
+          severity="warn"
+          (onClick)="review('ask_for_changes')"
+          [label]="'Ask for changes' | translate"
+        />
+        <p-button
+          size="large"
+          severity="danger"
+          (onClick)="review('reject')"
+          [label]="'Reject' | translate"
+        />
+      </p-buttongroup>
     </div>
-  </div>
-</div>
+    </ng-template>
+</p-panel>
+}

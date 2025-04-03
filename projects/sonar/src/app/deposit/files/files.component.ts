@@ -12,5 +12,6 @@ export class FilesComponent {
   additionalFiles = input<any>();
   /** File key to preview */
   previewFileKey: string;
+  isShowPreview = false;
 
 }

@@ -22,7 +22,7 @@
   type="ball-zig-zag"
   [fullScreen]="true"
 >
-  <p class="text-white">
+  <p class="ui:text-white">
     {{ 'Loading...' | translate }}
     @if (fileUpload?.files?.length > 0) {
       ({{ nUploadedFiles }} / {{ fileUpload.files.length }})
@@ -31,72 +31,74 @@
 </ngx-spinner>
 
 @if (files != null) {
-  <div class="row mt-4">
-    <div class="col-12">
-      <h5 class="mb-2" translate>Upload Files</h5>
-      <p-fileUpload
-        [disabled]="reachMaxFileLimit"
-        #fileUpload
-        [auto]="true"
-        [multiple]="true"
-        name="uploadFiles"
-        [chooseLabel]="'Add file' | translate"
-        [customUpload]="true"
-        (uploadHandler)="uploadHandler($event, '')"
-        mode="advanced"
-        [maxFileSize]="maxFileSize"
-        (onSelect)="onSelect($event, '')"
-      >
-        <ng-template pTemplate="toolbar">
-          <div></div>
-          <div class="mt-2">
-            <small translate>
-              By uploading a file, I declare that I am aware of the terms and
-              conditions of the copyright transfer agreement governing the
-              publication of the respective document, and that the deposit of its
-              full-text content in the current platform is compatible with those.
-            </small>
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <h5 translate>Upload Files</h5>
+    <p-fileUpload
+      [disabled]="reachMaxFileLimit"
+      styleClass="ui:[&>.p-fileupload-header]:flex-col ui:[&>.p-fileupload-header]:items-start"
+      #fileUpload
+      [auto]="true"
+      [multiple]="true"
+      name="uploadFiles"
+      [chooseLabel]="'Add file' | translate"
+      [customUpload]="true"
+      (uploadHandler)="uploadHandler($event, '')"
+      mode="advanced"
+      [maxFileSize]="maxFileSize"
+      (onSelect)="onSelect($event, '')"
+    >
+      <ng-template #toolbar>
+          <p class="text-warning ui:w-full" translate>
+          By uploading a file, I declare that I am aware of the terms and
+          conditions of the copyright transfer agreement governing the
+          publication of the respective document, and that the deposit of its
+          full-text content in the current platform is compatible with those.
+          </p>
+      </ng-template>
+
+      <ng-template #file let-file />
+
+      <ng-template #content let-file>
+        @if (reachMaxFileLimit) {
+          <p-message
+            [text]="'The maximum number of files is reached. No additional upload is allowed.' | translate"
+            severity="error"
+            showTransitionOptions="0ms"
+          />
+        } @else {
+          <div class="ui:text-center ui:p-4">
+            <span class="ui:text-blue-500" translate>Drag and drop files.</span>
           </div>
-        </ng-template>
-
-        <ng-template let-file pTemplate="file"> </ng-template>
-
-        <ng-template let-file pTemplate="content">
-          @if (reachMaxFileLimit) {
-            <div class="alert alert-danger" role="alert" translate>
-              The maximum number of files is reached. No additional upload is
-              allowed.
-            </div>
-          } @else {
-            <span translate>Drag and drop files.</span>
-          }
-        </ng-template>
-      </p-fileUpload>
-    </div>
+        }
+      </ng-template>
+    </p-fileUpload>
 
     @if(files?.length > 0) {
-    <p-orderList
-      #orderList
-      [value]="files"
-      (onReorder)="reorder()"
-      [header]="'Uploaded Files' | translate"
-      [filterBy]="files.length > 5 ? 'label' : null"
-      [dragdrop]="false"
-      controlsPosition="right"
-      class="w-100 col-12"
-      metaKeySelection="true"
-      [filterPlaceholder]="'Filter by label' | translate"
-    >
-      <ng-template let-file pTemplate="item">
-        <sonar-file-item
-          [schema]="fileSchema()"
-          (update)="update(file, $event)"
-          (delete)="deleteFile($event)"
-          [file]="file"
-          (upload)="uploadNewVersion($event)"
-        ></sonar-file-item>
-      </ng-template>
-    </p-orderList>
+      <p-orderList
+        [responsive]="true"
+        scrollHeight="auto"
+        #orderList
+        [value]="files"
+        (onReorder)="reorder()"
+        [header]="'Uploaded Files' | translate"
+        [filterBy]="files.length > 5 ? 'label' : null"
+        [dragdrop]="false"
+        controlsPosition="right"
+        class="ui:[&_.p-orderlist-list-container]:flex-grow"
+        metaKeySelection="true"
+        [filterPlaceholder]="'Filter by label' | translate"
+      >
+        <ng-template let-file pTemplate="item">
+          <sonar-file-item
+            class="ui:flex-grow"
+            [schema]="fileSchema()"
+            (update)="update(file, $event)"
+            (delete)="deleteFile($event)"
+            [file]="file"
+            (upload)="uploadNewVersion($event)"
+          />
+        </ng-template>
+      </p-orderList>
   }
   </div>
 } @else {

@@ -42,7 +42,7 @@ export class UserService {
     private _http: HttpClient,
     private _appConfigService: AppConfigService)
   {
-    this.loadLoggedUser().subscribe();
+    // this.loadLoggedUser().subscribe();
   }
 
   /**

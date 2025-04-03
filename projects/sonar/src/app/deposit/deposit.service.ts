@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, DialogService, processJsonSchema, RecordService, removeEmptyValues, resolve$ref } from '@rero/ng-core';
+import { ApiService, processJsonSchema, RecordService, removeEmptyValues, resolve$ref } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { concat, from, Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, first, ignoreElements, map, mergeMap, reduce, switchMap, tap } from 'rxjs/operators';
+import { catchError, ignoreElements, map, mergeMap, reduce, tap } from 'rxjs/operators';
 import { UserService } from '../user.service';
 
 @Injectable({
@@ -33,26 +33,14 @@ export class DepositService implements OnDestroy {
   // User subscription
   private _userSubscription: Subscription;
 
-  /**
-   * Constructor.
-   *
-   * @param _apiService API service.
-   * @param _httpClient HTTP client.
-   * @param _userService User service.
-   * @param _toastrService Toast service.
-   * @param _translateService Translate service.
-   * @param _dialogService Dialog service.
-   * @param _recordService Record service.
-   */
-  constructor(
-    private _apiService: ApiService,
-    private _httpClient: HttpClient,
-    private _userService: UserService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _dialogService: DialogService,
-    private _recordService: RecordService
-  ) {
+  private _apiService: ApiService = inject(ApiService);
+  private _httpClient: HttpClient = inject(HttpClient);
+  private _userService: UserService = inject(UserService);
+  private _toastrService: ToastrService = inject(ToastrService);
+  private _translateService: TranslateService = inject(TranslateService);
+  private _recordService: RecordService = inject(RecordService);
+
+  constructor() {
     this._userSubscription = this._userService.user$.subscribe((user) => {
       this._user = user;
     });
@@ -145,51 +133,6 @@ export class DepositService implements OnDestroy {
         `${this._apiService.getEndpointByType('deposits', true)}/${deposit.pid}`
       )
     ).pipe(reduce(() => true));
-  }
-
-  /**
-   * Delete a deposit after a user confirmation.
-   * @param deposit Deposit to remove.
-   */
-  deleteDepositWithConfirmation(deposit: any): Observable<boolean> {
-    let observable$ = of(true);
-
-    if (deposit) {
-      observable$ = this._dialogService
-        .show({
-          ignoreBackdropClick: true,
-          initialState: {
-            title: this._translateService.instant('Confirmation'),
-            body: this._translateService.instant(
-              'Do you really want to cancel and remove this deposit?'
-            ),
-            confirmButton: true,
-            confirmTitleButton: this._translateService.instant('OK'),
-            cancelTitleButton: this._translateService.instant('Cancel')
-          }
-        })
-        .pipe(
-          first(),
-          switchMap((result: boolean) => {
-            if (result === true) {
-              return this.delete(deposit).pipe(
-                tap(() => {
-                  this._toastrService.success(
-                    this._translateService.instant('Deposit successfully removed.')
-                  );
-                }),
-                map(() => {
-                  return true;
-                })
-              );
-            }
-
-            return of(false);
-          })
-        );
-    }
-
-    return observable$;
   }
 
   /**

@@ -47,17 +47,17 @@ export class HighlightJsonPipe implements PipeTransform {
     json = json.replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match: any) => {
-        let cls = 'number';
+        let cls = 'ui:text-muted-color';
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
-            cls = 'key';
+            cls = 'text-error';
           } else {
-            cls = 'string';
+            cls = 'text-success';
           }
         } else if (/true|false/.test(match)) {
-          cls = 'boolean';
+          cls = 'text-primary';
         } else if (/null/.test(match)) {
-          cls = 'null';
+          cls = 'text-warning';
         }
         return `<span class="${cls}">${match}</span>`;
       }

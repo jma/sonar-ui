@@ -14,104 +14,47 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="ready">
-  <ng-container *ngIf="user; else errorTemplate">
-    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" routerLink="">SONAR <span class="text-secondary" translate>administration</span></a>
-        <button class="navbar-toggler d-lg-none" type="button" aria-expanded="false"
-          (click)="isCollapsed = !isCollapsed">
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" [collapse]="isCollapsed">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown" *ngIf="user.is_admin" dropdown>
-              <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" dropdownToggle translate>
-                Administration
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                <a class="dropdown-item" [routerLink]="['/records/', item]" *ngFor="let item of administrationMenu">
-                  {{ item | ucfirst | translate }}
-                </a>
-              </div>
-            </li>
-            <li class="nav-item" *ngIf="user.is_moderator">
-              <a class="nav-link" routerLink="/records/documents" translate>Documents</a>
-            </li>
-            <li class="nav-item" *ngIf="user.is_submitter">
-              <a class="nav-link" routerLink="/records/projects" translate>Research projects</a>
-            </li>
-            <li class="nav-item dropdown" *ngIf="user.is_submitter" dropdown>
-              <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" dropdownToggle translate>
-                Deposits
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                <a class="dropdown-item" routerLink="/deposit/create" translate>Deposit a publication</a>
-                <a class="dropdown-item" routerLink="/records/deposits" translate>Deposits</a>
-              </div>
-            </li>
-          </ul>
-          <ul class="navbar-nav">
-            <li class="nav-item dropdown" dropdown>
-              <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" dropdownToggle>
-                <i class="fa fa-user mr-2"></i>
-                {{ user.last_name }}, {{ user.first_name }}
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                <h6 class="dropdown-header">{{ user.email }}</h6>
-                <a class="dropdown-item" [href]="publicInterfaceLink" translate>Public interface</a>
-                <a class="dropdown-item" href="/users/profile" translate>Profile</a>
-                <a class="dropdown-item" href="/manage/" translate>Administration</a>
-                <a class="dropdown-item" href="/logout/" translate>Logout</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown ml-3" dropdown>
-              <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" dropdownToggle>
-                {{ currentLanguage | uppercase }}
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                <a class="dropdown-item" href (click)="$event.preventDefault(); changeLanguage(language.code)"
-                  *ngFor="let language of languages">{{ language.bibCode | translateLanguage }}</a>
-              </div>
-            </li>
-          </ul>
-        </div>
+@if (ready) {
+  @if(user) {
+      <div class="ui:bg-blue-900">
+    <div class="container ui:py-4 ui:text-lg">
+      <a class="ui:text-white ui:no-underline" routerLink="">SONAR <span class="ui:text-orange-400" translate>administration</span></a>
+    </div>
       </div>
-    </nav>
-    <div class="container my-5">
+    <div class="container">
+      <div class="ui:flex ui:justify-between">
+        <p-menubar [model]="items" class="ui:z-20"></p-menubar>
+        <p-menubar [model]="userItems" class="ui:z-20"></p-menubar>
+      </div>
+    </div>
+    <div class="container ui:my-5">
       <router-outlet></router-outlet>
     </div>
-    <footer id="footer" class="bg-light mt-5">
-      <div class="container">
-        <div class="row justify-content-center align-items-center">
-          <div class="col-12 col-sm-6 py-2 py-sm-5 text-center text-sm-left">
-            <div class="d-flex flex-row">
+    <footer id="footer" class="ui:bg-surface-100 ui:ui:mt-5">
+      <div class="container ui:p-2">
+        <div class="ui:flex ui:gap-2 ui:justify-between">
+          <div>
+            <div class="ui:flex ui:gap-2">
               <div>
-                  <a href="/help/">Help</a>
+                  <a href="/help/" translate>Help</a>
               </div>
-              <div class="ml-3">
-                  <a href="https://sonar.ch" target="_blank">Project and contact</a>
+              <div>
+                  <a href="https://sonar.ch" target="_blank" translate>Project and contact</a>
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 py-2 py-sm-5 text-center text-sm-right">
+          <div>
             Powered by <a href="https://www.rero.ch" target="_blank">RERO</a>
           </div>
         </div>
       </div>
     </footer>
-  </ng-container>
-  <ng-template #errorTemplate>
-    <div class="container mt-5">
-      <div class="alert alert-danger">
-        <h4 class="m-0 text-center p-4">
-          {{ 'An error occurred, application cannot be loaded.' | translate }}
-        </h4>
-      </div>
+  }
+  @else {
+    <div class="container ui:ui:mt-5">
+      <p-message class="ui:w-full" severity="error" showTransitionOptions="0ms">
+        {{ 'An error occurred, application cannot be loaded.' | translate }}
+      </p-message>
     </div>
-  </ng-template>
-</ng-container>
+  }
+}

@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
-import { EMPTY, Subscription } from 'rxjs';
-import { delay, first, switchMap } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { UserService } from '../../user.service';
 import { DepositService } from '../deposit.service';
 
@@ -44,14 +43,12 @@ export class ReviewComponent implements OnInit, OnDestroy {
   @ViewChild('comment')
   comment: ElementRef;
 
-  constructor(
-    private _userService: UserService,
-    private _dialogService: DialogService,
-    private _translateService: TranslateService,
-    private _depositService: DepositService,
-    private _toastr: ToastrService,
-    private _router: Router
-  ) { }
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private _userService: UserService = inject(UserService);
+  private _translateService: TranslateService = inject(TranslateService);
+  private _depositService: DepositService = inject(DepositService);
+  private _toastr: ToastrService = inject(ToastrService);
+  private _router: Router = inject(Router);
 
   /**
    * Component initialisation.
@@ -74,37 +71,21 @@ export class ReviewComponent implements OnInit, OnDestroy {
    * Approve the deposit.
    */
   review(action: string) {
-    this._dialogService
-      .show({
-        ignoreBackdropClick: true,
-        initialState: {
-          title: this._translateService.instant('deposit_log_action_' + action),
-          body: this._translateService.instant('Do you really want to do this action?'),
-          confirmButton: true,
-          confirmTitleButton: this._translateService.instant('OK'),
-          cancelTitleButton: this._translateService.instant('Cancel')
-        }
-      })
-      .pipe(
-        first(),
-        switchMap(result => {
-          if (result === false) {
-            return EMPTY;
-          }
-
-          return this._depositService.reviewDeposit(
+      this.confirmationService.confirm({
+        header: this._translateService.instant('deposit_log_action_' + action),
+        message: this._translateService.instant('Do you really want to do this action?'),
+        accept: () => {
+          this._depositService.reviewDeposit(
             this.deposit,
             action,
             this.comment.nativeElement.value
-          );
-        }),
-        delay(1000)
-      )
-      .subscribe((deposit: any) => {
-        this._toastr.success(this._translateService.instant('Review has been done successfully!'));
-        this._router.navigate(['records', 'deposits'], {
-          queryParams: { q: `pid:${deposit.pid}` }
-        });
-      });
+          ).subscribe((deposit: any) => {
+            this._toastr.success(this._translateService.instant('Review has been done successfully!'));
+            this._router.navigate(['records', 'deposits'], {
+              queryParams: { q: `pid:${deposit.pid}` }
+            });
+          });
+        }
+    });
   }
 }

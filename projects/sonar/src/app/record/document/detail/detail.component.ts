@@ -18,22 +18,18 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  TemplateRef,
-  ViewChild,
-  inject,
+  inject
 } from '@angular/core';
-import { ApiService, RecordService } from '@rero/ng-core';
-import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { RecordService } from '@rero/ng-core';
 import { Observable, Subscription, map } from 'rxjs';
 import { AppConfigService } from '../../../app-config.service';
 import { DocumentFile } from '../document.interface';
 
 @Component({
-    templateUrl: './detail.component.html',
-    standalone: false
+  templateUrl: './detail.component.html',
+  standalone: false,
 })
 export class DetailComponent implements OnDestroy, OnInit {
   /** Observable resolving record data */
@@ -45,6 +41,7 @@ export class DetailComponent implements OnDestroy, OnInit {
     url: SafeUrl;
   };
 
+  isShowPreview = false;
   // Show only three contributors on startup.
   contributorsLength = 3;
 
@@ -53,33 +50,21 @@ export class DetailComponent implements OnDestroy, OnInit {
 
   recordService = inject(RecordService);
 
-  // Form modal reference.
-  previewModalRef: BsModalRef;
-
   // Subscription to observables, used to unsubscribe to all at the same time.
   private _subscription: Subscription = new Subscription();
-
-  // Reference to preview modal in template.
-  @ViewChild('previewModal')
-  previewModalTemplate: TemplateRef<any>;
 
   /**
    * Constructor.
    *
-   * @param _apiService API service.
-   * @param _httpClient HTTP client.
    * @param _configService Config service.
    * @param _translateService Translate service.
    * @param _sanitizer DOM sanitizer.
    * @param _modalService Modal service.
    */
   constructor(
-    private _apiService: ApiService,
     private _configService: AppConfigService,
-    private _httpClient: HttpClient,
     private _translateService: TranslateService,
-    private _sanitizer: DomSanitizer,
-    private _modalService: BsModalService
+    private _sanitizer: DomSanitizer
   ) {}
 
   /**
@@ -107,20 +92,18 @@ export class DetailComponent implements OnDestroy, OnInit {
     this._subscription.add(
       this._translateService.onLangChange.subscribe(() => {
         this.sortAbstracts();
-        if (this.record && this.record.abstracts.length > 0) {
-          this.changeAbstract(this.record.abstracts[0]);
-        }
       })
     );
   }
   updateFiles(files) {
-    this.recordService.getRecord('documents', this.record.pid, 1).pipe(
-      map(doc => this.record._files = doc.metadata._files)
-    ).subscribe();
+    this.recordService
+      .getRecord('documents', this.record.pid, 1)
+      .pipe(map((doc) => (this.record._files = doc.metadata._files)))
+      .subscribe();
   }
 
   get filteredKeys() {
-    return this.filteredFiles.map(file => file.key);
+    return this.filteredFiles.map((file) => file.key);
   }
   /**
    * Component destruction.
@@ -170,30 +153,6 @@ export class DetailComponent implements OnDestroy, OnInit {
     });
   }
 
-
-  /**
-   * Show abstract's full text when clicking on the show more link.
-   *
-   * @param event DOM event triggered.
-   * @param abstract Object containing abstract's data.
-   */
-  showMoreAbstract(event: any, abstract: any) {
-    event.preventDefault();
-    abstract.full = true;
-  }
-
-  /**
-   * Show abstract corresponding to the clicked language.
-   *
-   * @param abstract Object containing abstract's data.
-   */
-  changeAbstract(abstract: any) {
-    this.record.abstracts.forEach((element: any) => {
-      element.show = false;
-    });
-    abstract.show = true;
-  }
-
   /**
    * Scroll to target.
    *
@@ -211,13 +170,11 @@ export class DetailComponent implements OnDestroy, OnInit {
    * @param file Document file object.
    */
   showPreview(file: DocumentFile): void {
-    this.previewModalRef = this._modalService.show(this.previewModalTemplate, {
-      class: 'modal-lg',
-    });
     this.previewFile = {
       label: file.label,
       url: this._sanitizer.bypassSecurityTrustResourceUrl(file.links.preview),
     };
+    this.isShowPreview = true;
   }
 
   /**
@@ -226,7 +183,7 @@ export class DetailComponent implements OnDestroy, OnInit {
    * @param project Project record.
    * @returns String representing the funding organisations.
    */
-  get_funding_organisations(project: any): string {
+  getFundingOrganisations(project: any): string {
     if (!project.funding_organisations) {
       return '';
     }
@@ -253,8 +210,11 @@ export class DetailComponent implements OnDestroy, OnInit {
     const abstractsLanguage = [];
     const abstractsCode = [];
     this.record.abstracts.forEach((abstract: any) => {
-      if (this._configService.languagesMap.find(
-        (map: { code: string; bibCode: string }) => map.bibCode === abstract.language)
+      if (
+        this._configService.languagesMap.find(
+          (map: { code: string; bibCode: string }) =>
+            map.bibCode === abstract.language
+        )
       ) {
         abstractsLanguage.push(abstract);
       } else {
@@ -269,19 +229,23 @@ export class DetailComponent implements OnDestroy, OnInit {
       this._configService.languagesMap
     );
 
-    this.record.abstracts = abstractsLanguage.sort((a: any, b: any) => {
-      const aIndex = languagesPriorities.findIndex(
-        (lang) => a.language === lang.bibCode
+    this.record.abstracts = abstractsLanguage
+      .sort((a: any, b: any) => {
+        const aIndex = languagesPriorities.findIndex(
+          (lang) => a.language === lang.bibCode
+        );
+        const bIndex = languagesPriorities.findIndex(
+          (lang) => b.language === lang.bibCode
+        );
+        if (aIndex === bIndex) {
+          return 0;
+        }
+        return aIndex < bIndex ? -1 : 1;
+      })
+      .concat(
+        abstractsCode.sort((a: any, b: any) =>
+          a.language.localeCompare(b.language)
+        )
       );
-      const bIndex = languagesPriorities.findIndex(
-        (lang) => b.language === lang.bibCode
-      );
-      if (aIndex === bIndex) {
-        return 0;
-      }
-      return aIndex < bIndex ? -1 : 1;
-    }).concat(
-      abstractsCode.sort((a: any, b: any) => a.language.localeCompare(b.language))
-    );
   }
 }

@@ -20,7 +20,12 @@
     ],
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "paths": {
+      "@rero/prime/*": [
+        "node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

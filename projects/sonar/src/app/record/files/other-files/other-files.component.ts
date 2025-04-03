@@ -16,16 +16,15 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, Record, RecordService } from '@rero/ng-core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { PrimeNGConfig } from 'primeng/api';
-import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { ApiService, RecordService } from '@rero/ng-core';
+import { Observable, Subscription, map, switchMap, tap } from 'rxjs';
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { PrimeNG } from 'primeng/config';
 
 // file interface
 export interface File {
@@ -43,7 +42,7 @@ export interface File {
 @Component({
     selector: 'sonar-other-files',
     templateUrl: './other-files.component.html',
-    styleUrl: './other-files.component.scss',
+    // styleUrl: './other-files.component.scss',
     standalone: false
 })
 export class OtherFilesComponent implements OnInit, OnDestroy {
@@ -73,16 +72,12 @@ export class OtherFilesComponent implements OnInit, OnDestroy {
     label: string;
     url: SafeUrl;
   };
-  // modal for the invenio previewer
-  previewModalRef: BsModalRef;
 
-  // for modal
-  @ViewChild('previewModal')
-  previewModalTemplate: TemplateRef<any>;
+  isShowPreview = false;
 
   // -------- Services -------------
   // primeng configuration service
-  private ngConfigService = inject(PrimeNGConfig);
+  private ngConfigService = inject(PrimeNG);
   // http service
   private httpService = inject(HttpClient);
   // translation service
@@ -94,7 +89,7 @@ export class OtherFilesComponent implements OnInit, OnDestroy {
   // url sanitizer service
   private sanitizer = inject(DomSanitizer);
   // modal service
-  private modalService = inject(BsModalService);
+  // private modalService = inject(BsModalService);
   // service to detect responsive breakpoints
   private breakpointObserver = inject(BreakpointObserver);
 
@@ -235,12 +230,10 @@ export class OtherFilesComponent implements OnInit, OnDestroy {
    */
 
   preview(file: File): void {
-    this.previewModalRef = this.modalService.show(this.previewModalTemplate, {
-      class: 'modal-lg',
-    });
     this.previewFile = {
       label: file.label,
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.preview),
     };
+    this.isShowPreview = true;
   }
 }

@@ -14,36 +14,36 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngVar="identifier">
-  <container-element [ngSwitch]="identifier.field">
-    <!-- Type: identifiedBy -->
-    <some-element *ngSwitchCase="'identifiedBy'">
-      <span class="badge badge-secondary text-light mr-1">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</span>
-      <ng-container *ngIf="identifier.link; else noLink">
-        <a href="{{ identifier.link }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
-      </ng-container>
-      <ng-template #noLink>
-        <ng-container *ngIf="identifier.value.startsWith('http'); else valueOnly">
-          <a href="{{ identifier.value }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
-        </ng-container>
-        <ng-template #valueOnly>
-          {{ identifier.value }}
-        </ng-template>
-      </ng-template>
-    </some-element>
-
-    <!-- Type: agent -->
-    <some-element *ngSwitchCase="'agent'">
-      <ng-container *ngIf="identifier.link; else agentNoLink">
-        <a class="badge badge-secondary text-light mr-1" title="{{ externalLinkText }}" href="{{ identifier.link }}">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</a>
-      </ng-container>
-      <ng-template #agentNoLink>
-        <span class="badge badge-secondary text-light mr-1">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</span>
-      </ng-template>
-    </some-element>
-
-    <some-element *ngSwitchDefault>
-      {{ identifier.value }}
-    </some-element>
-  </container-element>
-</ng-container>
+@switch(identifier.field) {
+  @case ('identifiedBy') {
+    <p-tag severity="secondary">
+      {{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}
+    </p-tag>
+    @if(identifier.link) {
+      <a href="{{ identifier.link }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
+    }
+    @else {
+      @if(identifier.value.startsWith('http')) {
+        <a href="{{ identifier.value }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
+      }
+      @else {
+        {{ identifier.value }}
+      }
+    }
+  }
+  @case ('agent') {
+    @if(identifier.link) {
+      <p-tag severity="secondary" class="ui:mr-1">
+        <a title="{{ externalLinkText }}" href="{{ identifier.link }}">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</a>
+      </p-tag>
+    }
+    @else {
+      <p-tag severity="secondary">
+        {{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}
+      </p-tag>
+    }
+  }
+  @default {
+    {{ identifier.value }}
+  }
+}

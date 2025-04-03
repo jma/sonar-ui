@@ -24,23 +24,23 @@
   </ng-template>
 
   <ng-template pTemplate="icons">
-    <button
+    <p-button
       [title]="'remove' | translate"
-      class="p-panel-header-icon p-link mr-2"
-      (click)="deleteFile(file())"
-    >
-      <span class="fa fa-trash"></span>
-    </button>
+      [text]="true"
+      icon="fa fa-trash"
+      class="p-panel-header-icon p-link ui:mr-2"
+      (onClick)="deleteFile(file())"
+    />
   </ng-template>
 
-  <div class="grid">
-    <div class="col">
-      <div class="flex justify-content-end flex-wrap">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+    <div class="ui:col-span-12">
+      <div class="ui:flex ui:justify-end ui:flex-wrap">
         <p-button
-          label="Save"
-          (click)="save()"
+          [label]="'Save' | translate"
+          (onClick)="save()"
           icon="pi pi-save"
-          class="small"
+          size="small"
         />
       </div>
       <p-divider />
@@ -49,12 +49,11 @@
         [fields]="fields()"
         [options]="options"
         [form]="form"
-      ></formly-form>
+      />
     </div>
     <p-divider layout="vertical"></p-divider>
-
-    <div class="col">
-      <div class="flex justify-content-end flex-wrap">
+    <div class="ui:col-span-12">
+      <div class="ui:flex ui:justify-end ui:flex-wrap">
         <p-fileUpload
           mode="basic"
           [chooseLabel]="'A new version' | translate"
@@ -70,7 +69,7 @@
       <p-divider />
       @if (file().versions) {
       <h5 translate>Versions</h5>
-      <ul>
+      <ul class="ui:list-none">
         @for (version of file()?.versions; track version) {
         <li>
           <ng-container
@@ -91,17 +90,17 @@
 </p-panel>
 
 <ng-template #fileLink let-file="file" let-name="name">
-  {{file.metadata.order}}. &nbsp;
   @if (file?.links?.self) {
   <a
+    class="ui:flex-grow"
     tabindex="-1"
-    [tooltip]="
+    [pTooltip]="
       (file.size | filesize) + ' / ' + (file.updated | dateTranslate : 'medium')
     "
     title="download"
     [href]="downloadURL(file)"
     download
-    >{{ name }} <i class="fa fa-download"></i
+    >{{ name }}&nbsp;<i class="fa fa-download"></i
   ></a>
   }
 </ng-template>

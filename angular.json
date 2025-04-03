@@ -26,8 +26,7 @@
               "projects/sonar/src/assets"
             ],
             "styles": [
-              "projects/sonar/src/styles.scss",
-              "node_modules/ngx-spinner/animations/ball-zig-zag.css"
+              "projects/sonar/src/styles.scss"
             ],
             "scripts": [],
             "preserveSymlinks": true,
