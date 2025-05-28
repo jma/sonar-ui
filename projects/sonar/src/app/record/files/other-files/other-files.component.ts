@@ -42,7 +42,6 @@ export interface File {
 @Component({
     selector: 'sonar-other-files',
     templateUrl: './other-files.component.html',
-    // styleUrl: './other-files.component.scss',
     standalone: false
 })
 export class OtherFilesComponent implements OnInit, OnDestroy {

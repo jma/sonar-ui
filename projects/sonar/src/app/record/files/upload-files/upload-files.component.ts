@@ -49,7 +49,6 @@ import { AppConfigService } from '../../../app-config.service';
 @Component({
   selector: 'sonar-upload-files',
   templateUrl: './upload-files.component.html',
-  styleUrl: './upload-files.component.scss',
   standalone: false,
 })
 export class UploadFilesComponent {
@@ -149,6 +148,9 @@ export class UploadFilesComponent {
    */
   update(file, metadata) {
     // remove useless spaces
+    if(!metadata.label) {
+      metadata.label = file.key;
+    }
     metadata.label = metadata.label.trim();
 
     let indexToUpdate = this.record._files.findIndex(
@@ -439,6 +441,9 @@ export class UploadFilesComponent {
           fileVersions.sort((a, b) => a.metadata.created - b.metadata.created);
           file.versions = fileVersions;
         }
+        // TODO: remove when the primeng issue will be solved
+        //       https://github.com/primefaces/primeng/issues/18442
+        file.name = file.label;
         headFiles.push(file);
       }
     });

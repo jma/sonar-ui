@@ -1,57 +1,53 @@
 <h4>{{ 'Main file' | translate }}</h4>
 {{ mainFile().key }} ({{ mainFile().size | filesize }})
-<a
+<p-button
   href="#"
-  class="ui:ml-2"
-  (click)="
+  icon="fa fa-eye"
+  [text]="true"
+  (onClick)="
     $event.preventDefault();
     previewFileKey = mainFile().key;
     isShowPreview = true
   "
->
-  <i class="fa fa-eye"></i>
-</a>
+/>
 <a
   [href]="mainFile().key | fileLink : 'deposits' : depositPid() : 'files'"
+  pButton
   target="_blank"
-  class="ui:ml-2"
->
-  <i class="fa fa-download"></i>
-</a>
+  icon="fa fa-download"
+  [text]="true"
+></a>
 
-<div class="ui:ui:mt-5" *ngIf="additionalFiles()?.length > 0">
-  <h4>{{ 'Additional files' | translate }}</h4>
-  <p *ngFor="let file of additionalFiles()">
-    {{ file.key }} ({{ file.size | filesize }})
-    <a
-      href="#"
-      class="ui:ml-2"
-      (click)="
-        $event.preventDefault(); previewFileKey = file.key; isShowPreview=true
-      "
-    >
-      <i class="fa fa-eye"></i>
-    </a>
-    <a
-      [href]="file.key | fileLink : 'deposits' : depositPid() : 'files'"
-      target="_blank"
-      class="ui:ml-2"
-    >
-      <i class="fa fa-download"></i>
-    </a>
-  </p>
-</div>
+@if(additionalFiles()?.length > 0) {
+  <div class="ui:mt-2">
+    <h4>{{ 'Additional files' | translate }}</h4>
+    @for(file of additionalFiles(); track file.key) {
+      <div>
+        {{ file.key }} ({{ file.size | filesize }})
+        <p-button
+          href="#"
+          icon="fa fa-eye"
+          [text]="true"
+          (onClick)="previewFileKey = file.key; isShowPreview=true"
+        />
+        <a
+          pButton
+          [href]="file.key | fileLink : 'deposits' : depositPid() : 'files'"
+          [text]="true"
+          target="_blank"
+          icon="fa fa-download"
+        ></a>
+      </div>
+    }
+  </div>
+}
 
 <!--Preview modal-->
 
-<p-dialog [header]="previewFileKey" [modal]="true" [(visible)]="isShowPreview" [style]="{ width: '25rem' }">
+<p-dialog [header]="previewFileKey" [modal]="true" [(visible)]="isShowPreview"   [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }">
   <iframe
-    class="preview-iframe"
-    id="preview-iframe"
-    width="100%"
-    height="500"
-    [src]="
-    previewFileKey | fileLink : 'deposits' : depositPid() : 'preview'
-  "
-  style="border: none;"></iframe>
+    [style]="{ width: '100%', height: '800px', border: 'none' }"
+    [src]="previewFileKey | fileLink : 'deposits' : depositPid() : 'preview'"
+  ></iframe>
 </p-dialog>

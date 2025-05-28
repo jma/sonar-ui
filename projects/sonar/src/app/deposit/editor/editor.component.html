@@ -15,51 +15,51 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-  <div class="ui:flex ui:justify-end ui:items-center ui:flex-wrap ui:gap-2">
-      @if(currentStep() === 'metadata') {
-      <p-splitButton
-        [label]="'Import metadata' | translate"
-        [model]="importMenuItems"
-        appendTo="body"
-      />
-      }
-      @if(currentStep() === 'diffusion') {
-      <p-button
-        (onClick)="save()"
-        [label]="'Save' | translate"
-        iconPos="right"
-      />
-      }
-      @else {
-      <p-button
-        (onClick)="save()"
-        icon="pi pi-chevron-right"
-        [label]="'Continue' | translate"
-        iconPos="right"
-      />
-      }
-      @if(canSubmit()) {
-      <p-button
-        (onClick)="confirmPublish()"
-        [label]="isAdminUser ? ('Publish' | translate) : ('Submit' | translate)"
-        iconPos="right"
-      />
-      }
-  </div>
+<div class="ui:flex ui:justify-end ui:items-center ui:flex-wrap ui:gap-2">
+    @if(currentStep() === 'metadata') {
+    <p-splitButton
+      [label]="'Import metadata' | translate"
+      [model]="importMenuItems"
+      appendTo="body"
+    />
+    }
+    @if(currentStep() === 'diffusion') {
+    <p-button
+      (onClick)="save()"
+      [label]="'Save' | translate"
+      iconPos="right"
+    />
+    }
+    @else {
+    <p-button
+      (onClick)="save()"
+      icon="fa fa-chevron-right"
+      [label]="'Continue' | translate"
+      iconPos="right"
+    />
+    }
+    @if(canSubmit()) {
+    <p-button
+      (onClick)="confirmPublish()"
+      [label]="isAdminUser ? ('Publish' | translate) : ('Submit' | translate)"
+      iconPos="right"
+    />
+    }
+</div>
 
-  <!-- metadata editor -->
-  <formly-form
-    [form]="form"
-    [model]="model"
-    [fields]="fields"
-    [class]="'step-' + currentStep"
-  />
+<!-- metadata editor -->
+<formly-form
+  [form]="form"
+  [model]="model"
+  [fields]="fields"
+  [class]="'step-' + currentStep"
+/>
 
 <p-dialog
   [header]="'Import from swisscovery' | translate"
   [modal]="true"
   [(visible)]="importModalIsVisible"
-  styleClass="w-25rem"
+  styleClass="ui:w-[40lvw]"
 >
-<sonar-deposit-editor-swisscovery (data)="mapSwisscoverRecord($event)"/>
+  <sonar-deposit-editor-swisscovery (data)="mapSwisscoverRecord($event)"/>
 </p-dialog>

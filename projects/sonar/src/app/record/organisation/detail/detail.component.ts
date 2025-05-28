@@ -55,21 +55,21 @@ export class DetailComponent implements OnInit {
       .pipe(
         switchMap((record: any) => {
           this.record = record;
-          return combineLatest([
+          return combineLatest(
             this.recordService.getRecords(
               'subdivisions',
               `organisation.pid:${record.id}`
             ),
             this.recordService.getRecords(
               'collections',
-              `organisation.pid:${record.id}`
+              // `organisation.pid:${record.id}`
             ),
-          ]);
+          );
         })
       )
-      .subscribe((result: any) => {
-        this.subdivisions = result[0].hits.hits;
-        this.collections = result[1].hits.hits;
+      .subscribe(([subdivisions, collections]: any) => {
+        this.subdivisions = subdivisions.hits.hits;
+        this.collections = collections.hits.hits;
       });
   }
 }

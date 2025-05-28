@@ -20,57 +20,69 @@
     <ng-container
       [ngTemplateOutlet]="fileLink"
       [ngTemplateOutletContext]="{ file: file(), name: file().label }"
-    ></ng-container>
+    />
   </ng-template>
 
   <ng-template pTemplate="icons">
     <p-button
+      [title]="'edit' | translate"
+      [text]="true"
+      icon="fa fa-edit"
+      class="p-panel-header-icon p-link"
+      (onClick)="showEditor()"
+    />
+    <p-button
       [title]="'remove' | translate"
       [text]="true"
       icon="fa fa-trash"
-      class="p-panel-header-icon p-link ui:mr-2"
-      (onClick)="deleteFile(file())"
+      class="p-panel-header-icon p-link"
+      (onClick)="deleteFile()"
     />
   </ng-template>
 
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-    <div class="ui:col-span-12">
-      <div class="ui:flex ui:justify-end ui:flex-wrap">
-        <p-button
-          [label]="'Save' | translate"
-          (onClick)="save()"
-          icon="pi pi-save"
-          size="small"
+  <div class="ui:p-4 ui:bg-white ui:flex ui:flex-col ui:gap-1">
+    @if(file().key) {
+      <sonar-field-description
+          [label]="'Filename' | translate"
+          [field]="file().key"
         />
-      </div>
-      <p-divider />
-      <formly-form
-        [model]="model"
-        [fields]="fields()"
-        [options]="options"
-        [form]="form"
-      />
-    </div>
-    <p-divider layout="vertical"></p-divider>
-    <div class="ui:col-span-12">
-      <div class="ui:flex ui:justify-end ui:flex-wrap">
-        <p-fileUpload
-          mode="basic"
-          [chooseLabel]="'A new version' | translate"
-          chooseIcon="pi pi-upload"
-          [accept]="file().metadata.mimetype"
-          fileLimit="1"
-          [auto]="true"
-          [maxFileSize]="maxFileSize"
-          [customUpload]="true"
-          (uploadHandler)="uploadHandler($event)"
+    }
+    @if(file().size) {
+      <sonar-field-description
+          [label]="'File Size' | translate"
+          [field]="file().size | filesize"
         />
-      </div>
-      <p-divider />
-      @if (file().versions) {
-      <h5 translate>Versions</h5>
-      <ul class="ui:list-none">
-        @for (version of file()?.versions; track version) {
+    }
+    @if(file().updated) {
+      <sonar-field-description
+          [label]="'Updated at' | translate"
+          [field]="file().updated | dateTranslate: 'fullDate'"
+        />
+    }
+    @let data = file().metadata;
+    @if(data.access) {
+      <sonar-field-description
+          [label]="'Access' | translate"
+          [field]="data.access | translate"
+        />
+    }
+    @if(data.embargo_date) {
+      <sonar-field-description
+          [label]="'Embargo Date' | translate"
+          [field]="data.embargo_date | dateTranslate: 'fullDate'"
+        />
+    }
+    @if(data.embargoDate) {
+      <sonar-field-description
+          [label]="'Embargo Date' | translate"
+          [field]="data.embargoDate | dateTranslate: 'fullDate'"
+        />
+    }
+    <p-divider align="left" ><b translate>Versions</b></p-divider>
+
+    @if (file().versions) {
+      <ul>
+        @for (version of file()?.versions; track $index) {
         <li>
           <ng-container
             [ngTemplateOutlet]="fileLink"
@@ -82,25 +94,39 @@
         </li>
         }
       </ul>
-      } @else {
-      <span translate>No previous version</span>
-      }
-    </div>
+    }
+      <div class="ui:flex ui:justify-end ui:flex-wrap">
+        <p-fileUpload
+          [chooseButtonProps]="{size:'small'}"
+          mode="basic"
+          [chooseLabel]="'A new version' | translate"
+          chooseIcon="fa fa-upload"
+          [accept]="file().metadata.mimetype"
+          fileLimit="1"
+          [auto]="true"
+          [maxFileSize]="maxFileSize"
+          [customUpload]="true"
+          (uploadHandler)="uploadHandler($event)"
+        />
+      </div>
   </div>
 </p-panel>
 
 <ng-template #fileLink let-file="file" let-name="name">
   @if (file?.links?.self) {
   <a
-    class="ui:flex-grow"
+    pButton
+    iconPos="right"
     tabindex="-1"
     [pTooltip]="
       (file.size | filesize) + ' / ' + (file.updated | dateTranslate : 'medium')
     "
-    title="download"
+    [title]="'download' | translate"
     [href]="downloadURL(file)"
+    icon="fa fa-download"
+    [text]="true"
     download
-    >{{ name }}&nbsp;<i class="fa fa-download"></i
-  ></a>
+    [label]="name"
+    ></a>
   }
 </ng-template>

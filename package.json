@@ -26,7 +26,7 @@
     "e2e": "ng e2e",
     "lint": "ng lint",
     "pack": "npm run deploy && npm pack",
-    "serve": "ng serve --configuration proxy",
+    "serve": "ng serve --configuration proxy --no-hmr",
     "test": "ng test",
     "extract_messages": "ngx-translate-extract -k -c -s -i ./projects/sonar/src -o ./projects/sonar/src/assets/i18n/messages.json --fi '  '",
     "update_catalog": "ngx-translate-extract -k -c -s -i ./projects/sonar/src -o ./projects/sonar/src/assets/i18n/{de,en,fr,it,es}.json --fi '  '"
@@ -41,12 +41,10 @@
     "@angular/platform-browser": "^19.2.5",
     "@angular/platform-browser-dynamic": "^19.2.5",
     "@angular/router": "^19.2.5",
-    "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
     "@ngx-formly/core": "^7.0.0-alpha.1",
     "@ngx-formly/primeng": "^7.0.0-alpha.1",
     "@ngx-translate/core": "^16.0.0",
-    "@rero/ng-core": "file:../ng-core/rero-ng-core-19.2.0.tgz",
-    "@vpoppy/ngx-translate-extract": "^9.0.0",
+    "@rero/ng-core": "^19.0.1",
     "crypto-js": "^4.2.0",
     "easymde": "^2.19.0",
     "luxon": "^3.5.0",
@@ -55,10 +53,10 @@
     "lodash-es": "^4.17.21",
     "marked": "^15.0.0",
     "ngx-spinner": "^19.0.0",
-    "primelocale": "^1.6",
-    "primeng": "^19.1.0",
-    "@primeng/themes": "^19.1.0",
-    "rxjs": "^7.8.1",
+    "primelocale": "^2.1.2",
+    "primeng": "~19.1",
+    "@primeng/themes": "~19.1",
+    "rxjs": "^7.4.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -76,6 +74,7 @@
     "@types/jasmine": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
+    "@vpoppy/ngx-translate-extract": "^9.0.0",
     "bootstrap": "^4.6.2",
     "eslint": "^9.21.0",
     "jasmine-core": "^5.6.0",
@@ -88,8 +87,8 @@
     "ngx-toastr": "^19.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.8",
-    "tailwindcss-primeui": "^0.5.0",
-    "typescript": "~5.8.2"
+    "tailwindcss-primeui": "^0.6.1",
+    "typescript": "^5.8.0"
   },
   "publishConfig": {
     "access": "public"

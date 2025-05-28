@@ -21,7 +21,6 @@ import { MenuItem } from 'primeng/api';
 @Component({
     selector: 'sonar-deposit-step',
     templateUrl: './step.component.html',
-    // styleUrls: ['./step.component.scss'],
     standalone: false
 })
 export class StepComponent implements OnInit {

@@ -14,9 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record">
-  <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
-  <dl>
+@if(record) {
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
     <sonar-field-description [label]="'Code' | translate" [field]="record.metadata.code"/>
 
     <sonar-field-description [label]="'Is shared' | translate" [field]="record.metadata.isShared">
@@ -81,22 +81,23 @@
       </ng-template>
     </sonar-field-description>
 
-    <sonar-field-description [label]="'Subdivisions' | translate" [field]="subdivisions">
-      <ng-template let-subdivision pTemplate="template">
-        {{ subdivision.metadata.name | languageValue | async }}
-      </ng-template>
-    </sonar-field-description>
+    @if (subdivisions?.length) {
+      <sonar-field-description [label]="'Subdivisions' | translate" [field]="subdivisions">
+        <ng-template let-subdivision pTemplate="template">
+          {{ subdivision.metadata.name | languageValue | async }}
+        </ng-template>
+      </sonar-field-description>
+    }
 
-    <sonar-field-description [label]="'Collections' | translate" [field]="collections">
-      <ng-template let-collection pTemplate="template">
-        <a [routerLink]="['/', 'records', 'collections', 'detail', collection.id]">
-          {{ collection.metadata.name | languageValue | async }}
-        </a>
-      </ng-template>
-    </sonar-field-description>
-  </dl>
-  <sonar-upload-files
-  recordType="organisations"
-  [pid]="record.metadata.pid"
-></sonar-upload-files>
-</ng-container>
+    @if (collections?.length) {
+      <sonar-field-description [label]="'Collections' | translate" [field]="collections">
+        <ng-template let-collection pTemplate="template">
+          <a [routerLink]="['/', 'records', 'collections', 'detail', collection.id]">
+            {{ collection.metadata.name | languageValue | async }}
+          </a>
+        </ng-template>
+      </sonar-field-description>
+    }
+    <sonar-upload-files recordType="organisations" [pid]="record.metadata.pid" />
+  </div>
+}

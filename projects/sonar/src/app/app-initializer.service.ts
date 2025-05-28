@@ -26,7 +26,7 @@ export class AppInitializerService {
   constructor(private _userService: UserService) { }
 
   /** Function called when launching the application */
-  initialize(): Observable<any> {
+  load(): Observable<any> {
     return this._userService.loadLoggedUser();
   }
 }

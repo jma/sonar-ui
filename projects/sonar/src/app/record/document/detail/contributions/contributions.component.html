@@ -18,20 +18,22 @@
 @if(contributors.length > 0) {
   @if(!additionalInfosFields) {
     <ul class="ui:list-none">
-      @for (contributor of contributors|slice:0:contributorsLength; track contributor) {
+      @for (contributor of contributors|slice:0:contributorsLength; track $index) {
         <li><sonar-contribution [contributor]="contributor" viewType="detail" /></li>
       }
     </ul>
-    <a href="#" (click)="showMoreContributors($event)" *ngIf="showMore && contributors.length > contributorsLength">
+    @if(showMore && contributors.length > contributorsLength) {
+    <a href="#" (click)="showMoreContributors($event)">
       {{ 'Show more' | translate }}&hellip;
     </a>
+    }
   }
   @else {
     <dl class="metadata">
       <dt translate>Conference</dt>
       <dd>
         <ul class="ui:list-none">
-          @for (contributor of contributors|slice:0:contributorsLength; track contributor) {
+          @for (contributor of contributors|slice:0:contributorsLength; track $index) {
             <li><sonar-contribution [contributor]="contributor" viewType="detail" /></li>
           }
         </ul>

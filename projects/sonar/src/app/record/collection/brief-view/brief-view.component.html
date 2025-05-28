@@ -15,6 +15,6 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<h4>
-  <a routerLink="{{ detailUrl.link }}">{{ record.metadata.name | languageValue | async }}</a>
-</h4>
+<h5>
+  <a [routerLink]="detailUrl.link">{{ record.metadata.name | languageValue | async }}</a>
+</h5>

@@ -14,62 +14,66 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
-  <h1 class="ui:mb-4">{{ record.metadata.name }}</h1>
-  <dl>
-    <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
-      <ng-template let-description pTemplate="template">
-       <span [innerHtml]="description | nl2br"></span>
-      </ng-template>
-    </sonar-field-description>
+@if (record$ | async; as record) {
+  <h1>{{ record.metadata.name }}</h1>
+  <sonar-field-description [label]="'Description' | translate" [field]="record.metadata.description">
+    <ng-template let-description pTemplate="template">
+      <span [innerHtml]="description | nl2br"></span>
+    </ng-template>
+  </sonar-field-description>
 
-    <sonar-field-description [label]="'Start date' | translate" [field]="record.metadata.startDate | dateTranslate: 'longDate' ">
-    </sonar-field-description>
+  <sonar-field-description [label]="'Start date' | translate" [field]="record.metadata.startDate | dateTranslate: 'longDate' ">
+  </sonar-field-description>
 
-    <sonar-field-description [label]="'End date' | translate" [field]="record.metadata.endDate | dateTranslate: 'longDate' ">
-    </sonar-field-description>
+  <sonar-field-description [label]="'End date' | translate" [field]="record.metadata.endDate | dateTranslate: 'longDate' ">
+  </sonar-field-description>
 
-    <sonar-field-description [label]="'Identifier' | translate" [field]="record.metadata.identifiedBy">
-      <ng-template let-identifiedBy pTemplate="template">
-        <sonar-record-identifier type="identifiedBy" [data]="identifiedBy"/>
-      </ng-template>
-    </sonar-field-description>
+  <sonar-field-description [label]="'Identifier' | translate" [field]="record.metadata.identifiedBy">
+    <ng-template let-identifiedBy pTemplate="template">
+      <sonar-record-identifier type="identifiedBy" [data]="identifiedBy"/>
+    </ng-template>
+  </sonar-field-description>
 
-    <sonar-field-description [label]="'Investigators' | translate" [field]="record.metadata.investigators">
-      <ng-template let-investigator pTemplate="template">
-          {{ investigator.agent.preferred_name }}
-          (@for (role of investigator.role; track role; let last=$last) {
-              {{ role | translate }}@if (!last) {
-                ,&nbsp;
-              }
-          })
-          <sonar-record-identifier type="identifiedBy" [data]="investigator.identifiedBy" *ngIf="investigator.identifiedBy">
-          </sonar-record-identifier>
-          @if (investigator.affiliation) {
-            <small class="ui:ml-1"
-              [pTooltip]="investigator.controlledAffiliation ? (investigator.controlledAffiliation | join:' ; ') : null">
-              <i class="ui:text-muted-color">{{ investigator.affiliation }}</i>
-            </small>
-          }
-      </ng-template>
-    </sonar-field-description>
+  <sonar-field-description [label]="'Investigators' | translate" [field]="record.metadata.investigators">
+    <ng-template let-investigator pTemplate="template">
+        {{ investigator.agent.preferred_name }}
+        (@for (role of investigator.role; track $index; let last=$last) {
+            {{ role | translate }}@if (!last) {
+              ,&nbsp;
+            }
+        })
+        @if(investigator.identifiedBy) {
+          <sonar-record-identifier type="identifiedBy" [data]="investigator.identifiedBy" />
+        }
+        @if (investigator.affiliation) {
+          <small
+            [pTooltip]="investigator.controlledAffiliation ? (investigator.controlledAffiliation | join:' ; ') : null">
+            <i class="ui:text-muted-color">{{ investigator.affiliation }}</i>
+          </small>
+        }
+    </ng-template>
+  </sonar-field-description>
 
-    <sonar-field-description [label]="'Funding organisations' | translate" [field]="record.metadata.funding_organisations">
+    <sonar-field-description
+      [label]="'Funding organisations' | translate"
+      [field]="record.metadata.funding_organisations"
+    >
       <ng-template let-funding_organisation pTemplate="template">
         {{ funding_organisation.agent.preferred_name }}
-          <sonar-record-identifier type="identifiedBy"
-            [data]="funding_organisation.identifiedBy" *ngIf="funding_organisation.identifiedBy">
-          </sonar-record-identifier>
+        @if(funding_organisation.identifiedBy) {
+          <sonar-record-identifier
+            type="identifiedBy"
+            [data]="funding_organisation.identifiedBy"
+          />
+        }
       </ng-template>
     </sonar-field-description>
 
-  </dl>
 
   @if (user$ | async; as user){
-    @if (record.metadata.documents && record.metadata.documents.length > 0 && user.is_moderator) {
     <h4 translate>Linked documents</h4>
     <ul class="ui:list-none">
-      @for (document of record.metadata.documents; track document) {
+      @for (document of record.metadata.documents; track $index) {
         <li>
           <a [routerLink]="['/', 'records', 'documents', 'detail', document.pid]">
             {{ document.title[0].mainTitle | languageValue | async }}

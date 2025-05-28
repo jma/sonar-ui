@@ -65,12 +65,16 @@
             severity="error"
             showTransitionOptions="0ms"
           />
-        } @else {
-          <div class="ui:text-center ui:p-4">
-            <span class="ui:text-blue-500" translate>Drag and drop files.</span>
-          </div>
         }
       </ng-template>
+      <ng-template #empty>
+        @if (!reachMaxFileLimit) {
+          <div class="ui:flex ui:items-center ui:justify-center ui:flex-col ui:p-2">
+              <i class="fa fa-cloud-upload ui:!border-2 ui:!rounded-full ui:!p-8 ui:!text-4xl ui:!text-muted-color"></i>
+              <p class="ui:mt-6 ui:mb-0" translate>Drag and drop files to here to upload.</p>
+          </div>
+        }
+    </ng-template>
     </p-fileUpload>
 
     @if(files?.length > 0) {

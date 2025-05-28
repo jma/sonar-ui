@@ -123,6 +123,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.items = [
       {
         label:  this.translateService.instant('SONAR Administration'),
+        visible: this.user.is_admin,
         items: [
           {
             label: this.translateService.instant('Collections'),

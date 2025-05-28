@@ -25,7 +25,6 @@ import { DepositService } from '../deposit.service';
 @Component({
     selector: 'sonar-deposit-metadata',
     templateUrl: './metadata.component.html',
-    styleUrl: './metadata.component.css',
     standalone: false
 })
 export class MetadataComponent implements OnInit {

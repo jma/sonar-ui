@@ -17,21 +17,14 @@
 
 import {
   Component,
-  computed,
-  effect,
   inject,
   input,
-  output,
+  output
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFormOptions } from '@ngx-formly/core';
-import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import {
-  JSONSchemaService,
-  processJsonSchema,
-  resolve$ref,
-} from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
+import { DialogService } from 'primeng/dynamicdialog';
 import { AppConfigService } from '../../../app-config.service';
+import { FileItemEditorComponent } from '../file-item-editor/file-item-editor.component';
 @Component({
     selector: 'sonar-file-item',
     templateUrl: './file-item.component.html',
@@ -40,8 +33,9 @@ import { AppConfigService } from '../../../app-config.service';
 export class FileItemComponent {
   // file to display
   file = input.required<any>();
-  // editor JSONSchema
+
   schema = input.required<any>();
+
   // event when a file should be deleted
   delete = output<any>();
   // event when the file metadata should be updated
@@ -52,33 +46,32 @@ export class FileItemComponent {
   // maximum upload file size
   maxFileSize: number;
 
-  // formly jsonschema service
-  formlyJSONSchema = inject(FormlyJsonschema);
-  // ng-core jsonschema service
-  jsonschemaService = inject(JSONSchemaService);
   // application configuration service
   appConfigService = inject(AppConfigService);
 
-  // the formly form
-  form: FormGroup = new FormGroup({});
-  // editor value
-  model: any = {};
-  // editor options
-  options: FormlyFormOptions = {};
-  // formly editor fields
-  fields = computed(() => this.createForm(this.schema()));
+  dialogService = inject(DialogService);
+  translateService = inject(TranslateService);
 
   /**
    * constructor
    */
   constructor() {
     this.maxFileSize = this.appConfigService.maxFileSize;
-    effect(() => {
-      // set the form model from the file content
-      this.model = this.file().metadata;
-    });
   }
 
+  showEditor() {
+     let modalRef = this.dialogService.open(FileItemEditorComponent, {
+        header: this.translateService.instant('Metadata Editor'),
+        modal: true,
+        data: {
+          file: this.file(),
+          schema: this.schema()
+        },
+        closable: true,
+        width: '60vw'
+      });
+    modalRef.onClose.subscribe(model => model ? this.update.emit(model): null);
+  }
   /**
    * Get the download URL for a given file
    *
@@ -96,15 +89,8 @@ export class FileItemComponent {
    *
    * @param file to delete
    */
-  deleteFile(file) {
-    this.delete.emit(file);
-  }
-
-  /**
-   * Update the file metadata.
-   */
-  save() {
-    this.update.emit(this.model);
+  deleteFile() {
+    this.delete.emit(this.file());
   }
 
   /**
@@ -116,27 +102,4 @@ export class FileItemComponent {
     this.upload.emit({ file: this.file(), fileUpload: event.files[0] });
   }
 
-  /**
-   * Create the form editor.
-   *
-   * @param schema editor JSONSchema
-   * @returns the formly fields.
-   */
-  private createForm(schema: any) {
-    schema = processJsonSchema(resolve$ref(schema, schema.properties));
-    // form configuration
-    const editorConfig = {
-      longMode: false,
-    };
-    return [
-      this.formlyJSONSchema.toFieldConfig(schema, {
-        map: (field: any, fieldSchema: any) => {
-          field = this.jsonschemaService.processField(field, fieldSchema);
-          field.props.editorConfig = editorConfig;
-          field.props.getRoot = () => this.fields()[0];
-          return field;
-        },
-      }),
-    ];
-  }
 }

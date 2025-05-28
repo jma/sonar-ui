@@ -43,21 +43,21 @@
   }
 }
 
-@layer bootstrap {
-  $font-family-base: "Roboto", sans-serif;
-  $primary: #205078 !default;
-  $secondary: rgb(246, 130, 17) !default;
-  // @include meta.load-css('bootstrap/dist/css/bootstrap');
-  @import "bootstrap/scss/bootstrap";
-}
+// @layer bootstrap {
+//   $font-family-base: "Roboto", sans-serif;
+//   $primary: #205078 !default;
+//   $secondary: rgb(246, 130, 17) !default;
+//   // @include meta.load-css('bootstrap/dist/css/bootstrap');
+//   @import "bootstrap/scss/bootstrap";
+// }
 
-:root {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-}
+// :root {
+//   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+//     "Helvetica Neue", Helvetica, Arial, sans-serif;
+//   --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+//     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+//   font-size: 1rem;
+// }
 
 
 // // Font awesome

@@ -27,10 +27,6 @@ export class FileComponent {
   @Input()
   file: DocumentFile;
 
-  // Record statistics.
-  @Input()
-  statistics;
-
   // Show preview icon
   @Input()
   showPreview = true;
@@ -38,10 +34,6 @@ export class FileComponent {
   // Show download icon
   @Input()
   showDownload = true;
-
-  // Show statistics icon
-  @Input()
-  showStatistics = true;
 
   @Input()
   showExternalLink = true;

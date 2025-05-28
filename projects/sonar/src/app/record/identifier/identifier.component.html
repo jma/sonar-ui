@@ -16,15 +16,15 @@
 -->
 @switch(identifier.field) {
   @case ('identifiedBy') {
-    <p-tag severity="secondary">
+    <p-tag severity="secondary" styleClass="ui:mr-1">
       {{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}
     </p-tag>
     @if(identifier.link) {
-      <a href="{{ identifier.link }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
+      <a [href]="identifier.link" [title]="externalLinkText" target="_blank">{{ identifier.value }}</a>
     }
     @else {
       @if(identifier.value.startsWith('http')) {
-        <a href="{{ identifier.value }}" title="{{ externalLinkText }}" target="_blank">{{ identifier.value }}</a>
+        <a [href]="identifier.value" [title]="externalLinkText" target="_blank">{{ identifier.value }}</a>
       }
       @else {
         {{ identifier.value }}
@@ -33,8 +33,8 @@
   }
   @case ('agent') {
     @if(identifier.link) {
-      <p-tag severity="secondary" class="ui:mr-1">
-        <a title="{{ externalLinkText }}" href="{{ identifier.link }}">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</a>
+      <p-tag severity="secondary" styleClass="ui:mr-1">
+        <a [title]="externalLinkText" [href]="identifier.link">{{ (identifier.source ? identifier.source : identifier.type|translate)|uppercase }}</a>
       </p-tag>
     }
     @else {

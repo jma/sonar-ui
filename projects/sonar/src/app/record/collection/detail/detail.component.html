@@ -14,14 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
-  <h1 class="ui:mb-4">{{ record.metadata.name | languageValue | async }}</h1>
+@if(record$ | async; as record) {
+  <h1>{{ record.metadata.name | languageValue | async }}</h1>
   @if(record.metadata.description) {
     <h4 translate>Description</h4>
     <p [innerHtml]="record.metadata.description | languageValue | async | markdown"></p>
   }
   <sonar-upload-files
-  recordType="collections"
-  [pid]="record.metadata.pid"
-></sonar-upload-files>
-</ng-container>
+    recordType="collections"
+    [pid]="record.metadata.pid"
+  />
+}

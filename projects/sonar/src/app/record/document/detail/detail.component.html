@@ -23,7 +23,7 @@
           [file]="mainFile"
           [statistics]="record.statistics"
           (previewClicked)="showPreview($event)"
-        ></sonar-document-file>
+        />
       </div>
 
       <!-- DOCUMENT TYPE -->
@@ -78,9 +78,9 @@
       <!-- PUBLICATION STATEMENT -->
       @if(record.provisionActivity && record.provisionActivity.length > 0) {
         <ul class="ui:list-none">
-          @for(statement of record.provisionActivity; track statement) {
+          @for(statement of record.provisionActivity; track $index) {
             @if(statement.text && statement.text.default) {
-              @for(item of statement.text | keyvalue; track item) {
+              @for(item of statement.text | keyvalue; track $index) {
                 <li>{{ item.value }}</li>
               }
             }
@@ -131,10 +131,7 @@
               }}:
             </strong>
             <ul class="ui:list-none">
-              @for (partOf of record.partOf; track partOf) {
-              <li>
-                {{ partOf.text }}
-              </li>
+              @for (partOf of record.partOf; track $index) {
               <li>
                 {{ partOf.text }}
               </li>
@@ -146,8 +143,8 @@
       <!-- ---------------------- SUBJECTS ---------------------- -->
       @if(record.subjects && record.subjects.length > 0) {
         <div class="ui:flex ui:gap-1">
-          @for (subject of record.subjects; track subject) {
-            @for(value of subject.label.value; track value) {
+          @for (subject of record.subjects; track $index) {
+            @for(value of subject.label.value; track $index) {
               <p-tag severity="secondary" icon="fa fa-tag">
                 <a
                 [routerLink]="['/', 'records', 'documents']"
@@ -163,17 +160,17 @@
 
       <!-- ---------------------- ABSTRACT ---------------------- -->
       @if (record.abstracts.length > 0) {
-        <p-tabs [value]="0">
+        <p-tabs [value]="record.abstracts[0].language">
           <p-tablist>
-            @for (abstract of record.abstracts; track abstract; let i=$index) {
-              <p-tab [value]="i">{{ abstract.language | translateLanguage }}</p-tab>
+            @for (abstract of record.abstracts; track $index) {
+              <p-tab [value]="abstract.language">{{ abstract.language | translateLanguage }}</p-tab>
             }
           </p-tablist>
 
           <p-tabpanels>
-            @for (abstract of record.abstracts; track abstract; let i = $index) {
-              <p-tabpanel [value]="i">
-                <p-scrollpanel [style]="{ height: '150px' }">
+            @for (abstract of record.abstracts; track $index) {
+              <p-tabpanel [value]="abstract.language">
+                <p-scrollpanel styleClass="ui:h-[10rem]">
                   <p [innerHtml]="abstract.value | nl2br"></p>
                 </p-scrollpanel>
               </p-tabpanel>
@@ -366,27 +363,27 @@
     </p-tab>
   </p-tablist>
   <p-tabpanels>
-    <p-tabpanel value="others">
-      @if(filteredFiles.length > 1) {
-        <div class="ui:mt-4">
-          <sonar-other-files [documentPid]="record.pid" />
-        </div>
+    <p-tabpanel #otherFiles value="others">
+      @if(otherFiles.active() && filteredFiles.length > 1) {
+        <sonar-other-files [documentPid]="record.pid" />
       }
     </p-tabpanel>
-    <p-tabpanel value="stats">
-        <div class="ui:mt-4">
-          <sonar-stats-files
-            [record]="record"
-            [filteredKeys]="filteredKeys"
-          ></sonar-stats-files>
-        </div>
+    <p-tabpanel #stats value="stats">
+      @if(stats.active()) {
+        <sonar-stats-files
+          [record]="record"
+          [filteredKeys]="filteredKeys"
+        />
+      }
     </p-tabpanel>
-    <p-tabpanel value="edit">
+    <p-tabpanel #editFile value="edit">
+      @if(editFile.active()) {
         <sonar-upload-files
           recordType="documents"
           [pid]="record.pid"
           (filesChanged)="updateFiles($event)"
         />
+      }
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

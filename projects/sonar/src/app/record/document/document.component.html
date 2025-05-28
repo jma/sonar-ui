@@ -39,22 +39,35 @@
         [showExternalLink]="false"
       />
     }
-    <p class="ui:my-2" *ngIf="record.metadata.documentType">
-      <small>{{ ('document_type_' + record.metadata.documentType) | translate }}</small>
-    </p>
+    @if(record.metadata.documentType) {
+      <p class="ui:my-2">
+        <small>{{ ('document_type_' + record.metadata.documentType) | translate }}</small>
+      </p>
+    }
   </div>
   <div class="ui:col-span-12 ui:md:col-span-10 ui:flex ui:flex-col ui:gap-1">
-    <h4 class="ui:mb-2">
+    <h4>
       @if(detailUrl) {
-        <a
-          [href]="detailUrl.external? detailUrl.link: undefined"
-          [routerLink]="detailUrl.external? undefined: detailUrl.link"
-        >
-          <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
-          @if(record.metadata.title[0].subtitle) {
-            :&nbsp;{{ record.metadata.title[0].subtitle | languageValue | async }}
-          }
-        </a>
+        @if(detailUrl.external) {
+          <a
+            [href]="detailUrl.link"
+          >
+            <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
+            @if(record.metadata.title[0].subtitle) {
+              :&nbsp;{{ record.metadata.title[0].subtitle | languageValue | async }}
+            }
+          </a>
+        }
+        @else {
+          <a
+            [routerLink]="detailUrl.link"
+          >
+            <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
+            @if(record.metadata.title[0].subtitle) {
+              :&nbsp;{{ record.metadata.title[0].subtitle | languageValue | async }}
+            }
+          </a>
+        }
       }
       @else {
         <span [innerHTML]="record.metadata.title[0].mainTitle | languageValue | async | nl2br"></span>
@@ -65,21 +78,21 @@
     </h4>
     @if(isGlobalView && record.metadata.organisation) {
       <div class="ui:flex ui:gap-1">
-        @for(organisation of record.metadata.organisation; track organisation) {
+        @for(organisation of record.metadata.organisation; track $index) {
         <p-tag severity="secondary"  [value]="organisation.name" />
         }
       </div>
     }
     @if(record.metadata.subdivisions) {
       <div class="ui:flex ui:gap-1">
-        @for(subdivision of record.metadata.subdivisions; track subdivision) {
+        @for(subdivision of record.metadata.subdivisions; track $index) {
         <p-tag severity="secondary"  [value]="subdivision.name | languageValue | async" />
         }
       </div>
     }
     @if (record.metadata.contribution) {
       <span>
-        @for (contributor of record.metadata.contribution|contributors; track contributor; let first=$first) {
+        @for (contributor of record.metadata.contribution|contributors; track $index; let first=$first) {
           @if(!first) {
             &nbsp;;&nbsp;
           }
@@ -95,9 +108,9 @@
     }
     @if(record.metadata?.provisionActivity?.length > 0) {
       <ul class="ui:list-none">
-      @for(statement of record.metadata.provisionActivity; track statement) {
+      @for(statement of record.metadata.provisionActivity; track $index) {
         @if(statement.text && statement.text.default) {
-          @for(item of statement.text | keyvalue; track item) {
+          @for(item of statement.text | keyvalue; track $index) {
             <li>
             {{item.value}}
           </li>
@@ -107,7 +120,13 @@
     </ul>
     }
     @if(abstract) {
-      <p>{{ abstract | truncateText: 30 }}</p>
+      <ng-core-text-read-more
+        [text]="abstract"
+        unit="word"
+        [limit]="30"
+        [showMoreLabel]="'Show more' | translate"
+        [showLessLabel]="'Show less' | translate"
+      />
     }
   </div>
 </div>

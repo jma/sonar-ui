@@ -27,7 +27,7 @@
   ({{ meetingInfo }})
 }
 @if (contributor.agent.identifiedBy) {
-  <sonar-record-identifier type="agent" [data]="contributor.agent.identifiedBy" />
+  <sonar-record-identifier class="ui:ml-1" type="agent" [data]="contributor.agent.identifiedBy" />
 }
 @if(viewType === 'detail' && contributor.affiliation) {
   @if(contributor.controlledAffiliation) {

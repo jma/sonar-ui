@@ -14,20 +14,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container ui:pb-5 ui:pl-0">
-  <div>
-    <label class="ui:font-bold">{{ 'Document views' | translate }}:</label>
-    <span class="ui:ml-1">{{ statistics['record-view'] }}</span>
-  </div>
-  <label class="ui:font-bold">{{ 'File downloads' | translate }}:</label>
-  <ul class="ui:mb-0">
-    @for (key of filteredKeys; track key) {
-    <li>
+<dl class="metadata">
+  <dt>{{ 'Document views' | translate }}</dt>
+  <dd>{{ statistics['record-view'] }}</dd>
+</dl>
+<p-divider />
+<h6>{{ 'File downloads' | translate }}</h6>
+<dl class="metadata">
+  @for (key of filteredKeys; track $index) {
+    <dt>{{ key }}</dt>
+    <dd>
       @if(statistics[key]) {
-      {{ key }}: {{ statistics[key] }}
+        {{ statistics[key] }}
       } @else {
-      {{ key }}: 0 }
-    </li>
-    }
-  </ul>
-</div>
+        0
+      }
+    </dd>
+  }
+</dl>

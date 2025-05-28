@@ -8,7 +8,6 @@ import { map } from 'rxjs';
 @Component({
     selector: 'sonar-deposit-editor-swisscovery',
     templateUrl: './swisscovery.component.html',
-    // styleUrl: './swisscovery.component.css',
     standalone: false
 })
 export class SwisscoveryComponent {

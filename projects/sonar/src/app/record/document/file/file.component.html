@@ -30,19 +30,19 @@
   }
   @else {
     @if (showExternalLink && file.links.external) {
-      <a href="{{ file.links.external }}" target="_blank">
+      <a [href]="file.links.external" target="_blank">
         <ng-container [ngTemplateOutlet]="thumbnail" />
       </a>
     }
     @else {
       @if(showPreview && file.links.preview) {
-        <a href="{{ file.links.preview }}" (click)="preview(file); $event.preventDefault()">
+        <a [href]="file.links.preview" (click)="preview(file); $event.preventDefault()">
           <ng-container [ngTemplateOutlet]="thumbnail" />
         </a>
       }
       @else {
         @if(showDownload && file.links.download) {
-          <a href="{{ file.links.download }}?download">
+          <a [href]="file.links.download" download>
             <ng-container [ngTemplateOutlet]="thumbnail" />
           </a>
         }
@@ -52,39 +52,25 @@
       }
     }
   }
-  <div class="ui:my-2">
-    <p-tag severity="secondary">
-      {{ 'Public access from' | translate }}<br>{{ file.restriction.date }}
-    </p-tag>
-  </div>
+  @if(file?.restriction?.restricted && file?.restriction?.date) {
+    <div class="ui:mt-2">
+      <p-tag severity="secondary">
+        {{ 'Public access from' | translate }}<br>{{ file.restriction.date }}
+      </p-tag>
+    </div>
+  }
   <div class="ui:flex ui:gap-1 ui:justify-center">
     @if(showExternalLink && file.links.external) {
-      <a href="{{ file.links.external }}" target="_blank">
-        <i class="fa fa-external-link ui:mx-1"></i>
+      <a pButton [text]="true" icon="fa fa-external-link" [href]="file.links.external" target="_blank">
       </a>
     }
     @if(showPreview && file.links.preview) {
-      <a href="{{ file.links.preview }}" (click)="preview(file); $event.preventDefault()">
-        <i class="fa fa-eye ui:mx-1"></i>
+      <a pButton text="true" icon="fa fa-eye" [href]="file.links.preview" (onClick)="preview(file)">
       </a>
     }
     @if (showDownload && file.links.download) {
-      <a href="{{ file.links.download }}?download">
-        <i class="fa fa-download ui:mx-1"></i>
+      <a pButton text="true" icon="fa fa-download" [href]="file.links.download" download>
       </a>
-    }
-    @if(statistics && showStatistics) {
-      <a href="" (click)="goToElement($event, 'stats')" [pTooltip]="templateStats">
-        <i class="fa fa-bar-chart ui:mx-1"></i>
-      </a>
-      <ng-template #templateStats>
-        @if(statistics[file.key]) {
-          <div>{{ 'Downloads' | translate }}: {{ statistics[file.key] }}</div>
-        }
-        @else {
-          <div>{{ 'Downloads' | translate }}: 0</div>
-        }
-      </ng-template>
     }
   </div>
 }
@@ -93,5 +79,5 @@
 }
 </div>
 <ng-template #thumbnail>
-  <img src="{{ file.thumbnail }}" class="ui:max-w-full ui:h-auto ui:inline" alt="{{ file.label }}">
+  <img [src]="file.thumbnail" class="ui:max-w-full ui:h-auto ui:inline" [alt]="file.label">
 </ng-template>

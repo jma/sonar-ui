@@ -18,7 +18,7 @@
     />
     <button
       pButton
-      (click)="searchSwisscovery()"
+      (onClick)="searchSwisscovery()"
       icon="fa fa-search"
       severity="secondary"
       variant="text"
@@ -28,7 +28,7 @@
 
   @if(scResult) {
     @if(hasSwisscoveryResult){
-      <dl>
+      <dl class="metadata">
         <dt translate>Title</dt>
         <dd>{{ scResult?.metadata?.title ? scResult.metadata.title : ('no title' | translate) }}</dd>
         @if(scResult?.contributors) {

@@ -18,7 +18,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { ApiService, RecordService } from '@rero/ng-core';
+import { ISuggestionItem } from '@rero/ng-core/lib/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions } from '@rero/ng-core/lib/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.interface';
 import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -28,6 +30,8 @@ export class ContributionsAutocompleteService {
 
   private httpClient: HttpClient = inject(HttpClient);
   private translateService: TranslateService = inject(TranslateService);
+  private apiService: ApiService = inject(ApiService);
+  private recordService: RecordService = inject(RecordService);
 
   constructor() { }
 
@@ -35,16 +39,28 @@ export class ContributionsAutocompleteService {
     if (!query) {
       return of([]);
     }
-    return this.httpClient.get(
-      `/api/suggestions/completion?resource=${queryOptions.type}&field=${queryOptions.field}&q=${query}`
-    ).pipe(
+    var url = `/api/${queryOptions.type}/?q=${queryOptions.field}:${query}`;
+    if(queryOptions.type === 'documents') {
+      url = `/api/suggestions/completion?resource=${queryOptions.type}&field=${queryOptions.field}&q=${query}`;
+    }
+    return this.httpClient.get(url).pipe(
         map((results: any) => {
-          let toReturn = results.map((hit: any) => {
+          var toReturn = [];
+          if(results.hits) {
+            toReturn = results.hits.hits.map((hit: any) => {
+              return {
+                label: hit.metadata[queryOptions.label],
+                value: this.apiService.getRefEndpoint(queryOptions.type, hit.id)
+              };
+            });
+          } else {
+            toReturn = results.map((hit: any) => {
             return {
               label: hit,
              value: hit
             };
           });
+          }
           if(queryOptions.allowAdd == true && !results.includes(query)) {
             const label = `<span>${this.translateService.instant("New")}:</span>&nbsp;${query}`;
             toReturn.push({label: label, value: query});
@@ -64,6 +80,18 @@ export class ContributionsAutocompleteService {
   }
 
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    return of(item.label);
+    const url = item.value.split('/');
+    if(url.length < 2) {
+      return of(item.value);
+    }
+    const pid = url.pop();
+    return this.recordService
+      .getRecord(queryOptions.type, pid, 1)
+      .pipe(
+        map((data: any) =>{
+          return `<span class="ui:p-2"><strong>${data.metadata[queryOptions.label]}</strong></span>`;
+        }
+        )
+      );
   }
 }

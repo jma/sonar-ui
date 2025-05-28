@@ -28,6 +28,11 @@
             "styles": [
               "projects/sonar/src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": ["import"]
+              }
+            },
             "scripts": [],
             "preserveSymlinks": true,
             "extractLicenses": false,

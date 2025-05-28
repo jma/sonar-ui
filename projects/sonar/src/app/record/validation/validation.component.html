@@ -14,80 +14,89 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card ui:mt-3" *ngIf="validation && user && (!isModerator() || !isOwner())">
-  <div class="card-header">
-    <h5 class="m-0" translate>Validation</h5>
-  </div>
-  <div class="card-body">
-    <div class="alert alert-warning m-0"
-      *ngIf="validation.status === validationStatus.IN_PROGRESS || validation.status === validationStatus.ASK_FOR_CHANGES">
-      {{ "The record is currently in status \"\{\{ status \}\}\". It is not
-      visible in public views." | translate: { status: ('validation_status_' + validation.status) | translate } }}
-      <ng-container *ngIf="isOwner()">
-        <a href="#" class="alert-link" (click)="$event.preventDefault(); updateValidation(validationAction.PUBLISH)"
-          translate>
-          Submit it
-        </a>.
-      </ng-container>
-    </div>
-    <div class="alert alert-warning m-0" *ngIf="validation.status === validationStatus.TO_VALIDATE" translate>
-      The record is in validation. It will be reviewed by a moderator before publishing.
-    </div>
-    <div class="alert alert-danger m-0" *ngIf="validation.status === validationStatus.REJECTED" translate>
-      The record has been rejected after a review from a moderator.
-    </div>
-    <div class="alert alert-success m-0" *ngIf="validation.status === validationStatus.VALIDATED" translate>
-      The record is currently published. It is visible in public views.
-    </div>
+@if(validation && user && (!isModerator() || !isOwner())) {
+  <p-panel [header]="'Validation' | translate">
+    <div class="ui:flex ui:flex-col ui:gap-2 ui:justify-center ui:p-2">
+    @if(validation.status === validationStatus.IN_PROGRESS || validation.status === validationStatus.ASK_FOR_CHANGES) {
+      <p-message class="ui:w-full" severity="warn" showTransitionOptions="0ms">
+        {{ "The record is currently in status \"\{\{ status \}\}\". It is not visible in public views." | translate: { status: ('validation_status_' + validation.status) | translate } }}
+        @if(isOwner()) {
+          <a href="#" class="alert-link" (click)="$event.preventDefault(); updateValidation(validationAction.PUBLISH)" translate>
+            Submit it
+          </a>.
+        }
+      </p-message>
+    }
+    @if(validation.status === validationStatus.TO_VALIDATE) {
+      <p-message class="ui:w-full" severity="warn" showTransitionOptions="0ms">
+        {{"The record is in validation. It will be reviewed by a moderator before publishing." | translate}}
+      </p-message>
+    }
+    @if(validation.status === validationStatus.REJECTED) {
+      <p-message class="ui:w-full" severity="error" showTransitionOptions="0ms">
+        {{ "The record has been rejected after a review from a moderator." | translate}}
+      </p-message>
+    }
+    @if(validation.status === validationStatus.VALIDATED) {
+      <p-message class="ui:w-full" severity="success" showTransitionOptions="0ms">
+        {{ "The record is currently published. It is visible in public views." | translate }}
+      </p-message>
 
-    <ng-container *ngIf="validation.status === validationStatus.TO_VALIDATE && isModerator()">
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:my-3 justify-content-center">
-        <div class="col-sm-12">
-          <textarea class="form-control ui:grid ui:grid-cols-12 ui:gap-4" [placeholder]="'Leave a comment...' | translate" #comment></textarea>
-        </div>
+    }
+    @if(validation.status === validationStatus.TO_VALIDATE && isModerator()) {
+      <textarea
+        #comment
+        class="ui:min-w-lg ui:my-4"
+        pTextarea
+        [autoResize]="true"
+        [placeholder]="'Leave a comment...' | translate"
+      ></textarea>
+      <div class="ui:flex ui:justify-center">
+        <p-buttongroup class="ui:mx-auto">
+          <p-button
+            size="large"
+            severity="success"
+            (onClick)="updateValidation(validationAction.APPROVE)"
+            [label]="'Approve' | translate"
+          />
+          <p-button
+            size="large"
+            severity="warn"
+            (onClick)="updateValidation(validationAction.ASK_FOR_CHANGES)"
+            [label]="'Ask for changes' | translate"
+          />
+          <p-button
+            size="large"
+            severity="danger"
+            (onClick)="updateValidation(validationAction.REJECT)"
+            [label]="'Reject' | translate"
+          />
+        </p-buttongroup>
       </div>
-    </ng-container>
-    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:my-3">
-      <ng-container *ngIf="validation.status === validationStatus.TO_VALIDATE && isModerator()">
-        <div class="col-sm-3 ui:mb-1 ui:mb-sm-0">
-          <button class="btn btn-success btn-sm btn-block" (click)="updateValidation(validationAction.APPROVE)">
-            {{ 'Approve' | translate }}
-          </button>
-        </div>
-        <div class="col-sm-3 ui:mb-1 ui:mb-sm-0">
-          <button class="btn btn-warning btn-sm btn-block" (click)="updateValidation(validationAction.ASK_FOR_CHANGES)">
-            {{ 'Ask for changes' | translate }}
-          </button>
-        </div>
-        <div class="col-sm-3">
-          <button class="btn btn-outline-danger btn-sm btn-block" (click)="updateValidation(validationAction.REJECT)">
-            {{ 'Reject' | translate }}
-          </button>
-        </div>
-      </ng-container>
-      <div class="col ui:text-center text-sm-right">
-        <a href="#" (click)="$event.preventDefault(); showLogs = !showLogs" *ngIf="validation.logs">
-          <small translate>Show logs</small>
-        </a>
-      </div>
+    }
+    @if(validation.logs) {
+      <p-button [text]="true" [label]="'Show logs'" (onClick)="showLogs = !showLogs" />
+        @if(showLogs) {
+        <p-table [value]="validation.logs" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template #header>
+            <tr>
+              <th translate>Status</th>
+              <th translate>Date</th>
+              <th translate>User</th>
+              <th translate>Comment</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-log>
+            <tr>
+              <td>{{ ('validation_status_' + log.status) | translate }}</td>
+              <td>{{ log.date | dateTranslate: 'medium' }}</td>
+              <td>{{ log.user.name }}</td>
+              <td [innerHtml]="log.comment | nl2br"></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
+    }
     </div>
-    <div class="table-responsive" *ngIf="showLogs">
-      <table class="table table-bordered table-sm ui:mt-2">
-        <thead>
-          <tr>
-            <th translate>Status</th>
-            <th translate>Date</th>
-            <th translate>User</th>
-            <th translate>Comment</th>
-          </tr>
-        </thead>
-        <tr *ngFor="let log of validation.logs">
-          <td>{{ ('validation_status_' + log.status) | translate }}</td>
-          <td>{{ log.date | dateTranslate: 'medium' }}</td>
-          <td>{{ log.user.name }}</td>
-          <td [innerHtml]="log.comment | nl2br"></td>
-        </tr>
-      </table>
-    </div>
-  </div>
-</div>
+  </p-panel>
+}

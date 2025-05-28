@@ -17,7 +17,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ActivatedRoute, ActivationStart, Router, RouterModule, Routes, UrlSegment, mapToCanActivate } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, DetailComponent, EditorComponent, RecordSearchPageComponent } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
@@ -201,19 +201,23 @@ export class AppRoutingModule {
               {
                 label: _('Relevance'),
                 value: 'relevance',
+                icon: 'fa fa-sort-amount-desc',
                 defaultQuery: true
               },
               {
                 label: _('Date descending'),
                 value: 'newest',
+                icon: 'fa fa-sort-amount-desc',
                 defaultNoQuery: true
               },
               {
                 label: _('Date ascending'),
+                icon: 'fa fa-sort-amount-asc',
                 value: 'oldest',
               },
               {
                 label: _('Title'),
+                icon: 'fa fa-sort-alpha-asc',
                 value: 'title'
               }
             ]
@@ -282,19 +286,23 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Date descending'),
             value: 'newest',
+            icon: 'fa fa-sort-amount-desc',
             defaultNoQuery: true,
           },
           {
             label: _('Date ascending'),
+            icon: 'fa fa-sort-amount-asc',
             value: 'oldest',
           },
           {
             label: _('Title'),
+            icon: 'fa fa-sort-alpha-asc',
             value: 'title',
           },
         ],
@@ -308,11 +316,13 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
             defaultNoQuery: true,
           },
         ],
@@ -325,12 +335,14 @@ export class AppRoutingModule {
         sortOptions: [
           {
             label: _('Relevance'),
+            icon: 'fa fa-sort-amount-desc',
             value: 'relevance',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
             defaultNoQuery: true,
           },
         ],
@@ -345,16 +357,19 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Date descending'),
             value: 'newest',
+            icon: 'fa fa-sort-amount-desc',
             defaultNoQuery: true,
           },
           {
             label: _('Date ascending'),
             value: 'oldest',
+            icon: 'fa fa-sort-amount-asc',
           },
         ],
       },
@@ -379,19 +394,23 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
             defaultNoQuery: true,
           },
           {
             label: _('Date descending'),
+            icon: 'fa fa-sort-amount-desc',
             value: 'newest',
           },
           {
             label: _('Date ascending'),
+            icon: 'fa fa-sort-amount-asc',
             value: 'oldest',
           },
         ],
@@ -406,11 +425,13 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
             defaultNoQuery: true,
           },
         ],
@@ -424,11 +445,13 @@ export class AppRoutingModule {
           {
             label: _('Relevance'),
             value: 'relevance',
+            icon: 'fa fa-sort-amount-desc',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
             defaultNoQuery: true,
           },
         ],

@@ -33,7 +33,7 @@
           <i class="fa fa-filter"></i>
         </p-inputgroup-addon>
       </p-inputgroup>
-      <small *ngVar="filteredFiles.length as total">
+      <small>
         {{ getResultsText() | async }}
       </small>
     </div>
@@ -64,20 +64,26 @@
               </div>
             } @else {
               <div>
-                <i class="ui:text-muted-color fa fa-4x ui:pb-1" [ngClass]="file.mimetype | faIconClass: 'file'"></i>
+                <i class="fa fa-4x" [ngClass]="file.mimetype | faIconClass: 'file'"></i>
               </div>
             }
-            <div class="ui:flex ui:items-center ui:justify-center ui:gap-2 ui:mt-2">
+            <div class="ui:flex ui:items-center ui:justify-center">
               @if (file.preview) {
                 <a
+                  pButton
+                  [text]="true"
+                  icon="fa fa-eye"
                   [href]="file.label"
-                  (click)="preview(file); $event.preventDefault()"
+                  (onClick)="preview(file)"
                 >
-                  <i class="fa  ui:text-muted-color fa-eye ui:mx-1"></i>
                 </a>
               } @if (file.download) {
-                <a [href]="file.download" download>
-                  <i class="fa fa-download ui:text-muted-color ui:mx-1"></i>
+                <a
+                  pButton
+                  [text]="true"
+                  icon="fa fa-download"
+                  [href]="file.download"
+                download>
                 </a>
               }
             </div>

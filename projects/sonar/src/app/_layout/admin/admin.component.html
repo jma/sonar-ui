@@ -16,11 +16,13 @@
 -->
 @if (ready) {
   @if(user) {
-      <div class="ui:bg-blue-900">
-    <div class="container ui:py-4 ui:text-lg">
-      <a class="ui:text-white ui:no-underline" routerLink="">SONAR <span class="ui:text-orange-400" translate>administration</span></a>
-    </div>
+    <div class="ui:bg-primary-950">
+      <div class="container ui:py-4 ui:text-lg">
+        <a class="ui:text-white ui:no-underline" routerLink="">
+          SONAR <span class="ui:text-orange-400" translate>administration</span>
+        </a>
       </div>
+    </div>
     <div class="container">
       <div class="ui:flex ui:justify-between">
         <p-menubar [model]="items" class="ui:z-20"></p-menubar>
@@ -30,7 +32,7 @@
     <div class="container ui:my-5">
       <router-outlet></router-outlet>
     </div>
-    <footer id="footer" class="ui:bg-surface-100 ui:ui:mt-5">
+    <footer id="footer" class="ui:bg-surface-100 ui:mt-5">
       <div class="container ui:p-2">
         <div class="ui:flex ui:gap-2 ui:justify-between">
           <div>
@@ -51,7 +53,7 @@
     </footer>
   }
   @else {
-    <div class="container ui:ui:mt-5">
+    <div class="container ui:mt-5">
       <p-message class="ui:w-full" severity="error" showTransitionOptions="0ms">
         {{ 'An error occurred, application cannot be loaded.' | translate }}
       </p-message>

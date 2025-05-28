@@ -24,7 +24,9 @@ import {
 import {
   APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
+  inject,
   NgModule,
+  provideAppInitializer,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -35,11 +37,6 @@ import {
   TranslateModule,
 } from '@ngx-translate/core';
 import { CoreConfigService, primeNGConfig, RecordModule, RemoteAutocompleteService } from '@rero/ng-core';
-// import { CollapseModule } from 'ngx-bootstrap/collapse';
-// import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-// import { ModalModule } from 'ngx-bootstrap/modal';
-// import { TooltipModule } from 'ngx-bootstrap/tooltip';
-// import { NgxDropzoneModule } from 'ngx-dropzone';
 import { TabsModule } from 'primeng/tabs';
 
 import { ToastrModule } from 'ngx-toastr';
@@ -117,11 +114,7 @@ import { ValidationComponent } from './record/validation/validation.component';
 import { UserService } from './user.service';
 
 import { TextareaModule } from 'primeng/textarea';
-export function appInitializerFactory(
-  appInitializerService: AppInitializerService
-): () => Promise<any> {
-  return () => appInitializerService.initialize().toPromise();
-}
+import { FileItemEditorComponent } from './record/files/file-item-editor/file-item-editor.component';
 
 export function minElementError(err: any, field: FormlyFieldConfig) {
   return `This field must contain at least ${field.templateOptions.minItems} element.`;
@@ -150,6 +143,7 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     AdminComponent,
     PublicationPipe,
     FileComponent,
+    FileItemEditorComponent,
     ProjectBriefViewComponent,
     ProjectDetailComponent,
     IdentifierComponent,
@@ -226,12 +220,10 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
       provide: CoreConfigService,
       useClass: AppConfigService,
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [AppInitializerService, UserService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.load();
+    }),
     {
       provide: RemoteAutocompleteService,
       useClass: ContributionsAutocompleteService,
