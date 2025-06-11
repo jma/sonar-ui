@@ -17,8 +17,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 
 @Injectable({
@@ -140,8 +140,8 @@ export class UserService {
    * @return true if the organisation is dedicated.
    */
   isDedecatedOrganisation(): boolean {
-    return 'isDedicated' in this._user.organisation
-      && this._user.organisation.isDedicated;
+    return 'isDedicated' in this._user?.organisation
+      && this._user?.organisation?.isDedicated;
   }
 
   /**

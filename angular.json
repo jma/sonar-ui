@@ -30,7 +30,9 @@
             ],
             "stylePreprocessorOptions": {
               "sass": {
-                "silenceDeprecations": ["import"]
+                "silenceDeprecations": [
+                  "import"
+                ]
               }
             },
             "scripts": [],
@@ -39,10 +41,15 @@
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true,
-            "browser": "projects/sonar/src/main.ts"
+            "browser": "projects/sonar/src/main.ts",
+            "server": "projects/sonar/src/main.server.ts",
+            "ssr": {
+              "entry": "projects/sonar/src/server.ts"
+            }
           },
           "configurations": {
-            "proxy": {},
+            "proxy": {
+            },
             "production": {
               "fileReplacements": [
                 {

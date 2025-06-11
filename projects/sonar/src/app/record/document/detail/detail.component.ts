@@ -18,6 +18,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   inject
 } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -48,7 +49,7 @@ export class DetailComponent implements OnDestroy, OnInit {
   // Record retrieved from observable.
   record: any = null;
 
-  recordService = inject(RecordService);
+  protected recordService = inject(RecordService);
 
   // Subscription to observables, used to unsubscribe to all at the same time.
   private _subscription: Subscription = new Subscription();
@@ -151,17 +152,6 @@ export class DetailComponent implements OnDestroy, OnInit {
     return this.record.classification.filter((item: any) => {
       return item.type === 'bf:ClassificationUdc';
     });
-  }
-
-  /**
-   * Scroll to target.
-   *
-   * @param event DOM event triggered.
-   * @param target ID of the target element.
-   */
-  goToOtherFile(event: any, target: string) {
-    event.preventDefault();
-    document.querySelector('#' + target).scrollIntoView({ behavior: 'smooth' });
   }
 
   /**

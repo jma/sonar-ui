@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfigService } from './app-config.service';
+import { UserService } from './user.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
     selector: 'sonar-root',
@@ -25,6 +27,7 @@ import { AppConfigService } from './app-config.service';
 })
 export class AppComponent implements OnInit {
 
+  protected document:Document = inject(DOCUMENT);
   /**
    * Constructor.
    * @param _translateService TranslateService.
@@ -40,9 +43,11 @@ export class AppComponent implements OnInit {
    * Component init hook.
    */
   ngOnInit() {
+    // TODO: retrieve the language from the logged user API
     // Ex: <html lang="en" data-view="global">
-    this.appConfigService.view = document.querySelector('html').getAttribute('data-view');
-    let language = document.documentElement.lang || 'en';
+    // this.appConfigService.view = document.querySelector('html').getAttribute('data-view');
+    // let language = document.documentElement.lang || 'en';
+    let language = 'fr';
     if (language == null) {
       const browserLang = this.translateService.getBrowserLang();
       language = browserLang.match(this.appConfigService.languages.join('|')) ?

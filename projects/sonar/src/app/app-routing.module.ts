@@ -44,6 +44,7 @@ import { BriefViewComponent as SubdivisionBriefViewComponent } from './record/su
 import { UserComponent } from './record/user/user.component';
 import { UserService } from './user.service';
 import { MetadataComponent } from './deposit/metadata/metadata.component';
+import { RenderMode } from '@angular/ssr';
 
 const adminModeDisabled = (): Observable<ActionStatus> => {
   return of({

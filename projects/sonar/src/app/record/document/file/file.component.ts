@@ -54,16 +54,6 @@ export class FileComponent {
   @Output()
   previewClicked: EventEmitter<any> = new EventEmitter();
 
-  /**
-   * Scroll to target.
-   *
-   * @param event DOM event triggered.
-   * @param target ID of the target element.
-   */
-   goToElement(event: any, target: string) {
-    event.preventDefault();
-    document.querySelector('#' + target).scrollIntoView({ behavior: 'smooth' });
-  }
 
   /**
    * Method called when a preview link is clicked.

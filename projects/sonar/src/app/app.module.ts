@@ -19,6 +19,7 @@ import {
   HTTP_INTERCEPTORS,
   HttpClient,
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import {
@@ -29,7 +30,7 @@ import {
   provideAppInitializer,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration, withEventReplay, withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
@@ -230,8 +231,9 @@ export function minElementError(err: any, field: FormlyFieldConfig) {
     },
     // BsLocaleService,
     DatePipe,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(),withInterceptorsFromDi()),
     providePrimeNG(primeNGConfig),
+    provideClientHydration(withEventReplay()),
   ],
 })
 export class AppModule {}
